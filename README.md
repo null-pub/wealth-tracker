@@ -21,6 +21,8 @@ See it on github pages: https://null-pub.github.io/wealth-tracker/
 
 Install nodejs: `https://nodejs.org/en/download`
 
+download the code from github.
+
 Run:
 
 `npm install`
