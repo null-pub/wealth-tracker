@@ -14,3 +14,7 @@ npm install
 npm run start
 
 open http://localhost:5173/wealth-tracker
+
+known issues:
+
+- one off mortgage payments are not trackable.
