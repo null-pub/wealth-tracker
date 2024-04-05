@@ -4,6 +4,8 @@ See it on github pages: https://null-pub.github.io/wealth-tracker/
 
 ### All data is stored in local storage. If you change computers or even browsers your data will not follow you around.
 
+### Bugs may exist. This is for entertainment purposes only. Do your own math.
+
 ## Features
 
 - Tracks Wealth for generic accounts & mortgages.
