@@ -1,0 +1,49 @@
+{
+  "name": "wealth-tracker",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@emotion/css": "^11.11.2",
+    "@emotion/react": "^11.11.4",
+    "@mui/icons-material": "^5.15.14",
+    "@mui/material": "^5.15.14",
+    "@mui/system": "^5.15.14",
+    "@mui/x-date-pickers": "^7.1.0",
+    "@tanstack/react-store": "^0.3.1",
+    "@tanstack/store": "^0.3.1",
+    "ag-charts-community": "^9.2.0",
+    "ag-charts-react": "^9.2.1",
+    "ag-grid-community": "^31.2.0",
+    "ag-grid-react": "^31.2.0",
+    "luxon": "^3.4.4",
+    "mutative": "^1.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-error-boundary": "^4.0.13",
+    "uuid": "^9.0.1",
+    "vite-plugin-checker": "^0.6.4",
+    "vite-tsconfig-paths": "^4.3.2",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/luxon": "^3.4.2",
+    "@types/react": "^18.2.73",
+    "@types/react-dom": "^18.2.23",
+    "@types/uuid": "^9.0.8",
+    "@typescript-eslint/eslint-plugin": "^7.4.0",
+    "@typescript-eslint/parser": "^7.4.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
+    "typescript": "^5.4.3",
+    "vite": "^5.2.7"
+  }
+}
