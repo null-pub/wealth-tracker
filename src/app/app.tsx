@@ -40,6 +40,7 @@ export const App = () => {
             onClick={() => {
               setIsOpen(false);
               resetError?.();
+              resetStore();
             }}
             autoFocus
           >

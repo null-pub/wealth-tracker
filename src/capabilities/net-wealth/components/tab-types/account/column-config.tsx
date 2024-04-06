@@ -18,8 +18,11 @@ export const createAccountColumnConfig = (accountName: string): ColDef<AccountDa
     cellEditor: "agDateCellEditor",
     editable: true,
     valueSetter: (x) => {
-      updateAccountDate(accountName, x.data.id, DateTime.fromJSDate(x.newValue));
-      return true;
+      const date = DateTime.fromJSDate(x.newValue);
+      if (date.isValid) {
+        updateAccountDate(accountName, x.data.id, date);
+      }
+      return date.isValid;
     },
   },
   {

@@ -37,8 +37,11 @@ export const createAccountColumnConfig = (
     cellEditor: "agDateCellEditor",
     editable: true,
     valueSetter: (x) => {
-      updateProjectedIncomeDate(accountName, x.data.id, DateTime.fromJSDate(x.newValue));
-      return true;
+      const date = DateTime.fromJSDate(x.newValue);
+      if (date.isValid) {
+        updateProjectedIncomeDate(accountName, x.data.id, DateTime.fromJSDate(x.newValue));
+      }
+      return date.isValid;
     },
   },
   {
