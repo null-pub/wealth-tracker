@@ -13,10 +13,9 @@ const valueByDateRange = (account: AccountData[]) => {
     const next = array[index + 1];
     return {
       start: DateTime.fromISO(x.date),
-      end: (next?.date
-        ? DateTime.fromISO(next?.date).startOf("day")
-        : DateTime.fromISO(x.date).endOf("day").plus({ years: 1 })
-      ).minus({ days: 1 }),
+      end: (next?.date ? DateTime.fromISO(next?.date).startOf("day") : DateTime.fromISO(x.date).plus({ years: 1 }))
+        .minus({ days: 1 })
+        .endOf("day"),
       value: x.value,
     };
   });
@@ -55,7 +54,7 @@ export const useProjectedPay = () => {
 
       payPerPeriod.unshift({
         start: startDate,
-        end: end.plus({ years: -1 }),
+        end: end.plus({ years: -1 }).endOf("day"),
         value: Math.round(value * multiplier),
       });
     }
@@ -70,7 +69,7 @@ export const useProjectedPay = () => {
 
       payPerPeriod.push({
         start: startDate,
-        end: end.plus({ years: 1 }),
+        end: end.plus({ years: 1 }).endOf("day"),
         value: Math.round(value * multiplier),
       });
     }
