@@ -3,10 +3,10 @@ import { Button } from "@mui/material";
 import { ColDef } from "ag-grid-community";
 import { CustomCellRendererProps } from "ag-grid-react";
 import { DateTime } from "luxon";
+import { Cash } from "shared/components/formatters/cash";
 import { AccountData } from "shared/models/account-data";
 import { updateAccountDate, updateAccountValue } from "shared/store";
 import { removeAccountEntry } from "shared/store/remove-account-entry";
-import { formatCashShort } from "shared/utility/format-cash";
 import { shortDate } from "shared/utility/format-date";
 
 export const createAccountColumnConfig = (accountName: string): ColDef<AccountData>[] => [
@@ -28,11 +28,11 @@ export const createAccountColumnConfig = (accountName: string): ColDef<AccountDa
   {
     headerName: "Value",
     valueGetter: (x) => x.data?.value,
-    valueFormatter: (x) => formatCashShort(x.value),
     valueSetter: (x) => {
       updateAccountValue(accountName, x.data.id, +x.newValue);
       return true;
     },
+    cellRenderer: (x: CustomCellRendererProps<AccountData>) => <Cash value={x.value} placement="left" />,
     editable: true,
     cellEditor: "agNumberCellEditor",
     type: "numericColumn",
@@ -46,6 +46,7 @@ export const createAccountColumnConfig = (accountName: string): ColDef<AccountDa
             props.data && removeAccountEntry(accountName, props.data.id);
           }}
           color="error"
+          fullWidth
         >
           <DeleteForeverIcon />
         </Button>

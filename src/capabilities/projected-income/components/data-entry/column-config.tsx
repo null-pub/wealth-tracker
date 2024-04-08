@@ -5,12 +5,13 @@ import { Stack } from "@mui/system";
 import { ColDef, ICellRendererParams } from "ag-grid-community";
 import { CustomCellRendererProps } from "ag-grid-react";
 import { DateTime } from "luxon";
+import { Cash } from "shared/components/formatters/cash";
+import { Percent } from "shared/components/formatters/percent";
 import { AccountData } from "shared/models/account-data";
 import { TimeSeries } from "shared/models/projected-income";
 import { updateProjectedIncome } from "shared/store";
 import { removeProjectedIncome } from "shared/store/remove-projected-income";
 import { updateProjectedIncomeDate } from "shared/store/update-projected-income-date";
-import { formatCash } from "shared/utility/format-cash";
 import { shortDate } from "shared/utility/format-date";
 
 export const createAccountColumnConfig = (
@@ -47,8 +48,8 @@ export const createAccountColumnConfig = (
   {
     headerName: "Value",
     valueGetter: (x) => x.data?.value,
-    valueFormatter: (x) =>
-      variant === "number" ? x.value : variant === "cash" ? formatCash(x.value) : (x.value * 100).toFixed(2) + "%",
+    cellRenderer: (x: CustomCellRendererProps<AccountData>) =>
+      variant === "cash" ? <Cash compact={false} value={x.value} /> : <Percent value={x.value} />,
     type: "numericColumn",
     editable: true,
     cellEditor: "agNumberCellEditor",
@@ -66,6 +67,7 @@ export const createAccountColumnConfig = (
             props.data && removeProjectedIncome(accountName, props.data?.id);
           }}
           color="error"
+          fullWidth
         >
           <DeleteForeverIcon />
         </Button>

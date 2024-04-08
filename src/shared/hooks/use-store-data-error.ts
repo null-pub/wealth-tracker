@@ -7,10 +7,11 @@ export const useStoreDataError = () => {
     if (!invalidData) {
       return { hadError: false };
     }
-    const validated = storeValidator.safeParse(JSON.parse(invalidData));
+    const jsonInvalidData = JSON.parse(invalidData);
+    const validated = storeValidator.safeParse(jsonInvalidData);
     return {
       hadError: !!invalidData,
-      invalidData: JSON.stringify(invalidData, null, 2),
+      invalidData: jsonInvalidData,
       parseError: invalidData && !validated.success ? validated.error : undefined,
       resetError: () => {
         localStorage.removeItem("store-invalid");

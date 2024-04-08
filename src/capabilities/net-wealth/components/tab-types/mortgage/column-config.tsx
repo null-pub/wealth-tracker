@@ -3,9 +3,9 @@ import { Button } from "@mui/material";
 import { ColDef } from "ag-grid-community";
 import { CustomCellRendererProps } from "ag-grid-react";
 import { DateTime } from "luxon";
+import { Cash } from "shared/components/formatters/cash";
 import { AccountData } from "shared/models/account-data";
 import { removeAccountEntry } from "shared/store";
-import { formatCashShort } from "shared/utility/format-cash";
 import { shortDate } from "shared/utility/format-date";
 
 export const createAccountColumnConfig = (accountName: string): ColDef<AccountData>[] => [
@@ -17,8 +17,8 @@ export const createAccountColumnConfig = (accountName: string): ColDef<AccountDa
   },
   {
     headerName: "Home Value",
+    cellRenderer: (x: CustomCellRendererProps<AccountData>) => <Cash value={x.value} placement="left" />,
     valueGetter: (x) => x.data?.value,
-    valueFormatter: (x) => formatCashShort(x.value),
     type: "numericColumn",
   },
   {
@@ -30,6 +30,7 @@ export const createAccountColumnConfig = (accountName: string): ColDef<AccountDa
             props.data && removeAccountEntry(accountName, props.data?.id);
           }}
           color="error"
+          fullWidth
         >
           <DeleteForeverIcon />
         </Button>
@@ -38,11 +39,13 @@ export const createAccountColumnConfig = (accountName: string): ColDef<AccountDa
   },
 ];
 
-export const mortgageColumnConfig: ColDef<{
+type House = {
   date: DateTime;
   balance: number;
   equity: number;
-}>[] = [
+};
+
+export const mortgageColumnConfig: ColDef<House>[] = [
   {
     headerName: "Date",
     sort: "desc",
@@ -52,13 +55,13 @@ export const mortgageColumnConfig: ColDef<{
   {
     headerName: "Loan Balance",
     valueGetter: (x) => x.data?.balance.toFixed(2),
-    valueFormatter: (x) => formatCashShort(x.value),
+    cellRenderer: (x: CustomCellRendererProps<House>) => <Cash value={x.value} placement="left" />,
     type: "numericColumn",
   },
   {
     headerName: "Equity",
     valueGetter: (x) => x.data?.equity.toFixed(2),
-    valueFormatter: (x) => formatCashShort(x.value),
+    cellRenderer: (x: CustomCellRendererProps<House>) => <Cash value={x.value} placement="left" />,
     type: "numericColumn",
   },
 ];

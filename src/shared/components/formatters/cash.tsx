@@ -8,8 +8,22 @@ interface CashProps {
   disableTooltip?: boolean;
   compact?: boolean;
   tooltip?: string;
+  placement?:
+    | "top"
+    | "right"
+    | "bottom"
+    | "left"
+    | "bottom-end"
+    | "bottom-start"
+    | "left-end"
+    | "left-start"
+    | "right-end"
+    | "right-start"
+    | "top-end"
+    | "top-start"
+    | undefined;
 }
-export const Cash = ({ value, fallback, disableTooltip, compact = true, tooltip }: CashProps) => {
+export const Cash = ({ value, fallback, disableTooltip, compact = true, tooltip, placement }: CashProps) => {
   const formatted = useMemo(() => {
     if (value === undefined) {
       return fallback;
@@ -19,6 +33,7 @@ export const Cash = ({ value, fallback, disableTooltip, compact = true, tooltip 
 
   return (
     <Tooltip
+      placement={placement}
       disableHoverListener={disableTooltip || !compact || !value}
       title={[tooltip, formatCash(value!)].join(" ")}
     >

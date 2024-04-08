@@ -25,34 +25,40 @@ export const App = () => {
     <>
       <InvalidDataDialog open={isOpen} error={error}>
         {hadError && (
-          <Button
-            onClick={() => {
-              downloadJson(`invalid-data-wealth-tracker-${getLocalDateTime().toFormat(shortDate)}.json`, invalidData);
-              setIsOpen(false);
-            }}
-          >
-            Download Data
-          </Button>
-        )}
-        {hadError && (
-          <Button
-            color="error"
-            onClick={() => {
-              setIsOpen(false);
-              resetError?.();
-              resetStore();
-            }}
-            autoFocus
-          >
-            Reset
-          </Button>
+          <>
+            <Button
+              color="error"
+              onClick={() => {
+                setIsOpen(false);
+                resetError?.();
+                resetStore();
+              }}
+            >
+              Reset
+            </Button>
+            <Button
+              onClick={() => {
+                downloadJson(`invalid-data-wealth-tracker-${getLocalDateTime().toFormat(shortDate)}.json`, invalidData);
+              }}
+            >
+              Download Data
+            </Button>
+
+            <Button
+              onClick={() => {
+                setIsOpen(false);
+                resetError?.();
+              }}
+            >
+              Ignore
+            </Button>
+          </>
         )}
         {!hadError && (
           <Button
             onClick={() => {
               setIsOpen(false);
             }}
-            autoFocus
           >
             Cancel
           </Button>
