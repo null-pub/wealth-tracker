@@ -8,9 +8,8 @@ export interface PayPeriod {
 
 export const getPayPeriods = (anyPayday: DateTime, start: DateTime, end: DateTime): PayPeriod[] => {
   const diff = -1 * Math.abs(start.diff(anyPayday, ["weeks", "days"]).days);
-  const daysOffset = +(anyPayday > start);
   const startPayDay = start.plus({
-    day: diff + daysOffset,
+    day: diff,
   });
 
   const numPayDays = end.diff(start, ["weeks", "days"]).weeks / 2;

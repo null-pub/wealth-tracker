@@ -29,8 +29,8 @@ export const useBaseIncome = (startDate: DateTime, endDate: DateTime): BaseIncom
       const payDuringPeriod = dateRanges.map((x) => {
         const start = DateTime.max(x.start, payPeriod.start);
         const end = DateTime.min(x.end, payPeriod.end);
-        const businessDays = differenceInBusinessDays(end.plus({ millisecond: 1 }).toJSDate(), start.toJSDate());
-        const value = (x.value / 10) * Math.round(businessDays);
+        const businessDays = differenceInBusinessDays(end.plus({ milliseconds: 1 }).toJSDate(), start.toJSDate());
+        const value = (x.value / 10) * Math.max(1, businessDays);
         return {
           start,
           end,
