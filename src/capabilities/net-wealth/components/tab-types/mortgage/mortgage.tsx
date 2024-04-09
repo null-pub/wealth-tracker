@@ -54,6 +54,7 @@ export const MortgageTab = (props: { accountName: string }) => {
           rowData={account?.data ?? []}
           columnDefs={accountColumnConfig}
           id={account + "-history"}
+          autoSizeStrategy={{ type: "fitGridWidth" }}
         />
       </Grid>
       <Grid lg={3}>

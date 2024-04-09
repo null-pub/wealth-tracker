@@ -5,10 +5,10 @@ import { Stack } from "@mui/system";
 import { ColDef, ICellRendererParams } from "ag-grid-community";
 import { DateTime } from "luxon";
 import { getLocalDateTime } from "shared/utility/current-date";
-import { formatCash } from "shared/utility/format-cash";
 import { shortDate } from "shared/utility/format-date";
-import { formatPercent } from "shared/utility/format-percent";
 import { TimeSeriesWealth } from "../../hooks/use-times-series-wealth";
+import { Cash } from "shared/components/formatters/cash";
+import { Percent } from "shared/components/formatters/percent";
 
 export const columnConfig: ColDef<TimeSeriesWealth>[] = [
   {
@@ -43,18 +43,27 @@ export const columnConfig: ColDef<TimeSeriesWealth>[] = [
     },
   },
   {
+    type: "numericColumn",
     headerName: "Wealth",
     valueGetter: (x) => x.data?.wealth,
-    valueFormatter: (x) => formatCash(x.data?.wealth ?? 0),
+    cellRenderer: (x: ICellRendererParams<unknown, number>) => {
+      return x.value && <Cash value={x.value} placement="left" />;
+    },
   },
   {
+    type: "numericColumn",
     headerName: "YoY ($)",
     valueGetter: (x) => x.data?.yoyCash,
-    valueFormatter: (x) => (x.value != undefined ? formatCash(x.value) : ""),
+    cellRenderer: (x: ICellRendererParams<unknown, number>) => {
+      return x.value && <Cash value={x.value} placement="left" />;
+    },
   },
   {
+    type: "numericColumn",
     headerName: "YoY (%)",
     valueGetter: (x) => x.data?.yoyPct,
-    valueFormatter: (x) => (x.value !== undefined ? formatPercent(x.value) : ""),
+    cellRenderer: (x: ICellRendererParams<unknown, number>) => {
+      return x.value && <Percent value={x.value} />;
+    },
   },
 ];

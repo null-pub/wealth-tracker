@@ -35,8 +35,9 @@ export const AccountTab = (props: { accountName: string }) => {
 
   return (
     <Grid container height="100%" width={"100%"} padding={1} spacing={2}>
-      <Grid xl={3} lg={4}>
+      <Grid lg={3} xl={3}>
         <AgGrid
+          key={accountName}
           reactiveCustomComponents
           rowData={account?.data ?? []}
           columnDefs={accountColumnConfig}
