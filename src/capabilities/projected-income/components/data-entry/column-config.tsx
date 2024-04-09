@@ -59,6 +59,7 @@ export const createAccountColumnConfig = (
     },
   },
   {
+    cellStyle: () => ({ display: "inline-flex", padding: "0px" }),
     headerName: "Actions",
     cellRenderer: (props: CustomCellRendererProps<AccountData>) => {
       return (
