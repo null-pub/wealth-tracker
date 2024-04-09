@@ -39,7 +39,8 @@ export const createAccountColumnConfig = (accountName: string): ColDef<AccountDa
   },
   {
     cellStyle: () => ({ display: "inline-flex", padding: "0px" }),
-    headerName: "Actions",
+    headerName: "",
+    colId: "actions",
     cellRenderer: (props: CustomCellRendererProps<AccountData>) => {
       return (
         <Button
