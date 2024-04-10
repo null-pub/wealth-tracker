@@ -14,7 +14,7 @@ import { shortDate } from "shared/utility/format-date";
 import InvalidDataDialog from "./invalid-data-dialog";
 
 export const App = () => {
-  const [tab, setTab] = useState<string>("wealth");
+  const [tab, setTab] = useState<string>("projected-income");
   const onExport = useExport();
   const onImport = useImport();
   const { hadError, parseError, resetError, invalidData } = useStoreDataError();

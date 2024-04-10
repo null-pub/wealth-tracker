@@ -7,19 +7,21 @@ export interface PayPeriod {
 }
 
 export const getPayPeriods = (anyPayday: DateTime, start: DateTime, end: DateTime): PayPeriod[] => {
-  const diff = anyPayday.diff(start, ["weeks", "days"]).days;
+  const diff = anyPayday.diff(start, ["weeks", "days"]);
   const startPayDay = start.plus({
-    day: diff,
+    days: diff.days,
+    weeks: +(diff.weeks % 2 !== 0),
   });
 
   const numPayDays = end.diff(start, ["weeks", "days"]).weeks / 2;
   const periods = [];
-  for (let i = 1; i <= numPayDays; i++) {
+  for (let i = 0; i <= numPayDays; i++) {
     periods.push({
       start: startPayDay.plus({ weeks: i * 2 - 3, day: 3 }),
       end: startPayDay.plus({ weeks: i * 2 - 1 }).endOf("day"),
       payedOn: startPayDay.plus({ weeks: i * 2 }),
     });
   }
-  return periods;
+
+  return periods.filter((x) => x.payedOn > start && x.payedOn < end);
 };

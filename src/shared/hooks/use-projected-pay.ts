@@ -5,11 +5,10 @@ import { AccountData } from "shared/models/account-data";
 import { store } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { findSameYear } from "shared/utility/find-same-year";
-import { sortByDate } from "shared/utility/sort-by-date";
 import { useMostFrequentValue } from "./use-most-frequent-value";
 
-const valueByDateRange = (account: AccountData[]) => {
-  return account.toSorted(sortByDate((x) => DateTime.fromISO(x.date), "asc")).map((x, index, array) => {
+export const valueByDateRange = (account: AccountData[]) => {
+  return account.map((x, index, array) => {
     const next = array[index + 1];
     return {
       start: DateTime.fromISO(x.date),
@@ -36,7 +35,13 @@ const defaultValue = {
   value: 0,
 };
 
-export const useProjectedPay = () => {
+export interface ProjectedPay {
+  start: DateTime<true> | DateTime<false>;
+  end: DateTime<true> | DateTime<false>;
+  value: number;
+}
+
+export const useProjectedPay = (): ProjectedPay[] => {
   const timeSeries = useStore(store, (x) => x.projectedIncome.timeSeries);
   const baseIncome = timeSeries.paycheck;
   const meritPct = useMostFrequentValue(timeSeries.meritIncreasePct);

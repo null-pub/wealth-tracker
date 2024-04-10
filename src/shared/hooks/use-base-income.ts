@@ -1,10 +1,8 @@
-import { differenceInBusinessDays } from "date-fns/differenceInBusinessDays";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
-import { aPayday } from "shared/utility/a-payday";
-import { DateRangesOverlap } from "shared/utility/date-ranges-overlap";
-import { PayPeriod, getPayPeriods } from "shared/utility/get-pay-periods";
+import { PayPeriod } from "shared/utility/get-pay-periods";
 import { useProjectedPay } from "./use-projected-pay";
+import { getPayments } from "shared/utility/get-payments";
 
 export type IncomePerPeriod = {
   perPayday: number;
@@ -24,29 +22,8 @@ export const useBaseIncome = (startDate: DateTime, endDate: DateTime): BaseIncom
   const pay = useProjectedPay();
 
   return useMemo(() => {
-    const payPeriods = getPayPeriods(aPayday, startDate, endDate).map((payPeriod) => {
-      const dateRanges = pay.filter((x) => DateRangesOverlap(x, payPeriod));
-      const payDuringPeriod = dateRanges.map((x) => {
-        const start = DateTime.max(x.start, payPeriod.start);
-        const end = DateTime.min(x.end, payPeriod.end);
-        const businessDays = differenceInBusinessDays(end.plus({ milliseconds: 1 }).toJSDate(), start.toJSDate());
-        const value = (x.value / 10) * Math.max(1, businessDays);
-        return {
-          start,
-          end,
-          value,
-        };
-      });
-      const sum = payDuringPeriod.reduce((acc, curr) => acc + curr.value, 0);
-
-      return {
-        ...payPeriod,
-        value: sum,
-      };
-    });
-
+    const payPeriods = getPayments(startDate, endDate, pay);
     const totalIncome = payPeriods.reduce((acc, curr) => acc + curr.value, 0);
-
     const incomePerPeriod = payPeriods
       .reduceRight((acc, curr) => {
         if (acc[0]?.[0]?.value === curr.value) {
