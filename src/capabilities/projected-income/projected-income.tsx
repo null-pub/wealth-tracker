@@ -14,11 +14,10 @@ import { BonusOutcome } from "./components/bonus-outcome";
 import { Layout } from "./components/data-entry/data-entry";
 import { MeritOutcome } from "./components/merit-increase";
 import { Outcome } from "./components/outcome";
-import { useGradient } from "./hooks/use-gradient";
 
 export const ProjectedIncome = () => {
   const [selectedYear, setSelectedYear] = useState(getLocalDateTime().year);
-  useGradient();
+
   const oldestYear = useStore(store, (x) => {
     const first = x.projectedIncome.timeSeries.paycheck[1]?.date;
     const date = first ? DateTime.fromISO(first) : getLocalDateTime();
