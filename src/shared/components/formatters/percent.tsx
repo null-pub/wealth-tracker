@@ -1,9 +1,11 @@
 import { Box } from "@mui/system";
+import { ReactNode } from "react";
 import { formatPercent } from "shared/utility/format-percent";
 
 interface PercentProps {
-  value: number;
+  value?: number;
   probability?: number;
+  fallback?: ReactNode;
 }
 
 const getColor = (probability?: number) => {
@@ -19,6 +21,6 @@ const getColor = (probability?: number) => {
   return "red";
 };
 
-export const Percent = ({ value, probability }: PercentProps) => {
-  return <Box color={getColor(probability)}>{formatPercent(value)}</Box>;
+export const Percent = ({ value, probability, fallback }: PercentProps) => {
+  return <Box color={getColor(probability)}>{value ? formatPercent(value) : fallback}</Box>;
 };

@@ -24,14 +24,14 @@ interface CashProps {
     | "top-start"
     | undefined;
 }
-
+//(max ?? 0) - (min ?? 0) < 1000
 export const CashRange = ({ min, max, fallback, disableTooltip, compact = true }: CashProps) => {
   return (
     <Box>
-      {(max ?? 0) - (min ?? 0) < 1000 && (
+      {(max ?? 0) / (min ?? 1) <= 1.01 && (
         <Cash fallback={fallback} value={max} disableTooltip={disableTooltip} compact={compact} />
       )}
-      {(max ?? 0) - (min ?? 0) > 1000 && (
+      {(max ?? 0) / (min ?? 1) > 1.01 && (
         <>
           <Cash value={min} fallback={fallback} disableTooltip={disableTooltip} compact={compact} />
           <span> - </span>

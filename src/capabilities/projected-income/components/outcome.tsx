@@ -2,6 +2,7 @@ import { Box, Divider, Stack, Typography } from "@mui/material";
 import { ReactNode } from "react";
 import { CashRange } from "shared/components/formatters/cash-range";
 import { Percent } from "shared/components/formatters/percent";
+import { PercentRange } from "shared/components/formatters/percent-range";
 import { Cluster } from "../hooks/use-gradient";
 import { Value } from "./value";
 
@@ -20,7 +21,7 @@ export const Outcome = (props: { title: ReactNode; cluster?: Cluster[]; compact?
       </Typography>
       <Divider />
 
-      <Stack padding={1} direction={"row"} spacing={0.5}>
+      <Stack padding={1} direction={"row"} spacing={0.5} width={"max-content"}>
         {cluster &&
           cluster.map((x, i) => {
             return (
@@ -33,7 +34,9 @@ export const Outcome = (props: { title: ReactNode; cluster?: Cluster[]; compact?
                   </Box>
                 }
               >
-                <CashRange compact={compact} min={x.min} max={x.max} />
+                {x.min < 1 && x.min > 0 && <PercentRange min={x.min} max={x.max} />}
+                {x.min > 1 && <CashRange compact={compact} min={x.min} max={x.max} />}
+                {x.min === 0 && 0}
               </Value>
             );
           })}

@@ -19,8 +19,13 @@ export const Duration = (props: DurationProps) => {
     }
     if (variant === "countdown") {
       const diff = dateTime?.diffNow(["months", "days", "hours"]);
-      const format = diff && diff.days === 0 ? "h'hr'" : "d'd'";
-      return diff?.toFormat(format);
+      if (diff.months > 0) {
+        return diff?.toFormat("M'm'");
+      }
+      if (diff.days > 0) {
+        return diff?.toFormat("d'd'");
+      }
+      return diff?.toFormat("h'hr'");
     }
 
     return dateTime?.toFormat(dateFormat);

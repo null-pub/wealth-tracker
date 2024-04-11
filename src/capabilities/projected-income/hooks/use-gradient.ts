@@ -40,6 +40,7 @@ export const useClusters = (year: number) => {
       retirementBonus: clusters(scenarios.map((x) => x.retirementBonus)),
       companyBonus: clusters(scenarios.map((x) => x.companyBonus)),
       pay: clusters(scenarios.map((x) => x.pay.at(-1)?.value ?? 0)),
+      meritIncrease: clusters(scenarios.map((x) => x.meritIncreasePct + x.equityIncreasePct)),
       scenarios,
     };
   }, [scenarios]);

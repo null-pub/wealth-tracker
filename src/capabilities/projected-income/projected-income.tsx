@@ -63,6 +63,16 @@ export const ProjectedIncome = () => {
             compact={false}
             cluster={result.pay}
           />
+          <Outcome
+            title={
+              <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
+                <span>Merit Increase</span>
+                <Duration dateTime={dates.meritIncrease} />
+              </Box>
+            }
+            compact={false}
+            cluster={result.meritIncrease}
+          />
           <MeritOutcome
             title={
               <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
