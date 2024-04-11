@@ -1,22 +1,14 @@
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
-import { useDateRanges } from "shared/hooks/use-dates";
+import { useDateRanges, useDates } from "shared/hooks/use-dates";
 import { valueByDateRange } from "shared/hooks/use-projected-pay";
+import { AccountData } from "shared/models/account-data";
 import { store } from "shared/store";
-import { getLocalDateTime } from "shared/utility/current-date";
 import { findSameYear } from "shared/utility/find-same-year";
 import { PaymentPeriod, getPayments } from "shared/utility/get-payments";
-import { ckmeans, sumSimple } from "simple-statistics";
-
-interface GradientResult {
-  meritRate: number;
-  meritBonusRate: number;
-  companyBonusRate: number;
-  companyBonusFactor: number;
-  payments: PaymentPeriod[];
-  bonuses: number[];
-}
+import { groupBySingle } from "shared/utility/group-by";
+import { ckmeans } from "simple-statistics";
 
 const incomeByRange = (range: { start: DateTime; end: DateTime }, pay: PaymentPeriod[]) => {
   return pay
@@ -24,174 +16,141 @@ const incomeByRange = (range: { start: DateTime; end: DateTime }, pay: PaymentPe
     .reduce((acc, curr) => acc + curr.value, 0);
 };
 
-export const useGradient2 = () => {
-  /*
- 
-  ()=>
-    if Y-0 exists & Y-1 does not & (Merit / equity exist) for Y-0 //(aka this year but after april first)
-      return Y-0 and generate Y-1
-
-    if there is not a paycheck for Y-0 & Y-1 //(aka the future)
-      generate all possible ways to arrive at Y-1.
-      using all Merit / Merit bonus pairs generate all possible Y-0 / Y-1 pairs
-    
-    generate all company bonus scenarios for each prior set of scenarios
-
-    generate payments for Y-1 jan 1 thru Y-0 dec 31
-    compute bonuses , income
-
-    run ckmeans for 3 buckets
-
-
-  */
-};
-
-export const useGradient = () => {
-  const year = getLocalDateTime().year;
-  const dateRanges = useDateRanges(year);
+export const useScenarios = (year: number) => {
   const timeSeries = useStore(store, (x) => x.projectedIncome.timeSeries);
+  const dates = useDates(year);
+  const dateRanges = useDateRanges(year);
 
-  return useMemo(() => {
-    const equityPct = findSameYear(year, timeSeries.equityPct);
-    const meritIncreasePct = findSameYear(year, timeSeries.meritIncreasePct);
-    const meritBonusPct = findSameYear(year, timeSeries.meritBonusPct);
+  console.log("year", year);
 
-    const foundMerit = {
-      bonusPct: meritBonusPct?.value ?? 0,
-      meritIncreasePct: (meritIncreasePct?.value ?? 0) + (equityPct?.value ?? 0),
-    };
+  const payAndMerit = useMemo(() => {
+    const pay = timeSeries.paycheck.filter((x) => DateTime.fromISO(x.date).year > year - 3);
+    const mostRecent = pay.at(-1) ?? timeSeries.paycheck.at(-1);
+    if (!mostRecent) {
+      return [];
+    }
+    const yearsToGenerate = year - DateTime.fromISO(mostRecent.date).year;
+    console.log("yearsToGenerate", yearsToGenerate);
+    const meritPairs = getMeritPairs(timeSeries.meritIncreasePct, timeSeries.meritBonusPct);
+    const meritSequence = generateMeritSequence(meritPairs, yearsToGenerate);
 
-    const meritPairs = timeSeries.meritIncreasePct.map((x) => {
-      const bonusPct = findSameYear(DateTime.fromISO(x.date).year, timeSeries.meritBonusPct)?.value ?? 0;
+    const paycheckData =
+      meritSequence.length > 0
+        ? meritSequence.map((merits) => {
+            const next = pay.slice();
+            const initial = next.length;
+            for (let i = initial; i < merits.length + initial; i++) {
+              const prior = next[i - 1] ?? mostRecent;
+              const date = DateTime.fromISO(prior.date ?? mostRecent.date)
+                .plus({ years: 1 })
+                .set({ month: dates.meritIncrease.month, day: dates.meritIncrease.day });
+              const equity = findSameYear(date.year, timeSeries.equityPct)?.value ?? 0;
+              next.push({
+                date: date.toISO()!,
+                value: prior.value * (1 + merits[i - initial].meritIncreasePct + equity),
+                id: "",
+              });
+            }
+
+            const realMerit = pay.map(
+              (x) => findSameYear(DateTime.fromISO(x.date).year, timeSeries.meritBonusPct)?.value ?? 0
+            );
+            const fakeMerit = merits.map((x) => x.meritBonusPct);
+            const lastThreeMeritBonus = realMerit
+              .concat(fakeMerit)
+              .slice(-3)
+              .reduce((acc, curr) => acc + curr, 0);
+
+            return {
+              pay: next,
+              lastThreeMeritBonus,
+              ...merits.at(-1)!,
+            };
+          })
+        : [
+            (() => {
+              const realMeritBonus = pay.map(
+                (x) => findSameYear(DateTime.fromISO(x.date).year, timeSeries.meritBonusPct)?.value ?? 0
+              );
+              const meritIncreasePct = findSameYear(year, timeSeries.meritIncreasePct);
+
+              const lastThreeMeritBonus = realMeritBonus.slice(-3).reduce((acc, curr) => acc + curr, 0);
+
+              return {
+                pay: pay.slice(),
+                lastThreeMeritBonus,
+                meritIncreasePct: meritIncreasePct,
+                meritBonusPct: realMeritBonus.at(-1)!,
+              };
+            })(),
+          ];
+
+    const equityIncreasePct = findSameYear(year, timeSeries.equityPct)?.value ?? 0;
+    const scenarios = paycheckData.map(({ meritBonusPct, meritIncreasePct, lastThreeMeritBonus, ...x }) => {
+      const pay = valueByDateRange(x.pay);
+      const payments = getPayments(
+        DateTime.fromObject({ day: 1, month: 1, year: year - 1 }),
+        DateTime.fromObject({ day: 31, month: 12, year: year }).endOf("day"),
+        pay
+      );
       return {
-        bonusPct,
-        meritIncreasePct: x.value + (equityPct?.value ?? 0),
+        pay,
+        payments,
+        meritBonusPct,
+        meritIncreasePct,
+        equityIncreasePct,
+        lastThreeMeritBonus,
+        retirementBonusPct: 0.15,
       };
     });
-
-    const b = timeSeries.meritIncreasePct.map((x) => 1 + x.value);
-    const d = [new Set(b)];
-
-    for (let i = 0; i < 4; i++) {
-      const d2 = new Set<number>();
-      [...(d.at(-1)?.values() ?? [])].forEach((x) => {
-        b.forEach((y) => d2.add(x * y));
-      });
-      d.push(d2);
-    }
-
-    const c = [...(d.at(-1) ?? [])];
-
-    const pay = findSameYear(year, timeSeries.paycheck)?.value ?? 1;
-    const y = new Map<number, number[]>();
-    b.forEach((a) => {
-      return c.forEach((b) => {
-        y.set(a * b, [Math.round(b * pay), Math.round(a * b * pay)]);
-      });
-    });
-
-    const xx = ckmeans(
-      [...y.values()].map(([, x]) => x),
-      4
-    );
-
-    console.log(
-      xx,
-      xx.map((x) => [Math.min(...x), Math.max(...x), x.length / y.size])
-    );
-
-    const uniquePairs = Object.entries(Object.groupBy(meritPairs, (x) => x.bonusPct ** x.meritIncreasePct)).map(
-      ([, value]) => value!.at(0)!
-    );
-
-    const lastThreeMeritBonus = timeSeries.meritBonusPct
-      .filter((x) => DateTime.fromISO(x.date).year <= year)
-      .slice(-3)
-      .reduce((acc, curr) => acc + curr.value, 0);
 
     const uniqueCompanyBonusPcts = [...new Set(timeSeries.companyBonusPct.map((x) => x.value))];
 
-    console.log("uniqueMerits", uniquePairs);
-
-    //todo for each unique merit increase create seperate branching futures.
-    const basePaychecks = timeSeries.paycheck.filter((x) => {
-      const payYear = DateTime.fromISO(x.date).year;
-      return payYear === year - 1 || payYear === year - 2;
-    });
-    console.log("basePaychecks", basePaychecks);
-
-    const gMerits = (meritIncreasePct ? [foundMerit] : uniquePairs).map((merit): Partial<GradientResult> => {
-      const payByDateRanges = valueByDateRange(
-        basePaychecks.slice().concat({
-          date: DateTime.fromObject({ month: 4, day: 1, year }).toISO()!,
-          value: (basePaychecks.at(-1)?.value ?? 0) * (1 + merit.meritIncreasePct),
-          id: "",
-        })
-      );
-      const payments = getPayments(
-        DateTime.fromObject({ month: 1, day: 1, year: year - 1 }),
-        DateTime.fromObject({ month: 12, day: 31, year }).endOf("day"),
-        payByDateRanges
-      );
-      const bonus = incomeByRange(dateRanges.meritBonus, payments ?? []) * merit.bonusPct;
-      return {
-        payments,
-        meritRate: merit.meritIncreasePct,
-        meritBonusRate: merit.bonusPct,
-        bonuses: [bonus],
-      };
-    });
-    console.log("gMerits", gMerits);
-
-    const gCompanyBonus = uniqueCompanyBonusPcts.flatMap((bonusPct) => {
-      return gMerits.map((x) => {
-        const bonus = incomeByRange(dateRanges.companyBonus, x.payments ?? []) * bonusPct * lastThreeMeritBonus;
-        return {
-          ...x,
-          companyBonusRate: bonusPct * lastThreeMeritBonus,
-          companyBonusFactor: bonusPct,
-          bonuses: (x.bonuses ?? []).concat(bonus),
-        };
+    const withCompanyBonus = uniqueCompanyBonusPcts.flatMap((x) => {
+      return scenarios.map((y) => {
+        return { ...y, companyBonusFactor: x, companyBonusPct: y.lastThreeMeritBonus * x };
       });
     });
 
-    console.log("gCompanyBonus", gCompanyBonus);
+    let totals = withCompanyBonus.map((x) => {
+      const basePay = Math.round(incomeByRange(dateRanges.base, x.payments));
+      const meritBonus = Math.round(incomeByRange(dateRanges.meritBonus, x.payments) * x.meritBonusPct);
+      const companyBonus = Math.round(incomeByRange(dateRanges.companyBonus, x.payments) * x.companyBonusPct);
+      const retirementBonus = Math.round(incomeByRange(dateRanges.retirementBonus, x.payments) * 0.15);
+      const totalPay = Math.round(
+        [basePay, meritBonus, companyBonus, retirementBonus].reduce((acc, curr) => acc + curr, 0)
+      );
 
-    const gRetirementBonus = gCompanyBonus.map((x) => {
-      const bonus = (incomeByRange(dateRanges.retirementBonus, x.payments ?? []) + sumSimple(x.bonuses)) * 0.15;
-      return {
-        ...x,
-        bonuses: (x.bonuses ?? []).concat(bonus),
-      };
+      return { totalPay, basePay, meritBonus, companyBonus, retirementBonus, ...x };
     });
 
-    console.log("gRetirementBonus", gRetirementBonus);
+    const meritBonus = findSameYear(year, timeSeries.meritBonusPct);
+    if (meritBonus) {
+      totals = totals.filter((x) => x.meritBonusPct === meritBonus.value);
+    }
 
-    const gIncome = gRetirementBonus.map((x) => {
-      const pay = incomeByRange(dateRanges.base, x.payments ?? []);
-      const bonuses = x.bonuses.reduce((acc, curr) => acc + curr, 0);
-      return {
-        income: Math.round(pay + bonuses),
-        ...x,
-      };
-    });
-
-    console.log("gIncome", gIncome);
+    const companyBonusFactor = findSameYear(year, timeSeries.companyBonusPct);
+    if (companyBonusFactor) {
+      totals = totals.filter((x) => x.companyBonusFactor === companyBonusFactor.value);
+    }
 
     const ck = ckmeans(
-      gIncome.map((x) => x.income),
-      Math.min(3, gIncome.length)
+      totals.map((x) => x.totalPay),
+      Math.min(3, totals.length)
     );
     console.log(
+      totals,
       "ckmeans",
       ck,
-      ck.map((x) => [Math.min(...x), Math.max(...x), x.length / gIncome.length])
+      ck.map((x) => [Math.min(...x), Math.max(...x), x.length / totals.length])
     );
   }, [
     dateRanges.base,
     dateRanges.companyBonus,
     dateRanges.meritBonus,
     dateRanges.retirementBonus,
+    dates.meritIncrease.day,
+    dates.meritIncrease.month,
     timeSeries.companyBonusPct,
     timeSeries.equityPct,
     timeSeries.meritBonusPct,
@@ -199,4 +158,53 @@ export const useGradient = () => {
     timeSeries.paycheck,
     year,
   ]);
+
+  return payAndMerit;
 };
+
+export const useGradient2 = () => {
+  useScenarios(2024);
+};
+
+function generateMeritSequence(
+  meritPairs: { originalDate: DateTime; meritIncreasePct: number; meritBonusPct: number }[],
+  yearsToGenerate: number
+) {
+  if (yearsToGenerate === 0) {
+    return [];
+  }
+  const exists = new Set<number>();
+  let meritSequence = meritPairs.slice().map((x) => [x]);
+  for (let i = 0; i < yearsToGenerate - 1; i++) {
+    meritSequence = meritSequence
+      .flatMap((x) => {
+        return meritPairs.map((merit) => {
+          return x.slice().concat(merit);
+        });
+      })
+      .filter((x) => {
+        const sum = x.reduce((acc, curr) => acc + curr.meritIncreasePct, 0);
+        const doesExist = exists.has(sum);
+        exists.add(sum);
+        return doesExist == false;
+      });
+  }
+  return meritSequence;
+}
+
+function getMeritPairs(meritIncreasePct: AccountData[], meritBonusPct: AccountData[]) {
+  return Object.values(
+    groupBySingle(
+      meritIncreasePct.map((x) => {
+        const meritBonusPctPair = findSameYear(DateTime.fromISO(x.date).year, meritBonusPct);
+
+        return {
+          originalDate: DateTime.fromISO(x.date),
+          meritIncreasePct: x.value,
+          meritBonusPct: meritBonusPctPair?.value ?? 0,
+        };
+      }),
+      (x) => x.meritIncreasePct * 1000 + x.meritBonusPct
+    )
+  );
+}

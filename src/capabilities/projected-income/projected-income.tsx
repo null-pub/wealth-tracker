@@ -3,21 +3,22 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useState } from "react";
+import { useCompanyBonus } from "shared/hooks/use-company-bonus";
 import { useDates } from "shared/hooks/use-dates";
+import { useMeritBonus } from "shared/hooks/use-merit-bonus";
+import { useRetirementBonus } from "shared/hooks/use-retirement-bonus";
+import { useTotalIncome } from "shared/hooks/use-total-income";
 import { store } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
-import { useCompanyBonus } from "../../shared/hooks/use-company-bonus";
-import { useMeritBonus } from "../../shared/hooks/use-merit-bonus";
-import { useRetirementBonus } from "../../shared/hooks/use-retirement-bonus";
-import { useTotalIncome } from "../../shared/hooks/use-total-income";
 import { BonusOutcome } from "./components/bonus-outcome";
 import { Layout } from "./components/data-entry/data-entry";
 import { MeritOutcome } from "./components/merit-increase";
 import { Outcome } from "./components/outcome";
+import { useGradient2 } from "./hooks/use-gradient";
 
 export const ProjectedIncome = () => {
   const [selectedYear, setSelectedYear] = useState(getLocalDateTime().year);
-
+  useGradient2();
   const oldestYear = useStore(store, (x) => {
     const first = x.projectedIncome.timeSeries.paycheck[1]?.date;
     const date = first ? DateTime.fromISO(first) : getLocalDateTime();

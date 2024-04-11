@@ -7,7 +7,13 @@ import { getLocalDateTime } from "shared/utility/current-date";
 import { findSameYear } from "shared/utility/find-same-year";
 import { useMostFrequentValue } from "./use-most-frequent-value";
 
-export const valueByDateRange = (account: AccountData[]) => {
+export interface TimeSpanValue {
+  start: DateTime;
+  end: DateTime;
+  value: number;
+}
+
+export const valueByDateRange = (account: AccountData[]): TimeSpanValue[] => {
   return account.map((x, index, array) => {
     const next = array[index + 1];
     return {
