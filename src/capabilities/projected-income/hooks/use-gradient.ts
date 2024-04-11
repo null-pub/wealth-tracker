@@ -1,17 +1,46 @@
+import { useMemo } from "react";
 import { ckmeans } from "simple-statistics";
 import { useScenarios } from "./use-scenarios";
 
-export const useGradient2 = () => {
-  const scenarios = useScenarios(2026);
+const clusterTitle = (index: number, length: number) => {
+  if (length === 1) {
+    return "Actual";
+  } else if (length == 2) {
+    return ["Low", "High"][index];
+  } else {
+    return ["Low", "Med", "High"][index];
+  }
+};
 
-  const ck = ckmeans(
-    scenarios.map((x) => x.totalPay),
-    Math.min(3, scenarios.length)
-  );
-  console.log(
-    scenarios,
-    "ckmeans",
-    ck,
-    ck.map((x) => [Math.min(...x), Math.max(...x), x.length / scenarios.length])
-  );
+export interface Cluster {
+  min: number;
+  max: number;
+  probability: number;
+  title: string;
+}
+
+const clusters = (values: number[]): Cluster[] => {
+  return ckmeans(values, Math.min(3, values.length)).map((x, i, arr) => {
+    return {
+      min: Math.min(...x),
+      max: Math.max(...x),
+      probability: x.length / values.length,
+      title: clusterTitle(i, arr.length),
+    };
+  });
+};
+
+export const useClusters = (year: number) => {
+  const scenarios = useScenarios(year);
+
+  return useMemo(() => {
+    return {
+      totalPay: clusters(scenarios.map((x) => x.totalPay)),
+      meritBonus: clusters(scenarios.map((x) => x.meritBonus)),
+      retirementBonus: clusters(scenarios.map((x) => x.retirementBonus)),
+      companyBonus: clusters(scenarios.map((x) => x.companyBonus)),
+      pay: clusters(scenarios.map((x) => x.pay.at(-1)?.value ?? 0)),
+      scenarios,
+    };
+  }, [scenarios]);
 };

@@ -5,7 +5,7 @@ interface CellProps {
   children?: ReactNode;
   secondaryValue?: ReactNode;
   tertiaryValue?: ReactNode;
-  title: string;
+  title: ReactNode;
   className?: string;
 }
 

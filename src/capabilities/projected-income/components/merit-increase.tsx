@@ -1,7 +1,7 @@
 import { Box, Divider, Stack, Tooltip, Typography } from "@mui/material";
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
-import { useMemo } from "react";
+import { ReactNode, useMemo } from "react";
 import { Cash } from "shared/components/formatters/cash";
 import { Duration } from "shared/components/formatters/duration";
 import { Percent } from "shared/components/formatters/percent";
@@ -12,11 +12,11 @@ import { useMostFrequentValue } from "shared/hooks/use-most-frequent-value";
 import { useProjectedPay } from "shared/hooks/use-projected-pay";
 import { store } from "shared/store";
 import { findSameYear } from "shared/utility/find-same-year";
-import { usePaycheck } from "../hooks/use-pay-check";
+import { Cluster } from "../hooks/use-gradient";
 import { IncomePerPeriodTooltip } from "./income-per-period";
 import { Value } from "./value";
 
-export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
+export const MeritOutcome = (props: { title: ReactNode; payDate: DateTime; paycheck: Cluster[] }) => {
   const { title, payDate } = props;
 
   const dateRanges = useDateRanges(payDate.year);
@@ -41,7 +41,6 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
 
   const equityPct = useStore(store, (x) => payDate && findSameYear(payDate, x.projectedIncome.timeSeries.equityPct));
   const totalAdjust = (meritPct ?? 0) + (equityPct?.value ?? 0);
-  const paycheck = usePaycheck(payDate);
 
   return (
     <Box
@@ -56,11 +55,6 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
       <Divider />
 
       <Stack padding={1} direction={"row"} spacing={0.5}>
-        {
-          <Value title={"Paycheck"}>
-            <Cash value={paycheck} compact={false} />
-          </Value>
-        }
         <Tooltip
           componentsProps={{
             tooltip: {

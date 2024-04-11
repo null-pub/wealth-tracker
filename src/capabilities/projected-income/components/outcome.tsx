@@ -1,14 +1,12 @@
 import { Box, Divider, Stack, Typography } from "@mui/material";
-import { Outcome as TOutcome } from "shared/utility/min-max-avg";
-import { Value } from "./value";
-import { DateTime } from "luxon";
-import { Cash } from "shared/components/formatters/cash";
-import { Duration } from "shared/components/formatters/duration";
-import { Until } from "shared/components/formatters/until";
 import { ReactNode } from "react";
+import { CashRange } from "shared/components/formatters/cash-range";
+import { Percent } from "shared/components/formatters/percent";
+import { Cluster } from "../hooks/use-gradient";
+import { Value } from "./value";
 
-export const Outcome = (props: { title: ReactNode; outcome: TOutcome; payDate?: DateTime }) => {
-  const { outcome, title, payDate } = props;
+export const Outcome = (props: { title: ReactNode; cluster?: Cluster[]; compact?: boolean }) => {
+  const { title, cluster, compact = true } = props;
 
   return (
     <Box
@@ -17,39 +15,28 @@ export const Outcome = (props: { title: ReactNode; outcome: TOutcome; payDate?: 
         borderRadius: 2,
       }}
     >
-      <Typography sx={{ paddingBottom: 1, paddingLeft: 2, paddingTop: 1 }} variant="h5">
+      <Typography sx={{ paddingBottom: 1, paddingLeft: 2, paddingTop: 1, display: "flex" }} variant="h5">
         {title}
       </Typography>
       <Divider />
 
       <Stack padding={1} direction={"row"} spacing={0.5}>
-        {!outcome.actual && (
-          <>
-            <Value title={"min"}>
-              <Cash value={outcome.min} fallback={0} />
-            </Value>
-            <Value title={"avg"}>
-              <Cash value={outcome.avg} fallback={0} />
-            </Value>
-            <Value title={"max"}>
-              <Cash value={outcome.max} fallback={0} />
-            </Value>
-          </>
-        )}
-        {payDate && (
-          <Value
-            title={"Actual"}
-            secondaryValue={
-              <Until dateTime={payDate}>
-                <Cash value={outcome.actual} />
-              </Until>
-            }
-          >
-            <Duration dateTime={payDate}>
-              <Cash value={outcome.actual} />
-            </Duration>
-          </Value>
-        )}
+        {cluster &&
+          cluster.map((x, i) => {
+            return (
+              <Value
+                key={i}
+                title={
+                  <Box display={"flex"} gap={1}>
+                    <span>{x.title}</span>
+                    {x.probability < 1 && <Percent probability={x.probability} value={x.probability} />}
+                  </Box>
+                }
+              >
+                <CashRange compact={compact} min={x.min} max={x.max} />
+              </Value>
+            );
+          })}
       </Stack>
     </Box>
   );

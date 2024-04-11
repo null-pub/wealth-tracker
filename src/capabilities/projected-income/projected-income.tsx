@@ -3,48 +3,42 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useState } from "react";
-import { useCompanyBonus } from "shared/hooks/use-company-bonus";
+import { Duration } from "shared/components/formatters/duration";
 import { useDates } from "shared/hooks/use-dates";
-import { useMeritBonus } from "shared/hooks/use-merit-bonus";
-import { useRetirementBonus } from "shared/hooks/use-retirement-bonus";
-import { useTotalIncome } from "shared/hooks/use-total-income";
 import { store } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
-import { BonusOutcome } from "./components/bonus-outcome";
 import { Layout } from "./components/data-entry/data-entry";
 import { MeritOutcome } from "./components/merit-increase";
 import { Outcome } from "./components/outcome";
-import { useGradient2 } from "./hooks/use-gradient";
+import { useClusters } from "./hooks/use-gradient";
 
 export const ProjectedIncome = () => {
   const [selectedYear, setSelectedYear] = useState(getLocalDateTime().year);
-  useGradient2();
   const oldestYear = useStore(store, (x) => {
     const first = x.projectedIncome.timeSeries.paycheck[1]?.date;
     const date = first ? DateTime.fromISO(first) : getLocalDateTime();
     return date.year;
   });
 
+  const result = useClusters(selectedYear);
   const dates = useDates(selectedYear);
-  const { totalIncome } = useTotalIncome(selectedYear);
-  const meritBonus = useMeritBonus(selectedYear);
-  const juneBonus = useCompanyBonus(selectedYear);
-  const julyBonus = useRetirementBonus(selectedYear);
 
   return (
     <Box display="flex" flexDirection="column" height="100%" gap={2}>
       <Box flex="0 1 auto">
         <Stack gap={2} direction={"row"} overflow={"auto"}>
           <Outcome
+            cluster={result.totalPay}
             title={
               <Box display="flex" alignItems={"center"} gap={2} width={"100%"}>
                 <span>Income</span>
+                <Duration dateTime={dates.companyBonus} />
                 <DatePicker
                   sx={{ width: 90, marginLeft: "auto", marginRight: 2 }}
                   label={"year"}
                   views={["year"]}
                   minDate={getLocalDateTime().set({ year: oldestYear })}
-                  maxDate={getLocalDateTime().plus({ years: 10 })}
+                  maxDate={getLocalDateTime().plus({ years: 2 })}
                   defaultValue={getLocalDateTime()}
                   slotProps={{
                     textField: {
@@ -58,13 +52,54 @@ export const ProjectedIncome = () => {
                 />
               </Box>
             }
-            outcome={totalIncome}
-            payDate={dates.companyBonus}
           />
-          <MeritOutcome title="Merit Increase" payDate={dates.meritIncrease} />
-          <BonusOutcome title="Merit Bonus" outcome={meritBonus} payDate={dates.meritBonus} />
-          <BonusOutcome title="Company Bonus" outcome={juneBonus} payDate={dates.companyBonus} />
-          <BonusOutcome title="Retirement Bonus" outcome={julyBonus} payDate={dates.retirementBonus} />
+          <Outcome
+            title={
+              <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
+                <span>Paycheck</span>
+                <Duration dateTime={dates.meritIncrease} />
+              </Box>
+            }
+            compact={false}
+            cluster={result.pay}
+          />
+          <MeritOutcome
+            title={
+              <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
+                <span>Merit Increase</span>
+                <Duration dateTime={dates.meritIncrease} />
+              </Box>
+            }
+            payDate={dates.meritIncrease}
+            paycheck={result.pay}
+          />
+          <Outcome
+            title={
+              <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
+                <span>Merit Bonus</span>
+                <Duration dateTime={dates.meritBonus} />
+              </Box>
+            }
+            cluster={result.meritBonus}
+          />
+          <Outcome
+            title={
+              <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
+                <span>Company Bonus</span>
+                <Duration dateTime={dates.companyBonus} />
+              </Box>
+            }
+            cluster={result.companyBonus}
+          />
+          <Outcome
+            title={
+              <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
+                <span>Retirement Bonus</span>
+                <Duration dateTime={dates.retirementBonus} />
+              </Box>
+            }
+            cluster={result.retirementBonus}
+          />
         </Stack>
       </Box>
       <Box flex="1 1 auto">
