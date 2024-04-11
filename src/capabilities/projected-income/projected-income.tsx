@@ -76,7 +76,7 @@ export const ProjectedIncome = () => {
           <MeritOutcome
             title={
               <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
-                <span>Merit Increase</span>
+                <span>Base Pay</span>
                 <Duration dateTime={dates.meritIncrease} />
               </Box>
             }
