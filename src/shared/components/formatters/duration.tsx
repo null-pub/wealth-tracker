@@ -19,7 +19,7 @@ export const Duration = (props: DurationProps) => {
     }
     if (variant === "countdown") {
       const diff = dateTime?.diffNow(["years", "months", "days", "hours"]);
-      const format = `${diff.years > 0 ? "y 'years' " : ""}${diff.months > 0 ? "M 'months' " : ""}${
+      const format = `${diff.years > 0 ? "y 'year' " : ""}${diff.months > 0 ? "M 'months' " : ""}${
         diff.days > 0 && diff.months == 0 ? "d 'days'" : ""
       }`;
 

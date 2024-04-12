@@ -1,9 +1,9 @@
 import { DateTime } from "luxon";
 import { useMemo } from "react";
-import { useCompanyBonus } from "shared/hooks/use-company-bonus";
+import { useCompanyBonus } from "capabilities/projected-wealth/hooks/use-company-bonus";
 import { useDates } from "shared/hooks/use-dates";
-import { useMeritBonus } from "shared/hooks/use-merit-bonus";
-import { useRetirementBonus } from "shared/hooks/use-retirement-bonus";
+import { useMeritBonus } from "capabilities/projected-wealth/hooks/use-merit-bonus";
+import { useRetirementBonus } from "capabilities/projected-wealth/hooks/use-retirement-bonus";
 
 export const useFutureBonuses = () => {
   const local = DateTime.local();

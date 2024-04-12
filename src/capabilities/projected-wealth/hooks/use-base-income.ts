@@ -3,14 +3,7 @@ import { useMemo } from "react";
 import { PayPeriod } from "shared/utility/get-pay-periods";
 import { useProjectedPay } from "./use-projected-pay";
 import { getPayments } from "shared/utility/get-payments";
-
-export type IncomePerPeriod = {
-  perPayday: number;
-  count: number;
-  start: DateTime;
-  end: DateTime;
-  value: number;
-};
+import { IncomePerPeriod } from "shared/models/IncomePerPeriod";
 
 export interface BaseIncome {
   totalIncome: number;

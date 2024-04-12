@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { useMemo } from "react";
-import { useProjectedPay } from "shared/hooks/use-projected-pay";
+import { useProjectedPay } from "capabilities/projected-wealth/hooks/use-projected-pay";
 
 export const usePaycheck = (date: DateTime) => {
   const paychecks = useProjectedPay();

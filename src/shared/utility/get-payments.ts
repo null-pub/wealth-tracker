@@ -1,6 +1,6 @@
 import { differenceInBusinessDays } from "date-fns/differenceInBusinessDays";
 import { DateTime } from "luxon";
-import { ProjectedPay } from "shared/hooks/use-projected-pay";
+import { ProjectedPay } from "capabilities/projected-wealth/hooks/use-projected-pay";
 import { aPayday } from "./a-payday";
 import { DateRangesOverlap } from "./date-ranges-overlap";
 import { PayPeriod, getPayPeriods } from "./get-pay-periods";

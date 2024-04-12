@@ -1,9 +1,9 @@
 import { DateTime } from "luxon";
 import { useMemo } from "react";
-import { useBaseIncome } from "shared/hooks/use-base-income";
-import { useCompanyBonus } from "shared/hooks/use-company-bonus";
+import { useBaseIncome } from "capabilities/projected-wealth/hooks/use-base-income";
+import { useCompanyBonus } from "capabilities/projected-wealth/hooks/use-company-bonus";
 import { useDateRanges, useDates } from "shared/hooks/use-dates";
-import { useMeritBonus } from "shared/hooks/use-merit-bonus";
+import { useMeritBonus } from "capabilities/projected-wealth/hooks/use-merit-bonus";
 import { findNearestIdxOnOrBefore } from "shared/utility/find-nearest-on-or-before";
 
 export const usePayments = () => {

@@ -2,7 +2,7 @@ import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { useDates, useDateRanges } from "shared/hooks/use-dates";
-import { valueByDateRange } from "shared/hooks/use-projected-pay";
+import { valueByDateRange } from "capabilities/projected-wealth/hooks/use-projected-pay";
 import { store } from "shared/store";
 import { findSameYear } from "shared/utility/find-same-year";
 import { PaymentPeriod, getPayments } from "shared/utility/get-payments";

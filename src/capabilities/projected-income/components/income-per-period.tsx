@@ -1,8 +1,8 @@
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Table, TableBody, TableCell, TableRow } from "@mui/material";
 import { Cash } from "shared/components/formatters/cash";
+import { IncomePerPeriod } from "shared/models/IncomePerPeriod";
 import { shortDate } from "shared/utility/format-date";
-import { IncomePerPeriod } from "../../../shared/hooks/use-base-income";
 
 interface IncomePerPeriodTooltipProps {
   incomePerPeriod: IncomePerPeriod[];

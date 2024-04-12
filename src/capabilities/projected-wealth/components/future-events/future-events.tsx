@@ -10,10 +10,10 @@ import { DateTime } from "luxon";
 import { BeforeAfter } from "shared/components/formatters/before-after";
 import { Cash } from "shared/components/formatters/cash";
 import { Duration } from "shared/components/formatters/duration";
-import { useCompanyBonus } from "shared/hooks/use-company-bonus";
+import { useCompanyBonus } from "capabilities/projected-wealth/hooks/use-company-bonus";
 import { useDates } from "shared/hooks/use-dates";
-import { useMeritBonus } from "shared/hooks/use-merit-bonus";
-import { useRetirementBonus } from "shared/hooks/use-retirement-bonus";
+import { useMeritBonus } from "capabilities/projected-wealth/hooks/use-merit-bonus";
+import { useRetirementBonus } from "capabilities/projected-wealth/hooks/use-retirement-bonus";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { monthDay } from "shared/utility/format-date";
 

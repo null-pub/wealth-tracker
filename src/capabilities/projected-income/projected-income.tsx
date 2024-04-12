@@ -13,9 +13,9 @@ import { useClusters } from "./hooks/use-gradient";
 import { Alert, Tooltip } from "@mui/material";
 import { Cash } from "shared/components/formatters/cash";
 import { Value } from "./components/value";
-import { IncomePerPeriod } from "shared/hooks/use-base-income";
 import { IncomePerPeriodTooltip } from "./components/income-per-period";
 import { useHasMeritPairs } from "./hooks/use-has-merit-pairs";
+import { IncomePerPeriod } from "shared/models/IncomePerPeriod";
 
 export const ProjectedIncome = () => {
   const [selectedYear, setSelectedYear] = useState(getLocalDateTime().year);
