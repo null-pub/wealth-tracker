@@ -35,7 +35,10 @@ export const useScenarios = (year: number): Scenario[] => {
   const dateRanges = useDateRanges(year);
 
   const pay = useMemo(() => {
-    return timeSeries.paycheck.filter((x) => DateTime.fromISO(x.date).year > year - 3);
+    return timeSeries.paycheck.filter((x) => {
+      const date = DateTime.fromISO(x.date);
+      return date.year > year - 3 && date.year <= year;
+    });
   }, [timeSeries.paycheck, year]);
 
   const emptyMeritSequence = useMemo(() => {
@@ -84,12 +87,16 @@ export const useScenarios = (year: number): Scenario[] => {
         : meritSequence.map((merits) => {
             const next = pay.slice();
             const initial = next.length;
-
             for (let i = initial; i < merits.length + initial; i++) {
               const prior = next[i - 1] ?? mostRecentPay;
               const date = DateTime.fromISO(prior.date ?? mostRecentPay.date)
                 .plus({ years: 1 })
                 .set({ month: dates.meritIncrease.month, day: dates.meritIncrease.day });
+
+              if (date.year > year) {
+                break;
+              }
+
               const equity = findSameYear(date.year, timeSeries.equityPct)?.value ?? 0;
               next.push({
                 date: date.toISO()!,

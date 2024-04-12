@@ -10,11 +10,12 @@ import { getLocalDateTime } from "shared/utility/current-date";
 import { Layout } from "./components/data-entry/data-entry";
 import { Outcome } from "./components/outcome";
 import { useClusters } from "./hooks/use-gradient";
-import { Tooltip } from "@mui/material";
+import { Alert, Tooltip } from "@mui/material";
 import { Cash } from "shared/components/formatters/cash";
 import { Value } from "./components/value";
 import { IncomePerPeriod } from "shared/hooks/use-base-income";
 import { IncomePerPeriodTooltip } from "./components/income-per-period";
+import { useHasMeritPairs } from "./hooks/use-has-merit-pairs";
 
 export const ProjectedIncome = () => {
   const [selectedYear, setSelectedYear] = useState(getLocalDateTime().year);
@@ -24,6 +25,7 @@ export const ProjectedIncome = () => {
     return date.year;
   });
 
+  const hasMissingPairs = useHasMeritPairs();
   const clusters = useClusters(selectedYear);
   const dates = useDates(selectedYear);
   const dateRanges = useDateRanges(selectedYear);
@@ -175,6 +177,9 @@ export const ProjectedIncome = () => {
             }
             cluster={clusters.retirementBonus}
           />
+          {!hasMissingPairs && (
+            <Alert severity="error">Every Merit Increase must have a paired Merit Bonus percent</Alert>
+          )}
         </Stack>
       </Box>
       <Box flex="1 1 auto" overflow={"auto"}>

@@ -16,10 +16,7 @@ export const useMeritSequence = (year: number) => {
       return [];
     }
 
-    const yearsToGenerate = year - DateTime.fromISO(mostRecentPay.date).year;
-    if (yearsToGenerate === 0) {
-      return [];
-    }
+    const yearsToGenerate = Math.max(year - DateTime.fromISO(mostRecentPay.date).year, 1);
 
     let meritSequence = meritPairs.slice().map((x) => [x]);
     for (let i = 0; i < yearsToGenerate - 1; i++) {
