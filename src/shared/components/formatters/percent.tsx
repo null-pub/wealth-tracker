@@ -15,7 +15,7 @@ const getColor = (probability?: number) => {
   if (probability >= 0.5) {
     return "green";
   }
-  if (probability >= 0.3) {
+  if (probability >= 0.25) {
     return "yellow";
   }
   return "red";

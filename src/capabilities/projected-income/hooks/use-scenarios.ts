@@ -8,12 +8,7 @@ import { findSameYear } from "shared/utility/find-same-year";
 import { PaymentPeriod, getPayments } from "shared/utility/get-payments";
 import { useMeritSequence } from "./use-merit-sequence";
 import { AccountData } from "shared/models/account-data";
-
-const incomeByRange = (range: { start: DateTime; end: DateTime }, pay: PaymentPeriod[]) => {
-  return pay
-    .filter((x) => x.payedOn >= range.start && x.payedOn <= range.end)
-    .reduce((acc, curr) => acc + curr.value, 0);
-};
+import { incomeByRange } from "shared/utility/income-by-range";
 
 export interface Scenario {
   totalPay: number;
@@ -30,6 +25,7 @@ export interface Scenario {
   payments: PaymentPeriod[];
   equityIncreasePct: number;
   retirementBonusPct: number;
+  aprToApr: number;
 }
 
 export const useScenarios = (year: number): Scenario[] => {
@@ -136,6 +132,7 @@ export const useScenarios = (year: number): Scenario[] => {
     });
 
     const totals = withCompanyBonus.map((x) => {
+      const aprToApr = (x.pay.at(-1)?.value ?? 0) * 26;
       const basePay = Math.round(incomeByRange(dateRanges.base, x.payments));
       const meritBonus = Math.round(incomeByRange(dateRanges.meritBonus, x.payments) * x.meritBonusPct);
       const companyBonus = Math.round(incomeByRange(dateRanges.companyBonus, x.payments) * x.companyBonusPct);
@@ -146,9 +143,8 @@ export const useScenarios = (year: number): Scenario[] => {
         [basePay, meritBonus, companyBonus, retirementBonus].reduce((acc, curr) => acc + curr, 0)
       );
 
-      return { totalPay, basePay, meritBonus, companyBonus, retirementBonus, ...x };
+      return { totalPay, basePay, meritBonus, companyBonus, retirementBonus, aprToApr, ...x };
     });
-
     return totals;
   }, [
     dateRanges.base,

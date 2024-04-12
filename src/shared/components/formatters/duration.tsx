@@ -18,14 +18,12 @@ export const Duration = (props: DurationProps) => {
       return "??";
     }
     if (variant === "countdown") {
-      const diff = dateTime?.diffNow(["months", "days", "hours"]);
-      if (diff.months > 0) {
-        return diff?.toFormat("M'm'");
-      }
-      if (diff.days > 0) {
-        return diff?.toFormat("d'd'");
-      }
-      return diff?.toFormat("h'hr'");
+      const diff = dateTime?.diffNow(["years", "months", "days", "hours"]);
+      const format = `${diff.years > 0 ? "y 'years' " : ""}${diff.months > 0 ? "M 'months' " : ""}${
+        diff.days > 0 && diff.months == 0 ? "d 'days'" : ""
+      }`;
+
+      return diff?.toFormat(format);
     }
 
     return dateTime?.toFormat(dateFormat);

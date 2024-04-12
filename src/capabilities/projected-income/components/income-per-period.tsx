@@ -6,11 +6,10 @@ import { IncomePerPeriod } from "../../../shared/hooks/use-base-income";
 
 interface IncomePerPeriodTooltipProps {
   incomePerPeriod: IncomePerPeriod[];
-  totalIncome: number;
 }
 
 export const IncomePerPeriodTooltip = (props: IncomePerPeriodTooltipProps) => {
-  const { incomePerPeriod, totalIncome } = props;
+  const { incomePerPeriod } = props;
   return (
     <Table sx={{ width: "max-content" }}>
       <TableBody>
@@ -34,7 +33,7 @@ export const IncomePerPeriodTooltip = (props: IncomePerPeriodTooltipProps) => {
         <TableRow>
           <TableCell colSpan={4}>Total:</TableCell>
           <TableCell>
-            <Cash value={totalIncome} compact={false} />
+            <Cash value={incomePerPeriod.reduce((acc, curr) => curr.value + acc, 0)} compact={false} />
           </TableCell>
         </TableRow>
       </TableBody>

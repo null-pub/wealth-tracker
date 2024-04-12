@@ -6,8 +6,8 @@ import { PercentRange } from "shared/components/formatters/percent-range";
 import { Cluster } from "../hooks/use-gradient";
 import { Value } from "./value";
 
-export const Outcome = (props: { title: ReactNode; cluster?: Cluster[]; compact?: boolean }) => {
-  const { title, cluster, compact = true } = props;
+export const Outcome = (props: { title: ReactNode; cluster?: Cluster[]; compact?: boolean; children?: ReactNode }) => {
+  const { title, cluster, compact = true, children } = props;
 
   return (
     <Box
@@ -40,6 +40,7 @@ export const Outcome = (props: { title: ReactNode; cluster?: Cluster[]; compact?
               </Value>
             );
           })}
+        {children}
       </Stack>
     </Box>
   );
