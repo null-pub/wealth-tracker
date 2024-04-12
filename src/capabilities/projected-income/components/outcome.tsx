@@ -26,29 +26,31 @@ export const Outcome = (props: {
       <Typography sx={{ paddingBottom: 1, paddingLeft: 2, paddingTop: 1, display: "flex" }} variant="h5">
         {title}
       </Typography>
-      <Divider />
-
-      <Stack padding={1} direction={"row"} spacing={0.5} width={"max-content"}>
-        {cluster &&
-          cluster.map((x, i, arr) => {
-            return (
-              <Value
-                key={i}
-                title={
-                  <Box display={"flex"} gap={1}>
-                    <span>{arr.length === 1 && payDate.diffNow().toMillis() > 0 ? "Expected" : x.title}</span>
-                    {x.probability < 1 && <Percent probability={x.probability} value={x.probability} />}
-                  </Box>
-                }
-              >
-                {x.min < 1 && x.min > 0 && <PercentRange min={x.min} max={x.max} />}
-                {x.min > 1 && <CashRange compact={compact} min={x.min} max={x.max} />}
-                {x.min === 0 && 0}
-              </Value>
-            );
-          })}
-        {children}
-      </Stack>
+      {cluster && cluster.length > 0 && (
+        <>
+          <Divider />
+          <Stack padding={1} direction={"row"} spacing={0.5} width={"max-content"}>
+            {cluster.map((x, i, arr) => {
+              return (
+                <Value
+                  key={i}
+                  title={
+                    <Box display={"flex"} gap={1}>
+                      <span>{arr.length === 1 && payDate.diffNow().toMillis() > 0 ? "Expected" : x.title}</span>
+                      {x.probability < 1 && <Percent probability={x.probability} value={x.probability} />}
+                    </Box>
+                  }
+                >
+                  {x.min < 1 && x.min > 0 && <PercentRange min={x.min} max={x.max} />}
+                  {x.min > 1 && <CashRange compact={compact} min={x.min} max={x.max} />}
+                  {x.min === 0 && 0}
+                </Value>
+              );
+            })}
+            {children}
+          </Stack>
+        </>
+      )}
     </Box>
   );
 };

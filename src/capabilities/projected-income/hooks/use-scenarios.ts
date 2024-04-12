@@ -141,11 +141,19 @@ export const useScenarios = (year: number): Scenario[] => {
     const totals = withCompanyBonus.map((x) => {
       const aprToApr = (x.pay.at(-1)?.value ?? 0) * 26;
       const basePay = Math.round(incomeByRange(dateRanges.base, x.payments));
-      const meritBonus = Math.round(incomeByRange(dateRanges.meritBonus, x.payments) * x.meritBonusPct);
-      const companyBonus = Math.round(incomeByRange(dateRanges.companyBonus, x.payments) * x.companyBonusPct);
-      const retirementBonus = Math.round(
-        (meritBonus + companyBonus + incomeByRange(dateRanges.retirementBonus, x.payments)) * 0.15
-      );
+
+      const meritBonus =
+        findSameYear(year, timeSeries.meritBonus)?.value ??
+        Math.round(incomeByRange(dateRanges.meritBonus, x.payments) * x.meritBonusPct);
+
+      const companyBonus =
+        findSameYear(year, timeSeries.companyBonus)?.value ??
+        Math.round(incomeByRange(dateRanges.companyBonus, x.payments) * x.companyBonusPct);
+
+      const retirementBonus =
+        findSameYear(year, timeSeries.retirementBonus)?.value ??
+        Math.round((meritBonus + companyBonus + incomeByRange(dateRanges.retirementBonus, x.payments)) * 0.15);
+
       const totalPay = Math.round(
         [basePay, meritBonus, companyBonus, retirementBonus].reduce((acc, curr) => acc + curr, 0)
       );
@@ -163,10 +171,13 @@ export const useScenarios = (year: number): Scenario[] => {
     emptyMeritSequence,
     meritSequence,
     pay,
+    timeSeries.companyBonus,
     timeSeries.companyBonusPct,
     timeSeries.equityPct,
+    timeSeries.meritBonus,
     timeSeries.meritBonusPct,
     timeSeries.paycheck,
+    timeSeries.retirementBonus,
     year,
   ]);
 };
