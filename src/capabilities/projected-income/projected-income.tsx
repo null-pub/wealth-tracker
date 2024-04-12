@@ -76,9 +76,9 @@ export const ProjectedIncome = () => {
   }, [clusters.pay.length, clusters.scenarios, dateRanges.base.end, dateRanges.base.start]);
 
   return (
-    <Box display="flex" flexDirection="row" height="100%" width={"100%"} gap={2}>
+    <Box display="flex" flexDirection="row" height="100%" width={"100%"}>
       <Box flex="0 1 auto">
-        <Stack gap={2} direction={"column"} overflow={"auto"}>
+        <Stack gap={2} direction={"column"} overflow={"auto"} height="100%" paddingRight={1}>
           <Outcome
             cluster={clusters.totalPay}
             title={
@@ -182,8 +182,8 @@ export const ProjectedIncome = () => {
           )}
         </Stack>
       </Box>
-      <Box flex="1 1 auto" overflow={"auto"}>
-        <Box display={"flex"} height={"100%"} width={"100%"}>
+      <Box flex="1 1 auto" overflow={"auto"} paddingBottom={2} paddingLeft={1}>
+        <Box display={"flex"} height={"100%"} width={"100%"} gap={2}>
           <Layout
             accountName="paycheck"
             variant="cash"
