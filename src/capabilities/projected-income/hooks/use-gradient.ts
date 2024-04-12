@@ -34,6 +34,17 @@ export const useClusters = (year: number) => {
   const scenarios = useScenarios(year);
 
   return useMemo(() => {
+    if (scenarios.length === 0) {
+      return {
+        totalPay: [],
+        meritBonus: [],
+        retirementBonus: [],
+        companyBonus: [],
+        pay: [],
+        meritIncrease: [],
+        scenarios,
+      };
+    }
     return {
       totalPay: clusters(scenarios.map((x) => x.totalPay)),
       meritBonus: clusters(scenarios.map((x) => x.meritBonus)),

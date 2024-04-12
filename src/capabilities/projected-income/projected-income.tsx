@@ -104,6 +104,7 @@ export const ProjectedIncome = () => {
                 />
               </Box>
             }
+            payDate={dates.companyBonus}
           />
           <Outcome
             title={
@@ -114,6 +115,7 @@ export const ProjectedIncome = () => {
             }
             compact={false}
             cluster={clusters.pay}
+            payDate={dates.meritIncrease}
           >
             {basePay && (
               <Tooltip
@@ -148,6 +150,7 @@ export const ProjectedIncome = () => {
             }
             compact={false}
             cluster={clusters.meritIncrease}
+            payDate={dates.meritIncrease}
           />
 
           <Outcome
@@ -158,6 +161,7 @@ export const ProjectedIncome = () => {
               </Box>
             }
             cluster={clusters.meritBonus}
+            payDate={dates.meritBonus}
           />
           <Outcome
             title={
@@ -166,6 +170,7 @@ export const ProjectedIncome = () => {
                 <Duration dateTime={dates.companyBonus} />
               </Box>
             }
+            payDate={dates.companyBonus}
             cluster={clusters.companyBonus}
           />
           <Outcome
@@ -176,6 +181,7 @@ export const ProjectedIncome = () => {
               </Box>
             }
             cluster={clusters.retirementBonus}
+            payDate={dates.retirementBonus}
           />
           {!hasMissingPairs && (
             <Alert severity="error">Every Merit Increase must have a paired Merit Bonus percent</Alert>

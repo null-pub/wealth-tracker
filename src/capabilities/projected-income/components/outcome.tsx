@@ -5,9 +5,16 @@ import { Percent } from "shared/components/formatters/percent";
 import { PercentRange } from "shared/components/formatters/percent-range";
 import { Cluster } from "../hooks/use-gradient";
 import { Value } from "./value";
+import { DateTime } from "luxon";
 
-export const Outcome = (props: { title: ReactNode; cluster?: Cluster[]; compact?: boolean; children?: ReactNode }) => {
-  const { title, cluster, compact = true, children } = props;
+export const Outcome = (props: {
+  title: ReactNode;
+  cluster?: Cluster[];
+  compact?: boolean;
+  children?: ReactNode;
+  payDate: DateTime;
+}) => {
+  const { title, cluster, compact = true, children, payDate } = props;
 
   return (
     <Box
@@ -23,13 +30,13 @@ export const Outcome = (props: { title: ReactNode; cluster?: Cluster[]; compact?
 
       <Stack padding={1} direction={"row"} spacing={0.5} width={"max-content"}>
         {cluster &&
-          cluster.map((x, i) => {
+          cluster.map((x, i, arr) => {
             return (
               <Value
                 key={i}
                 title={
                   <Box display={"flex"} gap={1}>
-                    <span>{x.title}</span>
+                    <span>{arr.length === 1 && payDate.diffNow().toMillis() > 0 ? "Expected" : x.title}</span>
                     {x.probability < 1 && <Percent probability={x.probability} value={x.probability} />}
                   </Box>
                 }
