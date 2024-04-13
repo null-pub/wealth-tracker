@@ -1,6 +1,5 @@
 import { DateTime } from "luxon";
-import { Account } from "shared/models/account";
-import { Mortgage } from "shared/models/mortgage";
+import { Account, Mortgage } from "shared/models/store/current";
 import { findNearestOnOrBefore } from "./find-nearest-on-or-before";
 import { calcEquity, calcLoanBalance } from "./mortgage-calc";
 

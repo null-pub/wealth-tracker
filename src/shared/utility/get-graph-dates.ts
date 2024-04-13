@@ -1,13 +1,12 @@
 import { DateTime } from "luxon";
-import { Account } from "shared/models/account";
-import { Mortgage } from "shared/models/mortgage";
+import { Account, Mortgage } from "shared/models/store/current";
 
 export const getGraphDates = (accounts: (Account | Mortgage)[]) => {
   return [
     ...new Set(
       accounts.flatMap((x) => {
         return x.data.map((x) => DateTime.fromISO(x.date).startOf("day").toISO());
-      }),
+      })
     ),
   ]
     .map((x) => DateTime.fromISO(x!))

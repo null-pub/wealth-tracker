@@ -1,7 +1,7 @@
 import { InputAdornment, TextField } from "@mui/material";
 import { useStore } from "@tanstack/react-store";
 import { useCallback, useState } from "react";
-import { ProjectedWealth } from "shared/models/projected-wealth";
+import { ProjectedWealth } from "shared/models/store/current";
 import { store } from "shared/store";
 import { setProjectedWealth } from "shared/store/set-projected-wealth";
 

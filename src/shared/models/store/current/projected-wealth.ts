@@ -7,6 +7,7 @@ export const projectedWealth = z.object({
   medicareSupplementalTaxRate: z.number(),
   savingsPerMonth: z.number(),
   retirementContributionPaycheck: z.number(),
+  bonusWitholdingsRate: z.number(),
 });
 
 export type ProjectedWealth = z.infer<typeof projectedWealth>;

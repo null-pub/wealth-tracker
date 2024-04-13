@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { create } from "mutative";
 import { v4 as uuid } from "uuid";
-import { Account } from "../models/account";
+import { Account } from "shared/models/store/current";
 import { sortByDate } from "../utility/sort-by-date";
 import { store } from "./store";
 

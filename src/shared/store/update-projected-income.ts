@@ -1,5 +1,5 @@
 import { create } from "mutative";
-import { TimeSeries } from "shared/models/projected-income";
+import { TimeSeries } from "shared/models/store/current";
 import { store } from ".";
 
 export const updateProjectedIncome = (timeSeries: TimeSeries, id: string, value: number) => {

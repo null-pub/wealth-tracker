@@ -1,6 +1,7 @@
 import { useCallback } from "react";
-import { storeValidator } from "shared/models/store";
+import { storeValidator } from "shared/models/store/current";
 import { store } from "shared/store";
+import { migration } from "shared/store/migrations";
 
 function selectFile(contentType: string) {
   return new Promise<File>((resolve) => {
@@ -29,8 +30,20 @@ export const useImport = () => {
           if (content) {
             const data = JSON.parse(window.atob(content.split(",")[1]));
             const validation = storeValidator.safeParse(data);
-            validation.success && store.setState(() => data);
-            validation.success ? resolve() : reject(validation.error);
+            if (validation.success) {
+              store.setState(() => data);
+              resolve();
+            } else {
+              try {
+                migration(data);
+                store.setState(() => data);
+                resolve();
+              } catch (err) {
+                console.log("error", err);
+                console.log("invalid data", data);
+                reject(err);
+              }
+            }
           }
         };
       });

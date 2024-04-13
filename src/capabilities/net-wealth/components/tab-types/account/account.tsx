@@ -5,7 +5,7 @@ import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useMemo, useRef, useState } from "react";
 import { AgGrid } from "shared/components/ag-grid";
-import { Account } from "shared/models/account";
+import { Account } from "shared/models/store/current";
 import { AddAccountEntry, store } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { shortDate } from "shared/utility/format-date";

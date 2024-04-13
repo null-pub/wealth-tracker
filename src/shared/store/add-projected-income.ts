@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { create } from "mutative";
-import { TimeSeries } from "shared/models/projected-income";
+import { TimeSeries } from "shared/models/store/current";
 import { sortByDate } from "shared/utility/sort-by-date";
 import { v4 as uuid } from "uuid";
 import { store } from "./store";

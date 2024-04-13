@@ -1,6 +1,7 @@
 import { Store as CreateStore } from "@tanstack/store";
 import { ZodSchema } from "zod";
-import { Store, getDefaultStore, storeValidator } from "../models/store";
+import { Store, getDefaultStore, storeValidator } from "../models/store/current";
+import { migration } from "./migrations";
 
 const createStore = <T extends object>(validator: ZodSchema, defaultValue: T) => {
   const key = "store";
@@ -9,12 +10,16 @@ const createStore = <T extends object>(validator: ZodSchema, defaultValue: T) =>
   const data = localData ? JSON.parse(localData) : defaultValue;
   const parse = validator.safeParse(data);
 
-  //todo create migration process
   if (!parse.success) {
-    console.log("zod error", parse.error);
-    console.log("original", data);
-    localStorage.setItem(invalidData, JSON.stringify(data));
-    localStorage.setItem(key, JSON.stringify(defaultValue));
+    try {
+      migration(data);
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch (err) {
+      console.log("error", err);
+      console.log("invalid data", data);
+      localStorage.setItem(invalidData, JSON.stringify(data));
+      localStorage.setItem(key, JSON.stringify(defaultValue));
+    }
   }
 
   const store = new CreateStore<T>(data);

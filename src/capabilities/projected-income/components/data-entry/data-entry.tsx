@@ -4,7 +4,7 @@ import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useMemo, useState } from "react";
 import { AgGrid } from "shared/components/ag-grid";
-import { TimeSeries } from "shared/models/projected-income";
+import { TimeSeries } from "shared/models/store/current";
 import { addProjectedIncome, store } from "shared/store";
 import { shortDate } from "shared/utility/format-date";
 import { createAccountColumnConfig } from "./column-config";

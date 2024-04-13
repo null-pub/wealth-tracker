@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { storeValidator } from "shared/models/store";
+import { storeValidator } from "shared/models/store/current";
 
 export const useStoreDataError = () => {
   const invalidData = localStorage.getItem("store-invalid");

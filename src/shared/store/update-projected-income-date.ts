@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { create } from "mutative";
-import { TimeSeries } from "shared/models/projected-income";
+import { TimeSeries } from "shared/models/store/current";
 import { store } from ".";
 
 export const updateProjectedIncomeDate = (timeSeries: TimeSeries, id: string, date: DateTime) => {

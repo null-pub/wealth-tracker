@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { Loan } from "shared/models/loan";
+import { Loan } from "shared/models/store/current";
 
 export const calcLoanBalance = (date: DateTime, loan: Loan) => {
   const { firstPaymentDate, paymentsPerYear, principal: principal, ratePct: rate, payment: monthlyPayment } = loan;

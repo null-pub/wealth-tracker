@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { useMemo } from "react";
-import { Account } from "shared/models/account";
+import { Account } from "shared/models/store/current";
 
 export const useMissingYears = (account: Account) => {
   return useMemo(() => {
@@ -18,7 +18,7 @@ export const useMissingYears = (account: Account) => {
               });
               return date.diff(janFirst, ["days", "hours"]).days == 0;
             }),
-          ] as [number, boolean],
+          ] as [number, boolean]
       )
       .sort(([a], [b]) => {
         return a - b;

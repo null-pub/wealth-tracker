@@ -3,7 +3,7 @@ import Grid from "@mui/system/Unstable_Grid";
 import { useStore } from "@tanstack/react-store";
 import { useMemo } from "react";
 import { AgGrid } from "shared/components/ag-grid";
-import { Mortgage } from "shared/models/mortgage";
+import { Mortgage } from "shared/models/store/current";
 import { store } from "shared/store";
 
 import { findNearestOnOrBefore } from "shared/utility/find-nearest-on-or-before";

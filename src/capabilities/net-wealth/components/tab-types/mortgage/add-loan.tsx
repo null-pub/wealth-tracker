@@ -3,7 +3,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useRef, useState } from "react";
-import { Loan } from "shared/models/loan";
+import { Loan } from "shared/models/store/current";
 import { store } from "shared/store";
 import { setLoan } from "shared/store/set-loan";
 import { groupBy } from "shared/utility/group-by";

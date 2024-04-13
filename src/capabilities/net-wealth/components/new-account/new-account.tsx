@@ -1,9 +1,9 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, TextField } from "@mui/material";
 import { create } from "mutative";
 import { ReactNode, forwardRef, useRef, useState } from "react";
-import { AssetType } from "shared/models/asset-types";
 import { store } from "shared/store";
 
+type AssetType = "account" | "mortgage";
 export const NewAccount = forwardRef<HTMLButtonElement, { children?: ReactNode }>((props, ref) => {
   const [open, setOpen] = useState(false);
   const nameRef = useRef<HTMLInputElement>(null);
