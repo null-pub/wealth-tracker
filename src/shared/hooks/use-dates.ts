@@ -1,15 +1,39 @@
+import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
+import { AccountData } from "shared/models/account-data";
+import { store } from "shared/store";
+import { findSameYear } from "shared/utility/find-same-year";
 
-export const useDates = (year?: number) =>
-  useMemo(() => {
+const useRealDate = (year: number | undefined, data: AccountData[]) => {
+  return useMemo(() => {
+    if (!year) {
+      return undefined;
+    }
+    const meritBonus = findSameYear(year, data);
+    if (!meritBonus) {
+      return undefined;
+    }
+
+    return DateTime.fromISO(meritBonus.date);
+  }, [data, year]);
+};
+
+export const useDates = (year?: number) => {
+  const timeSeries = useStore(store, (x) => x.projectedIncome.timeSeries);
+
+  const meritBonusDate = useRealDate(year, timeSeries.meritBonus);
+  const companyBonusDate = useRealDate(year, timeSeries.companyBonus);
+
+  return useMemo(() => {
     return {
       meritIncrease: DateTime.fromObject({ month: 4, day: 1, year }),
-      meritBonus: DateTime.fromObject({ month: 4, day: 15, year }),
-      companyBonus: DateTime.fromObject({ month: 6, day: 15, year }),
+      meritBonus: meritBonusDate ?? DateTime.fromObject({ month: 4, day: 15, year }),
+      companyBonus: companyBonusDate ?? DateTime.fromObject({ month: 6, day: 15, year }),
       retirementBonus: DateTime.fromObject({ month: 7, day: 15, year }),
     };
-  }, [year]);
+  }, [companyBonusDate, meritBonusDate, year]);
+};
 
 export const useDateRanges = (year: number) => {
   return useMemo(
