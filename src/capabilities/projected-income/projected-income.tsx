@@ -8,14 +8,23 @@ import { useDateRanges, useDates } from "shared/hooks/use-dates";
 import { store } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { Layout } from "./components/data-entry/data-entry";
-import { Outcome } from "./components/outcome";
-import { useClusters } from "./hooks/use-gradient";
+import { Cluster, useClusters } from "./hooks/use-gradient";
 import { Alert, Tooltip } from "@mui/material";
 import { Cash } from "shared/components/formatters/cash";
 import { Value } from "./components/value";
 import { IncomePerPeriodTooltip } from "./components/income-per-period";
 import { useHasMeritPairs } from "./hooks/use-has-merit-pairs";
 import { IncomePerPeriod } from "shared/models/IncomePerPeriod";
+import { Card } from "shared/components/card";
+import { ClusterValue } from "shared/components/formatters/cluster-value";
+
+const Clusters = (props: { clusters: Cluster[]; eventDate: DateTime; compact?: boolean }) => {
+  const { clusters, eventDate, compact = true } = props;
+  return clusters.map((x, i, arr) => {
+    const title = arr.length === 1 && eventDate.diffNow().toMillis() > 0 ? "Expected" : x.title;
+    return <ClusterValue {...x} title={title} compact={compact} key={i} />;
+  });
+};
 
 export const ProjectedIncome = () => {
   const [selectedYear, setSelectedYear] = useState(getLocalDateTime().year);
@@ -79,8 +88,7 @@ export const ProjectedIncome = () => {
     <Box display="flex" flexDirection="row" height="100%" width={"100%"}>
       <Box flex="0 1 auto">
         <Stack gap={2} direction={"column"} overflow={"auto"} height="100%" paddingRight={1}>
-          <Outcome
-            cluster={clusters.totalPay}
+          <Card
             title={
               <Box display="flex" alignItems={"center"} gap={2} width={"100%"}>
                 <span>Income</span>
@@ -104,19 +112,18 @@ export const ProjectedIncome = () => {
                 />
               </Box>
             }
-            payDate={dates.companyBonus}
-          />
-          <Outcome
+          >
+            <Clusters clusters={clusters.totalPay} eventDate={dates.companyBonus} />
+          </Card>
+          <Card
             title={
               <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
                 <span>Paycheck</span>
                 <Duration dateTime={dates.meritIncrease} />
               </Box>
             }
-            compact={false}
-            cluster={clusters.pay}
-            payDate={dates.meritIncrease}
           >
+            <Clusters clusters={clusters.pay} eventDate={dates.meritIncrease} compact={false} />
             {basePay && (
               <Tooltip
                 componentsProps={{
@@ -140,49 +147,48 @@ export const ProjectedIncome = () => {
                 <Cash value={aprToApr} />
               </Value>
             )}
-          </Outcome>
-          <Outcome
+          </Card>
+          <Card
             title={
               <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
                 <span>Merit Increase</span>
                 <Duration dateTime={dates.meritIncrease} />
               </Box>
             }
-            compact={false}
-            cluster={clusters.meritIncrease}
-            payDate={dates.meritIncrease}
-          />
+          >
+            <Clusters clusters={clusters.meritIncrease} eventDate={dates.meritIncrease} />
+          </Card>
 
-          <Outcome
+          <Card
             title={
               <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
                 <span>Merit Bonus</span>
                 <Duration dateTime={dates.meritBonus} />
               </Box>
             }
-            cluster={clusters.meritBonus}
-            payDate={dates.meritBonus}
-          />
-          <Outcome
+          >
+            <Clusters clusters={clusters.meritBonus} eventDate={dates.meritBonus} />
+          </Card>
+          <Card
             title={
               <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
                 <span>Company Bonus</span>
                 <Duration dateTime={dates.companyBonus} />
               </Box>
             }
-            payDate={dates.companyBonus}
-            cluster={clusters.companyBonus}
-          />
-          <Outcome
+          >
+            <Clusters clusters={clusters.companyBonus} eventDate={dates.companyBonus} />
+          </Card>
+          <Card
             title={
               <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
                 <span>Retirement Bonus</span>
                 <Duration dateTime={dates.retirementBonus} />
               </Box>
             }
-            cluster={clusters.retirementBonus}
-            payDate={dates.retirementBonus}
-          />
+          >
+            <Clusters clusters={clusters.retirementBonus} eventDate={dates.retirementBonus} />
+          </Card>
           {!hasMissingPairs && (
             <Alert severity="error">Every Merit Increase must have a paired Merit Bonus percent</Alert>
           )}

@@ -14,7 +14,7 @@ import { getLocalDateTime } from "shared/utility/current-date";
 import { shortDate } from "shared/utility/format-date";
 import InvalidDataDialog from "./invalid-data-dialog";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { Config } from "app/config";
+import { Config } from "./config";
 
 export const App = () => {
   const [tab, setTab] = useState<string>("projected-income");

@@ -16,6 +16,7 @@ import { useMeritBonus } from "capabilities/projected-wealth/hooks/use-merit-bon
 import { useRetirementBonus } from "capabilities/projected-wealth/hooks/use-retirement-bonus";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { monthDay } from "shared/utility/format-date";
+import { useScenarios } from "capabilities/projected-income/hooks/use-scenarios";
 
 const isFuture = (date: DateTime) => date.diffNow("milliseconds").milliseconds > 0;
 
@@ -30,6 +31,8 @@ export const FutureEvents = () => {
   const companyBonus = useCompanyBonus(systemYear);
   const retirementBonus = useRetirementBonus(systemYear);
   const totalFutureBonuses = useFutureBonuses();
+
+  const scenarios = useScenarios(2024);
 
   const total =
     totalFutureBonuses + savings.remaining + retirement.remaining + socialSecurity.remaining + medicare.remaining;

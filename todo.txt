@@ -3,3 +3,11 @@ projected wealth:
     use pay dates from user
     use scenarios from projected income
     move config to modal
+
+net wealth 
+    redesign to make better
+
+config
+    move import/export/reset to settings
+    allow soft deleting accounts
+    
