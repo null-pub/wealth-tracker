@@ -1,14 +1,12 @@
 import { Box } from "@mui/material";
 import { Value } from "capabilities/projected-income/components/value";
+import { Cluster } from "capabilities/projected-income/hooks/use-gradient";
+import { DateTime } from "luxon";
 import { CashRange } from "shared/components/formatters/cash-range";
 import { Percent } from "shared/components/formatters/percent";
 import { PercentRange } from "shared/components/formatters/percent-range";
 
-interface ClusterValueProps {
-  min: number;
-  max: number;
-  probability: number;
-  title: string;
+interface ClusterValueProps extends Cluster {
   compact?: boolean;
 }
 
@@ -28,4 +26,12 @@ export const ClusterValue = (props: ClusterValueProps) => {
       {min === 0 && 0}
     </Value>
   );
+};
+
+export const ClusterValues = (props: { clusters: Cluster[]; eventDate: DateTime; compact?: boolean }) => {
+  const { clusters, eventDate, compact = true } = props;
+  return clusters.map((x, i, arr) => {
+    const title = arr.length === 1 && eventDate.diffNow().toMillis() > 0 ? "Expected" : x.title;
+    return <ClusterValue {...x} title={title} compact={compact} key={i} />;
+  });
 };

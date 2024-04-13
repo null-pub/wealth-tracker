@@ -21,7 +21,6 @@ const useRealDate = (year: number | undefined, data: AccountData[]) => {
 
 export const useDates = (year?: number) => {
   const timeSeries = useStore(store, (x) => x.projectedIncome.timeSeries);
-
   const meritBonusDate = useRealDate(year, timeSeries.meritBonus);
   const companyBonusDate = useRealDate(year, timeSeries.companyBonus);
 

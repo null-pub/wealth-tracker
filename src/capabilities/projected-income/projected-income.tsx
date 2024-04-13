@@ -8,7 +8,7 @@ import { useDateRanges, useDates } from "shared/hooks/use-dates";
 import { store } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { Layout } from "./components/data-entry/data-entry";
-import { Cluster, useClusters } from "./hooks/use-gradient";
+import { useClusters } from "./hooks/use-gradient";
 import { Alert, Tooltip } from "@mui/material";
 import { Cash } from "shared/components/formatters/cash";
 import { Value } from "./components/value";
@@ -16,15 +16,7 @@ import { IncomePerPeriodTooltip } from "./components/income-per-period";
 import { useHasMeritPairs } from "./hooks/use-has-merit-pairs";
 import { IncomePerPeriod } from "shared/models/IncomePerPeriod";
 import { Card } from "shared/components/card";
-import { ClusterValue } from "shared/components/formatters/cluster-value";
-
-const Clusters = (props: { clusters: Cluster[]; eventDate: DateTime; compact?: boolean }) => {
-  const { clusters, eventDate, compact = true } = props;
-  return clusters.map((x, i, arr) => {
-    const title = arr.length === 1 && eventDate.diffNow().toMillis() > 0 ? "Expected" : x.title;
-    return <ClusterValue {...x} title={title} compact={compact} key={i} />;
-  });
-};
+import { ClusterValues } from "shared/components/formatters/cluster-value";
 
 export const ProjectedIncome = () => {
   const [selectedYear, setSelectedYear] = useState(getLocalDateTime().year);
@@ -113,7 +105,7 @@ export const ProjectedIncome = () => {
               </Box>
             }
           >
-            <Clusters clusters={clusters.totalPay} eventDate={dates.companyBonus} />
+            <ClusterValues clusters={clusters.totalPay} eventDate={dates.companyBonus} />
           </Card>
           <Card
             title={
@@ -123,7 +115,7 @@ export const ProjectedIncome = () => {
               </Box>
             }
           >
-            <Clusters clusters={clusters.pay} eventDate={dates.meritIncrease} compact={false} />
+            <ClusterValues clusters={clusters.pay} eventDate={dates.meritIncrease} compact={false} />
             {basePay && (
               <Tooltip
                 componentsProps={{
@@ -156,7 +148,7 @@ export const ProjectedIncome = () => {
               </Box>
             }
           >
-            <Clusters clusters={clusters.meritIncrease} eventDate={dates.meritIncrease} />
+            <ClusterValues clusters={clusters.meritIncrease} eventDate={dates.meritIncrease} />
           </Card>
 
           <Card
@@ -167,7 +159,7 @@ export const ProjectedIncome = () => {
               </Box>
             }
           >
-            <Clusters clusters={clusters.meritBonus} eventDate={dates.meritBonus} />
+            <ClusterValues clusters={clusters.meritBonus} eventDate={dates.meritBonus} />
           </Card>
           <Card
             title={
@@ -177,7 +169,7 @@ export const ProjectedIncome = () => {
               </Box>
             }
           >
-            <Clusters clusters={clusters.companyBonus} eventDate={dates.companyBonus} />
+            <ClusterValues clusters={clusters.companyBonus} eventDate={dates.companyBonus} />
           </Card>
           <Card
             title={
@@ -187,7 +179,7 @@ export const ProjectedIncome = () => {
               </Box>
             }
           >
-            <Clusters clusters={clusters.retirementBonus} eventDate={dates.retirementBonus} />
+            <ClusterValues clusters={clusters.retirementBonus} eventDate={dates.retirementBonus} />
           </Card>
           {!hasMissingPairs && (
             <Alert severity="error">Every Merit Increase must have a paired Merit Bonus percent</Alert>
