@@ -1,10 +1,5 @@
-Add JSON migrations
-    add version
-   
-
-
 projected wealth: 
-
-add witholdings calcs to projected wealth (can we calc this? and is it needed if we do)
-use pay dates from user
-use scenarios from projected income
+    add witholdings calcs to projected wealth 
+    use pay dates from user
+    use scenarios from projected income
+    move config to modal

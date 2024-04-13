@@ -1,5 +1,6 @@
 import DeleteForever from "@mui/icons-material/DeleteForever";
-import { Box, Button, Stack, Tab, Tabs } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { Box, Button, IconButton, Modal, Paper, Stack, Tab, Tabs, Typography } from "@mui/material";
 import { NetWealth } from "capabilities/net-wealth";
 import { ProjectedIncome } from "capabilities/projected-income";
 import { ProjectedWealth } from "capabilities/projected-wealth";
@@ -12,6 +13,8 @@ import { resetStore } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { shortDate } from "shared/utility/format-date";
 import InvalidDataDialog from "./invalid-data-dialog";
+import SettingsIcon from "@mui/icons-material/Settings";
+import { Config } from "app/config";
 
 export const App = () => {
   const [tab, setTab] = useState<string>("projected-income");
@@ -21,8 +24,32 @@ export const App = () => {
   const [error, setError] = useState(parseError);
   const [isOpen, setIsOpen] = useState(hadError);
 
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
   return (
     <>
+      <Modal open={isSettingsOpen} onClose={() => setIsSettingsOpen(false)}>
+        <Paper
+          sx={{
+            padding: 2,
+            width: 600,
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            position: "absolute",
+          }}
+        >
+          <Stack spacing={2}>
+            <Box display={"flex"}>
+              <Typography variant="h5">Configuration</Typography>
+              <IconButton sx={{ marginLeft: "auto" }} onClick={() => setIsSettingsOpen(false)}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+            <Config />
+          </Stack>
+        </Paper>
+      </Modal>
       <InvalidDataDialog open={isOpen} error={error}>
         {hadError && (
           <>
@@ -71,6 +98,9 @@ export const App = () => {
           <Tab value="projected-wealth" label="Projected Wealth" />
         </Tabs>
         <Box marginLeft={"auto"} gap={2} display={"flex"}>
+          <Button onClick={() => setIsSettingsOpen(true)}>
+            <SettingsIcon />
+          </Button>
           <Button
             onClick={() =>
               onImport().catch((err) => {

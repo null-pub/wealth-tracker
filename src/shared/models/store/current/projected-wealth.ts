@@ -11,4 +11,4 @@ export const projectedWealth = z.object({
 });
 
 export type ProjectedWealth = z.infer<typeof projectedWealth>;
-export type ProjectedWealthConfig = keyof ProjectedWealth;
+export type ProjectedWealthKeys = keyof ProjectedWealth;
