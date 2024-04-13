@@ -18,10 +18,10 @@ export const Duration = (props: DurationProps) => {
       return "??";
     }
     if (variant === "countdown") {
-      const diff = dateTime?.diffNow(["years", "months", "days", "hours"]);
+      const diff = dateTime?.diff(getLocalDateTime(), ["years", "months", "days", "hours"]);
       const format = `${diff.years > 0 ? "y 'year' " : ""}${diff.months > 0 ? "M 'months' " : ""}${
         diff.days > 0 && diff.months == 0 ? "d 'days'" : ""
-      }`;
+      }${diff.hours > 0 && diff.days == 0 ? "h 'hours'" : ""}`;
 
       return diff?.toFormat(format);
     }

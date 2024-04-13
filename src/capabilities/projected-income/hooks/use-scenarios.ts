@@ -19,7 +19,8 @@ export interface Scenario {
   companyBonusFactor: number;
   companyBonusPct: number;
   pay: AccountData[];
-  lastThreeMeritBonus: number;
+  lastThreeMeritBonusFactor: number;
+  lastThreeMeritBonuses: number[];
   meritBonusPct: number;
   meritIncreasePct: number;
   payments: PaymentPeriod[];
@@ -49,7 +50,8 @@ export const useScenarios = (year: number): Scenario[] => {
       (x) => findSameYear(DateTime.fromISO(x.date).year, timeSeries.meritBonusPct)?.value ?? 0
     );
 
-    const lastThreeMeritBonus = meritBonuses.slice(-3).reduce((acc, curr) => acc + curr, 0);
+    const lastThreeMeritBonuses = meritBonuses.slice(-3);
+    const lastThreeMeritBonusFactor = meritBonuses.slice(-3).reduce((acc, curr) => acc + curr, 0);
     const payments = getPayments(
       DateTime.fromObject({ day: 1, month: 1, year: year - 1 }),
       DateTime.fromObject({ day: 31, month: 12, year: year }).endOf("day"),
@@ -59,7 +61,8 @@ export const useScenarios = (year: number): Scenario[] => {
     return [
       {
         pay: pay.slice(),
-        lastThreeMeritBonus,
+        lastThreeMeritBonusFactor,
+        lastThreeMeritBonuses,
         meritBonusPct,
         meritIncreasePct,
         payments,
@@ -109,10 +112,8 @@ export const useScenarios = (year: number): Scenario[] => {
               (x) => findSameYear(DateTime.fromISO(x.date).year, timeSeries.meritBonusPct)?.value ?? 0
             );
             const fakeMerit = merits.map((x) => x.meritBonusPct);
-            const lastThreeMeritBonus = actualMeritBonusPcts
-              .concat(fakeMerit)
-              .slice(-3)
-              .reduce((acc, curr) => acc + curr, 0);
+            const lastThreeMeritBonuses = actualMeritBonusPcts.concat(fakeMerit).slice(-3);
+            const lastThreeMeritBonusFactor = lastThreeMeritBonuses.reduce((acc, curr) => acc + curr, 0);
 
             const lastMerit = merits.at(-1)!;
             const payments = getPayments(
@@ -123,7 +124,8 @@ export const useScenarios = (year: number): Scenario[] => {
 
             return {
               pay: next,
-              lastThreeMeritBonus,
+              lastThreeMeritBonusFactor,
+              lastThreeMeritBonuses,
               meritBonusPct: lastMerit.meritBonusPct,
               meritIncreasePct: lastMerit.meritIncreasePct,
               payments,
@@ -134,7 +136,7 @@ export const useScenarios = (year: number): Scenario[] => {
 
     const withCompanyBonus = uniqueCompanyBonusPcts.flatMap((x) => {
       return basePayAndMeritScenarios.map((y) => {
-        return { ...y, companyBonusFactor: x, companyBonusPct: y.lastThreeMeritBonus * x };
+        return { ...y, companyBonusFactor: x, companyBonusPct: y.lastThreeMeritBonusFactor * x };
       });
     });
 
