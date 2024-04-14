@@ -6,9 +6,8 @@ import { useDates } from "shared/hooks/use-dates";
 import { store } from "shared/store";
 import { findMostMostLikely, scaleCluster } from "shared/utility/cluster-helpers";
 
-export const useFutureBonuses = () => {
+export const useFutureBonuses = (year: number) => {
   const local = DateTime.local();
-  const year = local.year;
   const dates = useDates(year);
   const clusters = useClusters(year);
   const config = useStore(store, (x) => x.projectedWealth);

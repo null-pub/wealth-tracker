@@ -1,24 +1,15 @@
 import { useStore } from "@tanstack/react-store";
-import { DateTime } from "luxon";
 import { useMemo } from "react";
+import { useDateRanges } from "shared/hooks/use-dates";
 import { store } from "shared/store";
-import { getLocalDateTime } from "shared/utility/current-date";
 
-export const useFutureSavings = () => {
+export const useFutureSavings = (year: number) => {
   const config = useStore(store, (x) => x.projectedWealth);
+  const dateRanges = useDateRanges(year);
   return useMemo(() => {
-    const systemYear = getLocalDateTime().year;
     return {
-      remaining:
-        config.savingsPerMonth *
-        DateTime.fromObject({
-          day: 31,
-          month: 12,
-          year: systemYear,
-        })
-          .endOf("day")
-          .diffNow("months").months,
+      remaining: config.savingsPerMonth * Math.min(Math.max(0, dateRanges.base.end.diffNow("months").months), 12),
       perMonth: config.savingsPerMonth,
     };
-  }, [config.savingsPerMonth]);
+  }, [config.savingsPerMonth, dateRanges.base]);
 };

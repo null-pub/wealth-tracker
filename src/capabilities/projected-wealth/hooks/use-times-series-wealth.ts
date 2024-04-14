@@ -3,7 +3,7 @@ import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { store } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
-import { findNearestOnOrBefore } from "shared/utility/find-nearest-on-or-before";
+import { findNearestIdxOnOrBefore, findNearestOnOrBefore } from "shared/utility/find-nearest-on-or-before";
 import { calcEquity, calcLoanBalance } from "shared/utility/mortgage-calc";
 import { useEarliestAccountEntry } from "./use-earliest-account-entry";
 import { useFutureBonuses } from "./use-future-bonuses";
@@ -19,39 +19,54 @@ export interface TimeSeriesWealth {
   yoyPct?: number;
 }
 
-export const useTimeSeriesWealth = () => {
+const useFutureWealth = (year: number) => {
+  const bonuses = useFutureBonuses(year);
+  const savings = useFutureSavings(year);
+  const ssiTaxValue = useFutureSocialSecurity(year);
+  const medicareTaxValue = useFutureMedicareTax(year);
+  const retirementContribution = useFutureRetirementContributions(year);
+
+  return (
+    bonuses +
+    savings.remaining +
+    retirementContribution.remaining +
+    (ssiTaxValue.min?.remaining ?? 0) +
+    (medicareTaxValue?.min?.remaining ?? 0)
+  );
+};
+
+const useFuturesWealth = () => {
+  const year = getLocalDateTime().year;
+  return {
+    [year + 1]: useFutureWealth(year),
+    [year + 2]: useFutureWealth(year + 1) + useFutureWealth(year),
+  };
+};
+
+export const useTimeSeriesWealth = (year: number) => {
   const localDateTime = getLocalDateTime();
   const earliest = useEarliestAccountEntry();
   const accounts = useStore(store, (x) => x.wealth);
-  const bonuses = useFutureBonuses();
-  const savings = useFutureSavings();
-  const ssiTaxValue = useFutureSocialSecurity();
-  const medicareTaxValue = useFutureMedicareTax();
-  const retirementContribution = useFutureRetirementContributions();
+  const futuresWealth = useFuturesWealth();
 
   const data = useMemo(() => {
     if (!earliest.isValid) {
       return [];
     }
 
-    const futureWealth =
-      bonuses +
-      savings.remaining +
-      retirementContribution.remaining +
-      (ssiTaxValue.min?.remaining ?? 0) +
-      (medicareTaxValue?.min?.remaining ?? 0);
-
-    const dates = new Array(localDateTime.year + 2 - earliest.year)
+    const dates = new Array(year + 2 - earliest.year)
       .fill(earliest.year)
       .map((x, i) => DateTime.fromObject({ day: 1, month: 1, year: x + i }).startOf("day"));
 
-    if (!localDateTime.equals(dates[dates.length - 2])) {
-      dates.splice(-1, 0, localDateTime);
+    const idx = findNearestIdxOnOrBefore(localDateTime, dates, (x) => x);
+    if (!dates.some((x) => x.equals(localDateTime.startOf("day")))) {
+      dates.splice(idx + 1, 0, localDateTime);
     }
 
+    const futureBenchmarkIdx = idx;
+
     return dates
-      .map((date, idx, arr) => {
-        const isLast = idx === arr.length - 1;
+      .map((date) => {
         const accountsWealth = Object.values(accounts).map((x) => {
           if (x.type === "mortgage" && x.loan) {
             const houseValue = findNearestOnOrBefore(date, x.data);
@@ -63,16 +78,18 @@ export const useTimeSeriesWealth = () => {
           }
           return 0;
         });
+
         const accountWealth = accountsWealth.reduce((acc, curr) => acc + curr, 0);
+        const futureWealth = futuresWealth[date.year] ?? 0;
 
         return {
           date,
           graphDate: date.toJSDate(),
-          wealth: accountWealth + (isLast ? futureWealth : 0),
+          wealth: accountWealth + futureWealth,
         };
       })
       .map((x, idx, arr) => {
-        if (idx !== arr.length - 1) {
+        if (x.date <= localDateTime) {
           const benchmarkWealth = arr[idx - 1]?.wealth;
           if (!benchmarkWealth) {
             return x;
@@ -84,7 +101,7 @@ export const useTimeSeriesWealth = () => {
           };
         }
 
-        const benchmarkWealth = arr[idx - 2]?.wealth;
+        const benchmarkWealth = arr[futureBenchmarkIdx]?.wealth;
         if (!benchmarkWealth) {
           return x;
         }
@@ -94,16 +111,6 @@ export const useTimeSeriesWealth = () => {
           yoyPct: x.wealth / benchmarkWealth - 1,
         };
       });
-  }, [
-    earliest.isValid,
-    earliest.year,
-    bonuses,
-    savings.remaining,
-    retirementContribution.remaining,
-    ssiTaxValue.min,
-    medicareTaxValue.min,
-    localDateTime,
-    accounts,
-  ]);
+  }, [earliest.isValid, earliest.year, year, localDateTime, accounts, futuresWealth]);
   return data as TimeSeriesWealth[];
 };

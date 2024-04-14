@@ -1,4 +1,5 @@
 import { Box, Stack } from "@mui/system";
+import { DatePicker } from "@mui/x-date-pickers";
 import { useStore } from "@tanstack/react-store";
 import { Value } from "capabilities/projected-income/components/value";
 import { Cluster, useClusters } from "capabilities/projected-income/hooks/use-gradient";
@@ -23,14 +24,14 @@ import { monthDay } from "shared/utility/format-date";
 
 const isFuture = (date: DateTime) => date.diffNow("milliseconds").milliseconds > 0;
 
-export const FutureEvents = () => {
-  const year = getLocalDateTime().year;
+export const FutureEvents = (props: { year: number; onChange: (year: number) => void }) => {
+  const { year, onChange } = props;
   const dates = useDates(year);
 
-  const savings = useFutureSavings();
-  const retirement = useFutureRetirementContributions();
-  const medicare = useFutureMedicareTax();
-  const socialSecurity = useFutureSocialSecurity();
+  const savings = useFutureSavings(year);
+  const retirement = useFutureRetirementContributions(year);
+  const medicare = useFutureMedicareTax(year);
+  const socialSecurity = useFutureSocialSecurity(year);
   const clusters = useClusters(year);
   const bonusTakehomeFactor = useStore(store, (x) => 1 - x.projectedWealth.bonusWitholdingsRate);
 
@@ -65,7 +66,30 @@ export const FutureEvents = () => {
   return (
     <>
       <Stack spacing={2}>
-        <Card title={`${year} Remaining Projected Wealth`}>
+        <Card
+          title={
+            <>
+              <span>Remaining Projected Wealth</span>
+              <DatePicker
+                sx={{ width: 90, marginRight: 2, marginLeft: "auto" }}
+                label={"year"}
+                views={["year"]}
+                minDate={getLocalDateTime()}
+                maxDate={getLocalDateTime().plus({ years: 1 })}
+                value={getLocalDateTime().set({ year })}
+                slotProps={{
+                  textField: {
+                    variant: "standard",
+                    label: "",
+                  },
+                }}
+                onYearChange={(year) => {
+                  onChange(year.year);
+                }}
+              />
+            </>
+          }
+        >
           <ClusterValues clusters={total} eventDate={dates.companyBonus} />
         </Card>
         {isFuture(dates.meritBonus) && (

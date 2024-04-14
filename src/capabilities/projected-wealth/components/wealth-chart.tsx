@@ -2,12 +2,16 @@ import { AgCartesianChartOptions, AgLineSeriesOptions } from "ag-charts-communit
 import { AgChartsReact } from "ag-charts-react";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
+import { getLocalDateTime } from "shared/utility/current-date";
 import { formatCash, formatCashShort } from "shared/utility/format-cash";
 import { shortDate } from "shared/utility/format-date";
 import { useTimeSeriesWealth } from "../hooks/use-times-series-wealth";
 
-export const WealthChart = () => {
-  const data = useTimeSeriesWealth();
+export const WealthChart = (props: { titleYear: number }) => {
+  const dataYear = getLocalDateTime().year + 1;
+  const { titleYear } = props;
+  const data = useTimeSeriesWealth(dataYear);
+  const offsetIdx = getLocalDateTime().year - titleYear + 1;
 
   const series = useMemo(() => {
     return [
@@ -40,8 +44,8 @@ export const WealthChart = () => {
     () => ({
       theme: "ag-default-dark",
       title: {
-        text: `${data[data.length - 1].date.toFormat(shortDate)} Projected wealth ${formatCashShort(
-          (data[data.length - 1]?.wealth ?? 0) as number
+        text: `${data[data.length - 1 - offsetIdx].date.toFormat(shortDate)} Projected wealth ${formatCashShort(
+          (data[data.length - 1 - offsetIdx]?.wealth ?? 0) as number
         )}`,
       },
       data,
@@ -61,7 +65,7 @@ export const WealthChart = () => {
       ],
       series,
     }),
-    [data, series]
+    [data, series, offsetIdx]
   );
   return <AgChartsReact options={options} />;
 };

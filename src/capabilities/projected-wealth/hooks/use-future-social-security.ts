@@ -3,7 +3,6 @@ import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { store } from "shared/store";
 import { scenarioStore } from "shared/store/scenario-store";
-import { getLocalDateTime } from "shared/utility/current-date";
 
 interface ThresholdTaxData {
   total: number;
@@ -12,21 +11,20 @@ interface ThresholdTaxData {
   perPaycheck: number;
 }
 
-export const useFutureSocialSecurity = (): TresholdTax => {
+export const useFutureSocialSecurity = (year: number): TresholdTax => {
   const config = useStore(store, (x) => x.projectedWealth);
-  return useThresholdTax(config.socialSecurityLimit, config.socialSecurityTaxRate);
+  return useThresholdTax(year, config.socialSecurityLimit, config.socialSecurityTaxRate);
 };
 
-export const useFutureMedicareTax = (): TresholdTax => {
+export const useFutureMedicareTax = (year: number): TresholdTax => {
   const config = useStore(store, (x) => x.projectedWealth);
-  return useThresholdTax(config.medicareSupplementalTaxThreshold, -1 * config.medicareSupplementalTaxRate);
+  return useThresholdTax(year, config.medicareSupplementalTaxThreshold, -1 * config.medicareSupplementalTaxRate);
 };
 
 export type TresholdTax = Partial<Record<"min" | "max", ThresholdTaxData>>;
 
-const useThresholdTax = (threshold: number, taxRate: number): TresholdTax => {
-  const currentYear = getLocalDateTime().year;
-  const scenarios = useStore(scenarioStore, (x) => x.scenarios[currentYear]);
+const useThresholdTax = (year: number, threshold: number, taxRate: number): TresholdTax => {
+  const scenarios = useStore(scenarioStore, (x) => x.scenarios[year]);
 
   const data = useMemo(
     () =>
