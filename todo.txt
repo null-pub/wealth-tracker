@@ -9,4 +9,3 @@ net wealth
 config
     move import/export/reset to settings
     allow soft deleting accounts
-    allow user to choose how many years to generate or determine how many years you can go out by checking 2500 combinations?

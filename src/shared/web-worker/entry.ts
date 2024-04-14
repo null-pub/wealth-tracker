@@ -6,7 +6,15 @@ import { DateTime } from "luxon";
 import { getScenarioSize } from "./merit-sequence";
 
 const currentYear = getLocalDateTime().year;
-const maxYear = currentYear + 4;
+const maxYear = (() => {
+  const projectedIncome = store.state.projectedIncome;
+  for (let i = currentYear; i <= currentYear + 10; i++) {
+    if (getScenarioSize(i, projectedIncome) > 2499) {
+      return Math.max(currentYear, i - 1);
+    }
+  }
+  return currentYear + 10;
+})();
 
 const worker = new Worker(new URL("worker.js", import.meta.url), { type: "module" });
 worker.onmessage = (event) => {
@@ -31,9 +39,6 @@ const loadAllScenarios = () => {
     worker.postMessage({ year: i, projectedIncome });
   }
   for (let i = currentYear; i <= maxYear; i++) {
-    if (getScenarioSize(i, projectedIncome) > 2500) {
-      break;
-    }
     worker.postMessage({ year: i, projectedIncome });
   }
 };
