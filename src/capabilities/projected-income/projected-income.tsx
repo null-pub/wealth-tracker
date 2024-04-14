@@ -7,7 +7,7 @@ import { useMemo, useState } from "react";
 import { Card } from "shared/components/card";
 import { Cash } from "shared/components/formatters/cash";
 import { ClusterValues } from "shared/components/formatters/cluster-value";
-import { Duration } from "shared/components/formatters/duration";
+import { CountDown } from "shared/components/formatters/countdown";
 import { useDateRanges, useDates } from "shared/hooks/use-dates";
 import { IncomePerPeriod } from "shared/models/IncomePerPeriod";
 import { scenarioStore } from "shared/store/scenario-store";
@@ -86,7 +86,7 @@ export const ProjectedIncome = () => {
             title={
               <Box display="flex" alignItems={"center"} gap={2} width={"100%"}>
                 <span>Income</span>
-                <Duration dateTime={dates.companyBonus} />
+                <CountDown dateTime={dates.companyBonus} />
                 <Box sx={{ display: "flex", marginLeft: "auto", alignItems: "center", flexWrap: "wrap" }}>
                   {scenarios.loading && <CircularProgress style={{ width: 20, height: 20 }} />}
                 </Box>
@@ -116,7 +116,7 @@ export const ProjectedIncome = () => {
             title={
               <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
                 <span>Paycheck</span>
-                <Duration dateTime={dates.meritIncrease} />
+                <CountDown dateTime={dates.meritIncrease} />
               </Box>
             }
           >
@@ -149,7 +149,7 @@ export const ProjectedIncome = () => {
             title={
               <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
                 <span>Merit Increase</span>
-                <Duration dateTime={dates.meritIncrease} />
+                <CountDown dateTime={dates.meritIncrease} />
               </Box>
             }
           >
@@ -160,7 +160,7 @@ export const ProjectedIncome = () => {
             title={
               <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
                 <span>Merit Bonus</span>
-                <Duration dateTime={dates.meritBonus} />
+                <CountDown dateTime={dates.meritBonus} />
               </Box>
             }
           >
@@ -170,7 +170,7 @@ export const ProjectedIncome = () => {
             title={
               <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
                 <span>Company Bonus</span>
-                <Duration dateTime={dates.companyBonus} />
+                <CountDown dateTime={dates.companyBonus} />
               </Box>
             }
           >
@@ -180,7 +180,7 @@ export const ProjectedIncome = () => {
             title={
               <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
                 <span>Retirement Bonus</span>
-                <Duration dateTime={dates.retirementBonus} />
+                <CountDown dateTime={dates.retirementBonus} />
               </Box>
             }
           >

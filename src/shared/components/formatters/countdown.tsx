@@ -10,7 +10,7 @@ interface DurationProps {
   variant?: "countdown" | "date";
   dateFormat?: string;
 }
-export const Duration = (props: DurationProps) => {
+export const CountDown = (props: DurationProps) => {
   const { dateTime, children, variant = "countdown", dateFormat = shortDate } = props;
 
   const countDownStr = useMemo(() => {

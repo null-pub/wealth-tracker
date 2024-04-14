@@ -13,8 +13,8 @@ import { useMemo } from "react";
 import { Card } from "shared/components/card";
 import { Cash } from "shared/components/formatters/cash";
 import { ClusterValues } from "shared/components/formatters/cluster-value";
+import { CountDown } from "shared/components/formatters/countdown";
 import { DateValue } from "shared/components/formatters/date";
-import { Duration } from "shared/components/formatters/duration";
 import { useDates } from "shared/hooks/use-dates";
 import { store } from "shared/store";
 import { ExpectedValue, scaleClusters } from "shared/utility/cluster-helpers";
@@ -73,7 +73,7 @@ export const FutureEvents = () => {
             title={
               <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
                 <span>Merit Bonus</span>
-                <Duration dateTime={dates.meritBonus} />
+                <CountDown dateTime={dates.meritBonus} />
               </Box>
             }
           >
@@ -88,7 +88,7 @@ export const FutureEvents = () => {
             title={
               <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
                 <span>Company Bonus</span>
-                <Duration dateTime={dates.companyBonus} />
+                <DateValue dateFormat={monthDay} variant={"date"} dateTime={dates.companyBonus} />
               </Box>
             }
           >
@@ -103,7 +103,7 @@ export const FutureEvents = () => {
             title={
               <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
                 <span>Retirement Bonus</span>
-                <Duration dateTime={dates.retirementBonus} />
+                <DateValue dateFormat={monthDay} dateTime={dates.retirementBonus} variant="date" />
               </Box>
             }
           >
@@ -115,38 +115,36 @@ export const FutureEvents = () => {
             title={
               <Box display={"flex"} width={"max-content"} gap={1} marginRight={2}>
                 <span>Social Security Limit</span>
-                {socialSecurity && socialSecurity.min !== socialSecurity.max && <span>on</span>}
 
-                <DateValue dateFormat={monthDay} variant="date" dateTime={socialSecurity.max?.firstOccurrence} />
+                <CountDown dateFormat={monthDay} variant="date" dateTime={socialSecurity.max?.firstOccurrence} />
                 {socialSecurity.min &&
                   socialSecurity.max &&
                   !socialSecurity.min.firstOccurrence.equals(socialSecurity.max.firstOccurrence) && (
                     <>
                       <span>or</span>
-                      <DateValue dateFormat={monthDay} variant="date" dateTime={socialSecurity.min.firstOccurrence} />
+                      <CountDown dateFormat={monthDay} variant="date" dateTime={socialSecurity.min.firstOccurrence} />
                     </>
                   )}
               </Box>
             }
           >
             {socialSecurity.max && socialSecurity.max.total === socialSecurity.min.total && (
-              <Value
-                title={"Expected"}
-                secondaryValue={<Cash tooltip="Per Paycheck" value={socialSecurity.max.perPaycheck} />}
-              ></Value>
+              <Value title={"Remaining"}>
+                <Cash value={socialSecurity.max?.remaining} compact={false} />
+              </Value>
             )}
             {socialSecurity.max && socialSecurity.max.total !== socialSecurity.min.total && (
               <>
                 <Value title={"Early"}>
-                  <Cash tooltip="Remaining" value={socialSecurity.max?.remaining} compact={false} />
+                  <Cash value={socialSecurity.max?.remaining} compact={false} />
                 </Value>
                 <Value title={"Late"}>
-                  <Cash tooltip="Remaining" value={socialSecurity.min.total} compact={false} />
+                  <Cash value={socialSecurity.min.total} compact={false} />
                 </Value>
               </>
             )}
             <Value title={"Per Paycheck"}>
-              <Cash tooltip="Per Paycheck" value={socialSecurity.max?.perPaycheck} />
+              <Cash value={socialSecurity.max?.perPaycheck} compact={false} />
             </Value>
           </Card>
         )}
@@ -155,34 +153,34 @@ export const FutureEvents = () => {
             title={
               <Box display={"flex"} width={"max-content"} gap={1} marginRight={2}>
                 <span>Medicare Supplemental Tax</span>
-                {medicare && medicare.min !== medicare.max && <span>on</span>}
-                <DateValue dateFormat={monthDay} variant="date" dateTime={medicare.max?.firstOccurrence} />
-                {medicare.min && medicare.max && !medicare.min.firstOccurrence.equals(medicare.max.firstOccurrence) && (
+
+                <DateValue dateFormat={monthDay} variant="date" dateTime={medicare.min?.firstOccurrence} />
+                {medicare.min && medicare.max && !medicare.max.firstOccurrence.equals(medicare.min.firstOccurrence) && (
                   <>
                     <span>or</span>
-                    <DateValue dateFormat={monthDay} variant="date" dateTime={medicare.min.firstOccurrence} />
+                    <DateValue dateFormat={monthDay} variant="date" dateTime={medicare.max.firstOccurrence} />
                   </>
                 )}
               </Box>
             }
           >
             {medicare.max && medicare.max.total === medicare.min.total && (
-              <Value title={"Expected"}>
-                <Cash tooltip="Remaining" value={medicare.max.remaining} compact={false} />
+              <Value title={"Remaining"}>
+                <Cash value={medicare.max.remaining} compact={false} />
               </Value>
             )}
             {medicare.max && medicare.max.total !== medicare.min.total && (
               <>
                 <Value title={"Early"}>
-                  <Cash tooltip="Remaining" value={medicare.min.total} compact={false} />
+                  <Cash value={medicare.min.total} compact={false} />
                 </Value>
                 <Value title={"Late"}>
-                  <Cash tooltip="Remaining" value={medicare.max?.remaining} compact={false} />
+                  <Cash value={medicare.max?.remaining} compact={false} />
                 </Value>
               </>
             )}
             <Value title={"Per Paycheck"}>
-              <Cash tooltip="Per Paycheck" value={medicare.max?.perPaycheck} />
+              <Cash tooltip="Per Paycheck" value={medicare.max?.perPaycheck} compact={false} />
             </Value>
           </Card>
         )}
