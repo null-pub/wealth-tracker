@@ -10,7 +10,7 @@ export const ProjectedWealth = () => {
   const [year, setYear] = useState(localTime.year);
 
   return (
-    <Box display="flex" flexDirection="row" height="100%" width={"100%"} gap={2}>
+    <Box display="flex" flexDirection="row" height="100%" width={"100%"} gap={1}>
       <Box flex="0 1 auto" height={"100%"} overflow={"auto"}>
         <FutureEvents onChange={setYear} year={year} />
       </Box>

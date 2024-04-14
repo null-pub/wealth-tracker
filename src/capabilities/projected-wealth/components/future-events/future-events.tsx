@@ -65,7 +65,7 @@ export const FutureEvents = (props: { year: number; onChange: (year: number) => 
 
   return (
     <>
-      <Stack spacing={2}>
+      <Stack spacing={2} width={550} paddingRight={1}>
         <Card
           title={
             <>
