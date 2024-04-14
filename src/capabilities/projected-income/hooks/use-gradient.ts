@@ -1,6 +1,7 @@
+import { useStore } from "@tanstack/react-store";
 import { useMemo } from "react";
+import { scenarioStore } from "shared/store/scenario-store";
 import { ckmeans } from "simple-statistics";
-import { useScenarios } from "./use-scenarios";
 
 const clusterTitle = (index: number, length: number) => {
   if (length === 1) {
@@ -19,7 +20,10 @@ export interface Cluster {
   title: string;
 }
 
-const clusters = (values: number[]): Cluster[] => {
+const clusters = (values?: number[]): Cluster[] => {
+  if (!values) {
+    return [];
+  }
   return ckmeans(values, Math.min(3, values.length)).map((x, i, arr) => {
     return {
       min: Math.min(...x),
@@ -31,10 +35,10 @@ const clusters = (values: number[]): Cluster[] => {
 };
 
 export const useClusters = (year: number) => {
-  const scenarios = useScenarios(year);
+  const scenarios = useStore(scenarioStore, (x) => x.scenarios[year]);
 
   return useMemo(() => {
-    if (scenarios.length === 0) {
+    if (scenarios?.length === 0) {
       return {
         totalPay: [],
         meritBonus: [],
@@ -43,15 +47,17 @@ export const useClusters = (year: number) => {
         pay: [],
         meritIncrease: [],
         scenarios,
+        taxablePay: [],
       };
     }
     return {
-      totalPay: clusters(scenarios.map((x) => x.totalPay)),
-      meritBonus: clusters(scenarios.map((x) => x.meritBonus)),
-      retirementBonus: clusters(scenarios.map((x) => x.retirementBonus)),
-      companyBonus: clusters(scenarios.map((x) => x.companyBonus)),
-      pay: clusters(scenarios.map((x) => x.pay.at(-1)?.value ?? 0)),
-      meritIncrease: clusters(scenarios.map((x) => x.meritIncreasePct + x.equityIncreasePct)),
+      totalPay: clusters(scenarios?.map((x) => x.totalPay)),
+      meritBonus: clusters(scenarios?.map((x) => x.meritBonus)),
+      retirementBonus: clusters(scenarios?.map((x) => x.retirementBonus)),
+      companyBonus: clusters(scenarios?.map((x) => x.companyBonus)),
+      pay: clusters(scenarios?.map((x) => x.pay.at(-1)?.value ?? 0)),
+      meritIncrease: clusters(scenarios?.map((x) => x.meritIncreasePct + x.equityIncreasePct)),
+      taxablePay: clusters(scenarios?.map((x) => x.taxablePay)),
       scenarios,
     };
   }, [scenarios]);

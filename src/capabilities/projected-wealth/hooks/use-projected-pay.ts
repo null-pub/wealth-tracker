@@ -1,30 +1,17 @@
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
-import { AccountData } from "shared/models/account-data";
 import { store } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { findSameYear } from "shared/utility/find-same-year";
 import { useMostFrequentValue } from "./use-most-frequent-value";
+import { valueByDateRange } from "shared/utility/get-values-by-date-range";
 
 export interface TimeSpanValue {
   start: DateTime;
   end: DateTime;
   value: number;
 }
-
-export const valueByDateRange = (account: AccountData[]): TimeSpanValue[] => {
-  return account.map((x, index, array) => {
-    const next = array[index + 1];
-    return {
-      start: DateTime.fromISO(x.date),
-      end: (next?.date ? DateTime.fromISO(next?.date).startOf("day") : DateTime.fromISO(x.date).plus({ years: 1 }))
-        .minus({ days: 1 })
-        .endOf("day"),
-      value: x.value,
-    };
-  });
-};
 
 const systemYear = getLocalDateTime().year;
 const defaultValue = {

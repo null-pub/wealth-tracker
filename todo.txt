@@ -1,8 +1,7 @@
 projected wealth: 
-    add witholdings calcs to projected wealth 
-    use pay dates from user
-    use scenarios from projected income
-    move config to modal
+   use scenarios for social security and medicare
+   use scenarios for table
+
 
 net wealth 
     redesign to make better
@@ -10,4 +9,4 @@ net wealth
 config
     move import/export/reset to settings
     allow soft deleting accounts
-    
+    allow user to choose how many years to generate or determine how many years you can go out by checking 2500 combinations?

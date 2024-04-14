@@ -8,6 +8,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { ErrorBoundary } from "react-error-boundary";
 import "./index.css";
+import "shared/web-worker/entry";
 
 const darkTheme = createTheme({
   palette: {
@@ -34,5 +35,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </ThemeProvider>
       </LocalizationProvider>
     </ErrorBoundary>
-  </React.StrictMode>,
+  </React.StrictMode>
 );

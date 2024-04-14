@@ -1,4 +1,3 @@
-import { Typography } from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import { Value } from "capabilities/projected-income/components/value";
 import { useFutureMedicareTax } from "capabilities/projected-wealth/hooks/use-future-medicare-tax";
@@ -13,11 +12,12 @@ import { useDates } from "shared/hooks/use-dates";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { monthDay } from "shared/utility/format-date";
 import { ClusterValues } from "shared/components/formatters/cluster-value";
-import { useClusters } from "capabilities/projected-income/hooks/use-gradient";
+import { Cluster, useClusters } from "capabilities/projected-income/hooks/use-gradient";
 import { Card } from "shared/components/card";
-import { scaleClusters } from "shared/utility/scale-cluster";
+import { scaleClusters, ExpectedValue } from "shared/utility/cluster-helpers";
 import { useStore } from "@tanstack/react-store";
 import { store } from "shared/store";
+import { useMemo } from "react";
 
 const isFuture = (date: DateTime) => date.diffNow("milliseconds").milliseconds > 0;
 
@@ -32,12 +32,38 @@ export const FutureEvents = () => {
   const clusters = useClusters(year);
   const bonusTakehomeFactor = useStore(store, (x) => 1 - x.projectedWealth.bonusWitholdingsRate);
 
+  const total = useMemo(() => {
+    const remaining = [
+      isFuture(dates.meritBonus) && scaleClusters(clusters.meritBonus, bonusTakehomeFactor),
+      isFuture(dates.companyBonus) && scaleClusters(clusters.companyBonus, bonusTakehomeFactor),
+      isFuture(dates.retirementBonus) && clusters.retirementBonus,
+      [{ min: savings.remaining, max: savings.remaining, probability: 1 }],
+      [{ min: retirement.remaining, max: retirement.remaining, probability: 1 }],
+      [{ min: socialSecurity.remaining, max: socialSecurity.remaining, probability: 1 }],
+      [{ min: medicare.remaining, max: medicare.remaining, probability: 1 }],
+    ].filter((x) => x !== false) as Cluster[][];
+
+    return ExpectedValue(remaining);
+  }, [
+    bonusTakehomeFactor,
+    clusters.companyBonus,
+    clusters.meritBonus,
+    clusters.retirementBonus,
+    dates.companyBonus,
+    dates.meritBonus,
+    dates.retirementBonus,
+    medicare.remaining,
+    retirement.remaining,
+    savings.remaining,
+    socialSecurity.remaining,
+  ]);
+
   return (
     <>
       <Stack spacing={2}>
-        <Typography variant="h5">
-          {year} Remaining Projected Wealth <Cash value={0} />
-        </Typography>
+        <Card title={`${year} Remaining Projected Wealth`}>
+          <ClusterValues clusters={total} eventDate={dates.companyBonus} />
+        </Card>
         {isFuture(dates.meritBonus) && (
           <Card
             title={

@@ -5,11 +5,10 @@ import { DateTime } from "luxon";
 import { useMemo, useState } from "react";
 import { Duration } from "shared/components/formatters/duration";
 import { useDateRanges, useDates } from "shared/hooks/use-dates";
-import { store } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { Layout } from "./components/data-entry/data-entry";
 import { useClusters } from "./hooks/use-gradient";
-import { Alert, Tooltip } from "@mui/material";
+import { Alert, CircularProgress, Tooltip } from "@mui/material";
 import { Cash } from "shared/components/formatters/cash";
 import { Value } from "./components/value";
 import { IncomePerPeriodTooltip } from "./components/income-per-period";
@@ -17,14 +16,10 @@ import { useHasMeritPairs } from "./hooks/use-has-merit-pairs";
 import { IncomePerPeriod } from "shared/models/IncomePerPeriod";
 import { Card } from "shared/components/card";
 import { ClusterValues } from "shared/components/formatters/cluster-value";
+import { scenarioStore } from "shared/store/scenario-store";
 
 export const ProjectedIncome = () => {
   const [selectedYear, setSelectedYear] = useState(getLocalDateTime().year);
-  const oldestYear = useStore(store, (x) => {
-    const first = x.projectedIncome.timeSeries.paycheck[1]?.date;
-    const date = first ? DateTime.fromISO(first) : getLocalDateTime();
-    return date.year;
-  });
 
   const hasMissingPairs = useHasMeritPairs();
   const clusters = useClusters(selectedYear);
@@ -35,14 +30,14 @@ export const ProjectedIncome = () => {
     if (clusters.pay.length !== 1) {
       return;
     }
-    return clusters.scenarios[0].basePay;
+    return clusters.scenarios?.[0].basePay;
   }, [clusters.pay.length, clusters.scenarios]);
 
   const aprToApr = useMemo(() => {
     if (clusters.pay.length !== 1) {
       return;
     }
-    return clusters.scenarios[0].aprToApr;
+    return clusters.scenarios?.[0].aprToApr;
   }, [clusters.pay.length, clusters.scenarios]);
 
   const paychecks = useMemo(() => {
@@ -50,9 +45,10 @@ export const ProjectedIncome = () => {
       return;
     }
 
-    const payPeriods = clusters.scenarios[0].payments.filter(
-      (x) => x.payedOn >= dateRanges.base.start && x.payedOn <= dateRanges.base.end
-    );
+    const payPeriods =
+      clusters.scenarios?.[0].payments.filter(
+        (x) => x.payedOn >= dateRanges.base.start && x.payedOn <= dateRanges.base.end
+      ) ?? [];
 
     return payPeriods
       .reduceRight((acc, curr) => {
@@ -76,6 +72,8 @@ export const ProjectedIncome = () => {
       }, [] as IncomePerPeriod[]);
   }, [clusters.pay.length, clusters.scenarios, dateRanges.base.end, dateRanges.base.start]);
 
+  const scenarios = useStore(scenarioStore);
+
   return (
     <Box display="flex" flexDirection="row" height="100%" width={"100%"}>
       <Box flex="0 1 auto">
@@ -85,12 +83,15 @@ export const ProjectedIncome = () => {
               <Box display="flex" alignItems={"center"} gap={2} width={"100%"}>
                 <span>Income</span>
                 <Duration dateTime={dates.companyBonus} />
+                <Box sx={{ display: "flex", marginLeft: "auto", alignItems: "center", flexWrap: "wrap" }}>
+                  {scenarios.loading && <CircularProgress style={{ width: 20, height: 20 }} />}
+                </Box>
                 <DatePicker
-                  sx={{ width: 90, marginLeft: "auto", marginRight: 2 }}
+                  sx={{ width: 90, marginRight: 2 }}
                   label={"year"}
                   views={["year"]}
-                  minDate={getLocalDateTime().set({ year: oldestYear })}
-                  maxDate={getLocalDateTime().plus({ years: 2 })}
+                  minDate={getLocalDateTime().set({ year: scenarios.minYear })}
+                  maxDate={getLocalDateTime().set({ year: scenarios.maxYear })}
                   defaultValue={getLocalDateTime()}
                   slotProps={{
                     textField: {

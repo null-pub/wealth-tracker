@@ -9,6 +9,7 @@ export const Card = (props: { title: ReactNode; children?: ReactNode }) => {
       sx={{
         border: "1px solid rgba(255,255,255,0.1)",
         borderRadius: 2,
+        minWidth: 480,
       }}
     >
       <Typography sx={{ paddingBottom: 1, paddingLeft: 2, paddingTop: 1, display: "flex" }} variant="h5">
@@ -18,7 +19,7 @@ export const Card = (props: { title: ReactNode; children?: ReactNode }) => {
       {children && (
         <>
           <Divider />
-          <Stack padding={1} direction={"row"} spacing={0.5} width={"max-content"}>
+          <Stack padding={1} direction={"row"} spacing={0.5} width={"max-content"} minHeight={80}>
             {children}
           </Stack>
         </>
