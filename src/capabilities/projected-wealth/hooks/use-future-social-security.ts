@@ -5,24 +5,26 @@ import { store } from "shared/store";
 import { scenarioStore } from "shared/store/scenario-store";
 import { getLocalDateTime } from "shared/utility/current-date";
 
-interface SocialSecurity {
+interface ThresholdTaxData {
   total: number;
   firstOccurrence: DateTime;
   remaining: number;
   perPaycheck: number;
 }
 
-export const useFutureSocialSecurity = () => {
+export const useFutureSocialSecurity = (): TresholdTax => {
   const config = useStore(store, (x) => x.projectedWealth);
   return useThresholdTax(config.socialSecurityLimit, config.socialSecurityTaxRate);
 };
 
-export const useFutureMedicareTax = () => {
+export const useFutureMedicareTax = (): TresholdTax => {
   const config = useStore(store, (x) => x.projectedWealth);
   return useThresholdTax(config.medicareSupplementalTaxThreshold, -1 * config.medicareSupplementalTaxRate);
 };
 
-const useThresholdTax = (threshold: number, taxRate: number) => {
+export type TresholdTax = Partial<Record<"min" | "max", ThresholdTaxData>>;
+
+const useThresholdTax = (threshold: number, taxRate: number): TresholdTax => {
   const currentYear = getLocalDateTime().year;
   const scenarios = useStore(scenarioStore, (x) => x.scenarios[currentYear]);
 
@@ -48,7 +50,7 @@ const useThresholdTax = (threshold: number, taxRate: number) => {
               perPaycheck,
             };
           })
-          .filter((x) => x.firstOccurrence) as SocialSecurity[]
+          .filter((x) => x.firstOccurrence) as ThresholdTaxData[]
       ).reduce(
         (acc, curr, i) => {
           if (i == 0) {
@@ -63,7 +65,7 @@ const useThresholdTax = (threshold: number, taxRate: number) => {
           }
           return acc;
         },
-        {} as Partial<Record<"min" | "max", SocialSecurity>>
+        {} as Partial<Record<"min" | "max", ThresholdTaxData>>
       ),
     [threshold, taxRate, scenarios]
   );
