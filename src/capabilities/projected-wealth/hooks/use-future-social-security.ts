@@ -22,7 +22,7 @@ export const useFutureMedicareTax = () => {
   return useThresholdTax(config.medicareSupplementalTaxThreshold, -1 * config.medicareSupplementalTaxRate);
 };
 
-export const useThresholdTax = (threshold: number, taxRate: number) => {
+const useThresholdTax = (threshold: number, taxRate: number) => {
   const currentYear = getLocalDateTime().year;
   const scenarios = useStore(scenarioStore, (x) => x.scenarios[currentYear]);
 

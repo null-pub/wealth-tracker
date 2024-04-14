@@ -6,7 +6,6 @@ import { useRef, useState } from "react";
 import { Loan } from "shared/models/store/current";
 import { store } from "shared/store";
 import { setLoan } from "shared/store/set-loan";
-import { groupBy } from "shared/utility/group-by";
 import { ZodIssue, z } from "zod";
 
 const convertPct = (value: number) => {
@@ -109,7 +108,7 @@ export const AddLoan = (props: { accountName: string }) => {
               setError({});
               setLoan(accountName, parsed.data);
             } else {
-              const issues = groupBy(parsed.error.issues, (x) => x.path.join(""));
+              const issues = Object.groupBy(parsed.error.issues, (x) => x.path.join(""));
               setError(issues);
             }
           }}

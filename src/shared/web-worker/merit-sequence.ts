@@ -16,7 +16,7 @@ export const getScenarioSize = (year: number, projectedIncome: ProjectedIncome) 
   return Math.pow(timeSeries.meritIncreasePct.length, yearsToGenerate) * timeSeries.companyBonus.length;
 };
 
-export const getMeritPairs = (year: number, projectedIncome: ProjectedIncome) => {
+const getMeritPairs = (year: number, projectedIncome: ProjectedIncome) => {
   const timeSeries = projectedIncome.timeSeries;
   const meritBonusPct = findSameYear(year, timeSeries.meritBonusPct);
   const meritIncreasePct = findSameYear(year, timeSeries.meritIncreasePct);

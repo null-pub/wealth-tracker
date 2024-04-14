@@ -9,7 +9,7 @@ import { addProjectedIncome, store } from "shared/store";
 import { shortDate } from "shared/utility/format-date";
 import { createAccountColumnConfig } from "./column-config";
 
-export const DataEntry = (props: {
+const DataEntry = (props: {
   timeSeries: TimeSeries;
   defaultDate: DateTime;
   variant?: "number" | "cash" | "percent";
@@ -79,7 +79,7 @@ export const DataEntry = (props: {
   );
 };
 
-export interface LayoutProps {
+interface LayoutProps {
   title: string;
   accountName: TimeSeries;
   defaultDate: DateTime;

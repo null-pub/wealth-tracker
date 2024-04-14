@@ -24,7 +24,6 @@ export const useTimeSeriesWealth = () => {
   const earliest = useEarliestAccountEntry();
   const accounts = useStore(store, (x) => x.wealth);
   const bonuses = useFutureBonuses();
-
   const savings = useFutureSavings();
   const ssiTaxValue = useFutureSocialSecurity();
   const medicareTaxValue = useFutureMedicareTax();
