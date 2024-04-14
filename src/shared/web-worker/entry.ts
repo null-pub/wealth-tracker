@@ -4,6 +4,7 @@ import { create } from "mutative";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { DateTime } from "luxon";
 import { getScenarioSize } from "./merit-sequence";
+import { ProjectedIncome } from "shared/models/store/version-1";
 
 const currentYear = getLocalDateTime().year;
 const maxYear = (() => {
@@ -44,7 +45,12 @@ const loadAllScenarios = () => {
 };
 loadAllScenarios();
 
+let priorProjectedIncome: ProjectedIncome | null = null;
 store.subscribe(() => {
+  if (priorProjectedIncome === store.state.projectedIncome) {
+    return;
+  }
   scenarioStore.setState(() => ({ loading: false, scenarios: {}, maxYear: currentYear, minYear: currentYear }));
+  priorProjectedIncome = store.state.projectedIncome;
   loadAllScenarios();
 });
