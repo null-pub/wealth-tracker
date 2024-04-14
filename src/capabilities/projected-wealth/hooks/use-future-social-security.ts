@@ -49,10 +49,10 @@ export const useFutureSocialSecurity = () => {
         if (i == 0) {
           return { min: curr, max: curr };
         } else {
-          if (curr.total < acc.min!.total ?? 0) {
+          if (curr.total < acc.min!.total) {
             acc.min = curr;
           }
-          if (curr.total > acc.max!.total ?? 0) {
+          if (curr.total > acc.max!.total) {
             acc.max = curr;
           }
         }
