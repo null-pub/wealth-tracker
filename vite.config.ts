@@ -5,6 +5,9 @@ import checker from "vite-plugin-checker";
 
 export default defineConfig({
   base: "/wealth-tracker/",
+  worker: {
+    plugins: () => [tsconfigPaths()],
+  },
   plugins: [
     react({
       jsxImportSource: "@emotion/react",
@@ -25,17 +28,10 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       output: {
-        manualChunks: (path) =>
-          path.split("/").reverse()[
-            path.split("/").reverse().indexOf("node_modules") - 1
-          ],
+        manualChunks: (path) => path.split("/").reverse()[path.split("/").reverse().indexOf("node_modules") - 1],
       },
       onLog(level, log, handler) {
-        if (
-          log.cause &&
-          (log.cause as { message: string }).message ===
-            "Can't resolve original location of error."
-        ) {
+        if (log.cause && (log.cause as { message: string }).message === "Can't resolve original location of error.") {
           return;
         }
         handler(level, log);
