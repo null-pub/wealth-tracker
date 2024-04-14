@@ -9,3 +9,5 @@ net wealth
 config
     move import/export/reset to settings
     allow soft deleting accounts
+    switch to a save model instead of live updates.
+    (or at least supress re-calc till closure)
