@@ -2,7 +2,7 @@ import { Store } from "@tanstack/store";
 import { Scenario } from "shared/models/scenario";
 import { getLocalDateTime } from "shared/utility/current-date";
 
-export interface ScenarioStore {
+interface ScenarioStore {
   scenarios: Partial<Record<number, Scenario[]>>;
   loading: boolean;
   minYear: number;

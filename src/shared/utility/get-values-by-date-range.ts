@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { AccountData } from "shared/models/store/current";
 
-export interface TimeSpanValue {
+interface TimeSpanValue {
   start: DateTime;
   end: DateTime;
   value: number;

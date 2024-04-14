@@ -10,7 +10,7 @@ interface ClusterValueProps extends Cluster {
   compact?: boolean;
 }
 
-export const ClusterValue = (props: ClusterValueProps) => {
+const ClusterValue = (props: ClusterValueProps) => {
   const { min, max, probability, title, compact } = props;
   return (
     <Value

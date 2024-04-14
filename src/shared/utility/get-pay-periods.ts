@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 
-export interface PayPeriod {
+interface PayPeriod {
   start: DateTime;
   end: DateTime;
   payedOn: DateTime;

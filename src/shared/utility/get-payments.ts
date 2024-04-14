@@ -12,7 +12,7 @@ export interface PaymentPeriod {
   cumulative: number;
 }
 
-export interface ProjectedPay {
+interface ProjectedPay {
   start: DateTime<true> | DateTime<false>;
   end: DateTime<true> | DateTime<false>;
   value: number;
