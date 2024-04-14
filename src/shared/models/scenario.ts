@@ -1,4 +1,3 @@
-import { PaymentPeriod } from "shared/utility/get-payments";
 import { AccountData } from "./account-data";
 
 export interface Scenario {
@@ -14,9 +13,17 @@ export interface Scenario {
   lastThreeMeritBonuses: number[];
   meritBonusPct: number;
   meritIncreasePct: number;
-  payments: PaymentPeriod[];
+  payments: {
+    start: string;
+    end: string;
+    payedOn: string;
+    value: number;
+    cumulative: number;
+  }[];
   equityIncreasePct: number;
   retirementBonusPct: number;
   aprToApr: number;
   taxablePay: number;
+  currentPaymentIdx: number;
+  remainingPayments: number;
 }

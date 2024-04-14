@@ -3,10 +3,14 @@ import { DateTime } from "luxon";
 import { ProjectedPay } from "capabilities/projected-wealth/hooks/use-projected-pay";
 import { aPayday } from "./a-payday";
 import { DateRangesOverlap } from "./date-ranges-overlap";
-import { PayPeriod, getPayPeriods } from "./get-pay-periods";
+import { getPayPeriods } from "./get-pay-periods";
 
-export interface PaymentPeriod extends PayPeriod {
+export interface PaymentPeriod {
+  start: string;
+  end: string;
+  payedOn: string;
   value: number;
+  cumulative: number;
 }
 
 export function getPayments(startDate: DateTime, endDate: DateTime, pay: ProjectedPay[]): PaymentPeriod[] {
@@ -19,16 +23,19 @@ export function getPayments(startDate: DateTime, endDate: DateTime, pay: Project
       const businessDays = differenceInBusinessDays(end.plus({ milliseconds: 1 }).toJSDate(), start.toJSDate());
       const value = (x.value / 10) * Math.max(1, businessDays);
       return {
-        start,
-        end,
+        start: start.toISO(),
+        end: end.toISO(),
         value,
       };
     });
     const sum = payDuringPeriod.reduce((acc, curr) => acc + curr.value, 0);
 
     return {
-      ...payPeriod,
       value: sum,
+      cumulative: 0,
+      start: payPeriod.start.toISO()!,
+      end: payPeriod.end.toISO()!,
+      payedOn: payPeriod.payedOn.toISO()!,
     };
   });
 }

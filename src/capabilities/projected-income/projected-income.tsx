@@ -46,9 +46,10 @@ export const ProjectedIncome = () => {
     }
 
     const payPeriods =
-      clusters.scenarios?.[0].payments.filter(
-        (x) => x.payedOn >= dateRanges.base.start && x.payedOn <= dateRanges.base.end
-      ) ?? [];
+      clusters.scenarios?.[0].payments.filter((x) => {
+        const payedOn = DateTime.fromISO(x.payedOn);
+        return payedOn >= dateRanges.base.start && payedOn <= dateRanges.base.end;
+      }) ?? [];
 
     return payPeriods
       .reduceRight((acc, curr) => {
@@ -62,8 +63,8 @@ export const ProjectedIncome = () => {
       }, [] as (typeof payPeriods)[])
       .reduce((acc, curr) => {
         acc.push({
-          start: curr[0].payedOn,
-          end: curr[curr.length - 1].payedOn,
+          start: DateTime.fromISO(curr[0].payedOn),
+          end: DateTime.fromISO(curr[curr.length - 1].payedOn),
           value: curr.reduce((acc, curr) => acc + curr.value, 0),
           perPayday: curr[0].value,
           count: curr.length,

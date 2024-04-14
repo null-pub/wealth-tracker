@@ -29,8 +29,8 @@ export const useBaseIncome = (startDate: DateTime, endDate: DateTime): BaseIncom
       }, [] as (typeof payPeriods)[])
       .reduce((acc, curr) => {
         acc.push({
-          start: curr[0].payedOn,
-          end: curr[curr.length - 1].payedOn,
+          start: DateTime.fromISO(curr[0].payedOn),
+          end: DateTime.fromISO(curr[curr.length - 1].payedOn),
           value: curr.reduce((acc, curr) => acc + curr.value, 0),
           perPayday: curr[0].value,
           count: curr.length,
@@ -38,6 +38,17 @@ export const useBaseIncome = (startDate: DateTime, endDate: DateTime): BaseIncom
         return acc;
       }, [] as IncomePerPeriod[]);
 
-    return { totalIncome, payPeriods, incomePerPeriod };
+    return {
+      totalIncome,
+      payPeriods: payPeriods.map((x) => {
+        return {
+          ...x,
+          payedOn: DateTime.fromISO(x.payedOn),
+          start: DateTime.fromISO(x.start),
+          end: DateTime.fromISO(x.end),
+        };
+      }),
+      incomePerPeriod,
+    };
   }, [startDate, endDate, pay]);
 };

@@ -3,6 +3,9 @@ import { PaymentPeriod } from "./get-payments";
 
 export const incomeByRange = (range: { start: DateTime; end: DateTime }, pay: PaymentPeriod[]) => {
   return pay
-    .filter((x) => x.payedOn >= range.start && x.payedOn <= range.end)
+    .filter((x) => {
+      const payedOn = DateTime.fromISO(x.payedOn);
+      return payedOn >= range.start && payedOn <= range.end;
+    })
     .reduce((acc, curr) => acc + curr.value, 0);
 };

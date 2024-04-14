@@ -17,7 +17,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { Config } from "./config";
 
 export const App = () => {
-  const [tab, setTab] = useState<string>("projected-income");
+  const [tab, setTab] = useState<string>("projected-wealth");
   const onExport = useExport();
   const onImport = useImport();
   const { hadError, parseError, resetError, invalidData } = useStoreDataError();

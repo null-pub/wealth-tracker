@@ -3,7 +3,7 @@ import { Value } from "capabilities/projected-income/components/value";
 import { useFutureMedicareTax } from "capabilities/projected-wealth/hooks/use-future-medicare-tax";
 import { useFutureRetirementContributions } from "capabilities/projected-wealth/hooks/use-future-retirement-contributions";
 import { useFutureSavings } from "capabilities/projected-wealth/hooks/use-future-savings";
-import { useFutureSocialSecurity } from "capabilities/projected-wealth/hooks/use-future-social-security";
+import { useFutureSocialSecurity, useSocial2 } from "capabilities/projected-wealth/hooks/use-future-social-security";
 import { DateTime } from "luxon";
 import { BeforeAfter } from "shared/components/formatters/before-after";
 import { Cash } from "shared/components/formatters/cash";
@@ -29,6 +29,7 @@ export const FutureEvents = () => {
   const retirement = useFutureRetirementContributions();
   const medicare = useFutureMedicareTax();
   const socialSecurity = useFutureSocialSecurity();
+  useSocial2();
   const clusters = useClusters(year);
   const bonusTakehomeFactor = useStore(store, (x) => 1 - x.projectedWealth.bonusWitholdingsRate);
 
