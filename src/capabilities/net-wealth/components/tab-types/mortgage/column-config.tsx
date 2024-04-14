@@ -4,7 +4,7 @@ import { ColDef } from "ag-grid-community";
 import { CustomCellRendererProps } from "ag-grid-react";
 import { DateTime } from "luxon";
 import { Cash } from "shared/components/formatters/cash";
-import { AccountData } from "shared/models/account-data";
+import { AccountData } from "shared/models/store/current";
 import { removeAccountEntry } from "shared/store";
 import { shortDate } from "shared/utility/format-date";
 

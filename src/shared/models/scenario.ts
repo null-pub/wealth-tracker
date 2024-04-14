@@ -1,4 +1,4 @@
-import { AccountData } from "./account-data";
+import { AccountData } from "./store/current";
 
 export interface Scenario {
   totalPay: number;

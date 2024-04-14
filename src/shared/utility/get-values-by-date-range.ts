@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { AccountData } from "shared/models/account-data";
+import { AccountData } from "shared/models/store/current";
 
 export interface TimeSpanValue {
   start: DateTime;

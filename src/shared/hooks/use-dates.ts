@@ -1,7 +1,7 @@
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
-import { AccountData } from "shared/models/account-data";
+import { AccountData } from "shared/models/store/current";
 import { store } from "shared/store";
 import { findSameYear } from "shared/utility/find-same-year";
 

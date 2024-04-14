@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { AccountData } from "shared/models/account-data";
+import { AccountData } from "shared/models/store/current";
 
 export function findSameYear(year: number, data: AccountData[]): AccountData | undefined;
 export function findSameYear(date: DateTime, data: AccountData[]): AccountData | undefined;
