@@ -28,9 +28,9 @@ export const ClusterValue = (props: ClusterValueProps) => {
   );
 };
 
-export const ClusterValues = (props: { clusters: Cluster[]; eventDate?: DateTime; compact?: boolean }) => {
+export const ClusterValues = (props: { clusters?: Cluster[]; eventDate?: DateTime; compact?: boolean }) => {
   const { clusters, eventDate, compact = true } = props;
-  return clusters.map((x, i, arr) => {
+  return clusters?.map((x, i, arr) => {
     const title = arr.length === 1 && (eventDate?.diffNow().toMillis() ?? -1) > 0 ? "Expected" : x.title;
     return <ClusterValue {...x} title={title} compact={compact} key={i} />;
   });

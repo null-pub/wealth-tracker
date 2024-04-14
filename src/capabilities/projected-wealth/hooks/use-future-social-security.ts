@@ -14,6 +14,15 @@ interface SocialSecurity {
 
 export const useFutureSocialSecurity = () => {
   const config = useStore(store, (x) => x.projectedWealth);
+  return useThresholdTax(config.socialSecurityLimit, config.socialSecurityTaxRate);
+};
+
+export const useFutureMedicareTax = () => {
+  const config = useStore(store, (x) => x.projectedWealth);
+  return useThresholdTax(config.medicareSupplementalTaxThreshold, -1 * config.medicareSupplementalTaxRate);
+};
+
+export const useThresholdTax = (threshold: number, taxRate: number) => {
   const currentYear = getLocalDateTime().year;
   const scenarios = useStore(scenarioStore, (x) => x.scenarios[currentYear]);
 
@@ -22,20 +31,15 @@ export const useFutureSocialSecurity = () => {
       (
         (scenarios ?? [])
           .map((x) => {
-            const total =
-              config.socialSecurityTaxRate *
-              Math.max(0, (x.payments.at(-1)?.cumulative ?? 0) - config.socialSecurityLimit);
-            const firstOccurrence = x.payments.find((x) => x.cumulative > config.socialSecurityLimit)?.payedOn;
+            const total = taxRate * Math.max(0, (x.payments.at(-1)?.cumulative ?? 0) - threshold);
+            const firstOccurrence = x.payments.find((x) => x.cumulative > threshold)?.payedOn;
             const remaining = x.payments
               .slice(x.currentPaymentIdx)
-              .filter((x) => x.cumulative >= config.socialSecurityLimit)
+              .filter((x) => x.cumulative >= threshold)
               .reduce((acc, curr) => {
-                return (
-                  acc +
-                  Math.min(curr.value, curr.cumulative - config.socialSecurityLimit) * config.socialSecurityTaxRate
-                );
+                return acc + Math.min(curr.value, curr.cumulative - threshold) * taxRate;
               }, 0);
-            const perPaycheck = total && config.socialSecurityTaxRate * (x.payments.at(-1)?.value ?? 0);
+            const perPaycheck = total && taxRate * (x.payments.at(-1)?.value ?? 0);
 
             return {
               total,
@@ -58,7 +62,7 @@ export const useFutureSocialSecurity = () => {
         }
         return acc;
       }, {} as Partial<Record<"min" | "max", SocialSecurity>>),
-    [config.socialSecurityLimit, config.socialSecurityTaxRate, scenarios]
+    [threshold, taxRate, scenarios]
   );
   console.log(data);
   return data;

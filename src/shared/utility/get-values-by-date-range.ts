@@ -1,6 +1,11 @@
-import { TimeSpanValue } from "capabilities/projected-wealth/hooks/use-projected-pay";
 import { DateTime } from "luxon";
 import { AccountData } from "shared/models/account-data";
+
+export interface TimeSpanValue {
+  start: DateTime;
+  end: DateTime;
+  value: number;
+}
 
 export const valueByDateRange = (account: AccountData[]): TimeSpanValue[] => {
   return account.map((x, index, array) => {

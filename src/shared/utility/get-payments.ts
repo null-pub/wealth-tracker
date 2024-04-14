@@ -1,6 +1,5 @@
 import { differenceInBusinessDays } from "date-fns/differenceInBusinessDays";
 import { DateTime } from "luxon";
-import { ProjectedPay } from "capabilities/projected-wealth/hooks/use-projected-pay";
 import { aPayday } from "./a-payday";
 import { DateRangesOverlap } from "./date-ranges-overlap";
 import { getPayPeriods } from "./get-pay-periods";
@@ -11,6 +10,12 @@ export interface PaymentPeriod {
   payedOn: string;
   value: number;
   cumulative: number;
+}
+
+export interface ProjectedPay {
+  start: DateTime<true> | DateTime<false>;
+  end: DateTime<true> | DateTime<false>;
+  value: number;
 }
 
 export function getPayments(startDate: DateTime, endDate: DateTime, pay: ProjectedPay[]): PaymentPeriod[] {

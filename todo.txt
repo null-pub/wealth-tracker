@@ -1,6 +1,6 @@
 projected wealth: 
-   use scenarios for social security and medicare
    use scenarios for table
+   fix layout when small
 
 
 net wealth 

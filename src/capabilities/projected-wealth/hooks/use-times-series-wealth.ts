@@ -7,10 +7,9 @@ import { findNearestOnOrBefore } from "shared/utility/find-nearest-on-or-before"
 import { calcEquity, calcLoanBalance } from "shared/utility/mortgage-calc";
 import { useEarliestAccountEntry } from "./use-earliest-account-entry";
 import { useFutureBonuses } from "./use-future-bonuses";
-import { useFutureMedicareTax } from "./use-future-medicare-tax";
 import { useFutureRetirementContributions } from "./use-future-retirement-contributions";
 import { useFutureSavings } from "./use-future-savings";
-import { useFutureSocialSecurity } from "./use-future-social-security";
+import { useFutureMedicareTax, useFutureSocialSecurity } from "./use-future-social-security";
 
 export interface TimeSeriesWealth {
   graphDate: Date;
@@ -25,6 +24,7 @@ export const useTimeSeriesWealth = () => {
   const earliest = useEarliestAccountEntry();
   const accounts = useStore(store, (x) => x.wealth);
   const bonuses = useFutureBonuses();
+
   const savings = useFutureSavings();
   const ssiTaxValue = useFutureSocialSecurity();
   const medicareTaxValue = useFutureMedicareTax();
@@ -40,7 +40,7 @@ export const useTimeSeriesWealth = () => {
       savings.remaining +
       retirementContribution.remaining +
       (ssiTaxValue.min?.remaining ?? 0) +
-      medicareTaxValue.remaining;
+      (medicareTaxValue?.min?.remaining ?? 0);
 
     const dates = new Array(localDateTime.year + 2 - earliest.year)
       .fill(earliest.year)
@@ -103,7 +103,7 @@ export const useTimeSeriesWealth = () => {
     savings.remaining,
     retirementContribution.remaining,
     ssiTaxValue.min,
-    medicareTaxValue.remaining,
+    medicareTaxValue.min,
     localDateTime,
     accounts,
   ]);

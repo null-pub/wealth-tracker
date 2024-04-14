@@ -1,7 +1,7 @@
 import { useStore } from "@tanstack/react-store";
 import { useMemo } from "react";
 import { scenarioStore } from "shared/store/scenario-store";
-import { ckmeans } from "simple-statistics";
+import { ckmeans, median } from "simple-statistics";
 
 const clusterTitle = (index: number, length: number) => {
   if (length === 1) {
@@ -16,6 +16,7 @@ const clusterTitle = (index: number, length: number) => {
 export interface Cluster {
   min: number;
   max: number;
+  median: number;
   probability: number;
   title: string;
 }
@@ -28,6 +29,7 @@ const clusters = (values?: number[]): Cluster[] => {
     return {
       min: Math.min(...x),
       max: Math.max(...x),
+      median: median(x),
       probability: x.length / values.length,
       title: clusterTitle(i, arr.length),
     };
