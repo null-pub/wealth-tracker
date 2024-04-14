@@ -13,6 +13,7 @@ import { TimeSeriesWealth } from "../../hooks/use-times-series-wealth";
 export const columnConfig: ColDef<TimeSeriesWealth>[] = [
   {
     headerName: "Date",
+    colId: "date",
     sort: "desc",
     valueFormatter: (x) => x.value?.toFormat(shortDate),
     valueGetter: (x) => x.data?.date,
@@ -45,12 +46,14 @@ export const columnConfig: ColDef<TimeSeriesWealth>[] = [
   {
     type: "numericColumn",
     headerName: "Wealth",
+    colId: "wealth",
     valueGetter: (x) => x.data?.wealth,
     cellRenderer: (x: ICellRendererParams<unknown, number>) => {
       return x.value && <Cash value={x.value} placement="left" />;
     },
   },
   {
+    colId: "yoy-cash",
     type: "numericColumn",
     headerName: "YoY ($)",
     valueGetter: (x) => x.data?.yoyCash,
@@ -59,11 +62,13 @@ export const columnConfig: ColDef<TimeSeriesWealth>[] = [
     },
   },
   {
+    colId: "yoy-percent",
     type: "numericColumn",
     headerName: "YoY (%)",
     valueGetter: (x) => x.data?.yoyPct,
     cellRenderer: (x: ICellRendererParams<unknown, number>) => {
       return x.value && <Percent value={x.value} />;
     },
+    minWidth: 60,
   },
 ];

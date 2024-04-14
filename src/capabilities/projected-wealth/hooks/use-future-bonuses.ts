@@ -18,16 +18,13 @@ export const useFutureBonuses = () => {
       [
         [
           dates.meritBonus,
-          scaleCluster(findMostMostLikely(clusters.meritBonus), config.bonusWitholdingsRate)?.median ?? 0,
+          scaleCluster(findMostMostLikely(clusters.meritBonus), 1 - config.bonusWitholdingsRate)?.median ?? 0,
         ],
         [
           dates.companyBonus,
-          scaleCluster(findMostMostLikely(clusters.companyBonus), config.bonusWitholdingsRate)?.median ?? 0,
+          scaleCluster(findMostMostLikely(clusters.companyBonus), 1 - config.bonusWitholdingsRate)?.median ?? 0,
         ],
-        [
-          dates.retirementBonus,
-          scaleCluster(findMostMostLikely(clusters.retirementBonus), config.bonusWitholdingsRate)?.median ?? 0,
-        ],
+        [dates.retirementBonus, findMostMostLikely(clusters.retirementBonus)?.median ?? 0],
       ] as [DateTime, number][]
     )
       .map(([payedOn, amount]) => (local < payedOn ? amount : 0))

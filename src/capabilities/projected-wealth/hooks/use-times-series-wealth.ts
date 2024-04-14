@@ -52,19 +52,18 @@ export const useTimeSeriesWealth = () => {
     return dates
       .map((date, idx, arr) => {
         const isLast = idx === arr.length - 1;
-        const accountWealth = Object.values(accounts)
-          .map((x) => {
-            if (x.type === "mortgage" && x.loan) {
-              const houseValue = findNearestOnOrBefore(date, x.data);
-              const balance = calcLoanBalance(date, x.loan);
-              return calcEquity(x.loan.ownershipPct, houseValue?.value, balance, x.loan.principal);
-            } else if (x.type === "account") {
-              const entry = findNearestOnOrBefore(date, x.data);
-              return entry?.value ?? 0;
-            }
-            return 0;
-          })
-          .reduce((acc, curr) => acc + curr, 0);
+        const accountsWealth = Object.values(accounts).map((x) => {
+          if (x.type === "mortgage" && x.loan) {
+            const houseValue = findNearestOnOrBefore(date, x.data);
+            const balance = calcLoanBalance(date, x.loan);
+            return calcEquity(x.loan.ownershipPct, houseValue?.value, balance, x.loan.principal);
+          } else if (x.type === "account") {
+            const entry = findNearestOnOrBefore(date, x.data);
+            return entry?.value ?? 0;
+          }
+          return 0;
+        });
+        const accountWealth = accountsWealth.reduce((acc, curr) => acc + curr, 0);
 
         return {
           date,

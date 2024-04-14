@@ -67,6 +67,6 @@ const useThresholdTax = (threshold: number, taxRate: number) => {
       ),
     [threshold, taxRate, scenarios]
   );
-  console.log(data);
+
   return data;
 };
