@@ -39,7 +39,7 @@ export const useTimeSeriesWealth = () => {
       bonuses +
       savings.remaining +
       retirementContribution.remaining +
-      ssiTaxValue.remaining +
+      (ssiTaxValue.min?.remaining ?? 0) +
       medicareTaxValue.remaining;
 
     const dates = new Array(localDateTime.year + 2 - earliest.year)
@@ -102,7 +102,7 @@ export const useTimeSeriesWealth = () => {
     bonuses,
     savings.remaining,
     retirementContribution.remaining,
-    ssiTaxValue.remaining,
+    ssiTaxValue.min,
     medicareTaxValue.remaining,
     localDateTime,
     accounts,
