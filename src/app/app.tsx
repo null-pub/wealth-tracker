@@ -1,5 +1,6 @@
-import DeleteForever from "@mui/icons-material/DeleteForever";
 import CloseIcon from "@mui/icons-material/Close";
+import DeleteForever from "@mui/icons-material/DeleteForever";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { Box, Button, IconButton, Modal, Paper, Stack, Tab, Tabs, Typography } from "@mui/material";
 import { NetWealth } from "capabilities/net-wealth";
 import { ProjectedIncome } from "capabilities/projected-income";
@@ -12,9 +13,8 @@ import { useStoreDataError } from "shared/hooks/use-store-data-error";
 import { resetStore } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { shortDate } from "shared/utility/format-date";
-import InvalidDataDialog from "./invalid-data-dialog";
-import SettingsIcon from "@mui/icons-material/Settings";
 import { Config } from "./config";
+import InvalidDataDialog from "./invalid-data-dialog";
 
 export const App = () => {
   const [tab, setTab] = useState<string>("projected-wealth");

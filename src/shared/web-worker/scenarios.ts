@@ -1,13 +1,13 @@
 import { DateTime } from "luxon";
+import { Scenario } from "shared/models/scenario";
+import { AccountData, ProjectedIncome } from "shared/models/store/current";
+import { getLocalDateTime } from "shared/utility/current-date";
+import { findNearestIdxOnOrBefore } from "shared/utility/find-nearest-on-or-before";
 import { findSameYear } from "shared/utility/find-same-year";
 import { getPayments } from "shared/utility/get-payments";
-import { incomeByRange } from "shared/utility/income-by-range";
-import { AccountData, ProjectedIncome } from "shared/models/store/current";
-import { getEmptyMeritSequence, getMeritSequence } from "./merit-sequence";
 import { valueByDateRange } from "shared/utility/get-values-by-date-range";
-import { Scenario } from "shared/models/scenario";
-import { findNearestIdxOnOrBefore } from "shared/utility/find-nearest-on-or-before";
-import { getLocalDateTime } from "shared/utility/current-date";
+import { incomeByRange } from "shared/utility/income-by-range";
+import { getEmptyMeritSequence, getMeritSequence } from "./merit-sequence";
 
 const getRealDate = (year: number | undefined, data: AccountData[]) => {
   if (!year) {

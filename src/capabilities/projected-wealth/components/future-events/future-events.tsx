@@ -1,5 +1,7 @@
 import { Box, Stack } from "@mui/system";
+import { useStore } from "@tanstack/react-store";
 import { Value } from "capabilities/projected-income/components/value";
+import { Cluster, useClusters } from "capabilities/projected-income/hooks/use-gradient";
 import { useFutureRetirementContributions } from "capabilities/projected-wealth/hooks/use-future-retirement-contributions";
 import { useFutureSavings } from "capabilities/projected-wealth/hooks/use-future-savings";
 import {
@@ -7,19 +9,17 @@ import {
   useFutureSocialSecurity,
 } from "capabilities/projected-wealth/hooks/use-future-social-security";
 import { DateTime } from "luxon";
+import { useMemo } from "react";
+import { Card } from "shared/components/card";
 import { Cash } from "shared/components/formatters/cash";
+import { ClusterValues } from "shared/components/formatters/cluster-value";
+import { DateValue } from "shared/components/formatters/date";
 import { Duration } from "shared/components/formatters/duration";
 import { useDates } from "shared/hooks/use-dates";
+import { store } from "shared/store";
+import { ExpectedValue, scaleClusters } from "shared/utility/cluster-helpers";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { monthDay } from "shared/utility/format-date";
-import { ClusterValues } from "shared/components/formatters/cluster-value";
-import { Cluster, useClusters } from "capabilities/projected-income/hooks/use-gradient";
-import { Card } from "shared/components/card";
-import { scaleClusters, ExpectedValue } from "shared/utility/cluster-helpers";
-import { useStore } from "@tanstack/react-store";
-import { store } from "shared/store";
-import { useMemo } from "react";
-import { DateValue } from "shared/components/formatters/date";
 
 const isFuture = (date: DateTime) => date.diffNow("milliseconds").milliseconds > 0;
 

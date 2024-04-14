@@ -1,10 +1,10 @@
-import { store } from "shared/store";
-import { scenarioStore } from "../store/scenario-store";
-import { create } from "mutative";
-import { getLocalDateTime } from "shared/utility/current-date";
 import { DateTime } from "luxon";
-import { getScenarioSize } from "./merit-sequence";
+import { create } from "mutative";
 import { Scenario } from "shared/models/scenario";
+import { store } from "shared/store";
+import { getLocalDateTime } from "shared/utility/current-date";
+import { scenarioStore } from "../store/scenario-store";
+import { getScenarioSize } from "./merit-sequence";
 
 const currentYear = getLocalDateTime().year;
 const maxYear = (() => {

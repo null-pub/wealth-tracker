@@ -25,7 +25,7 @@ export const useGraphData = () => {
           acc["date"] = date.toJSDate();
           return acc;
         },
-        { total: 0 } as Record<string, number | Date | null>,
+        { total: 0 } as Record<string, number | Date | null>
       );
     });
 

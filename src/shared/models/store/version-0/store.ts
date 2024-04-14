@@ -1,7 +1,7 @@
-import { projectedIncome } from "./projected-income";
-import { projectedWealth } from "./projected-wealth";
 import { z } from "zod";
 import { wealth } from "./net-wealth";
+import { projectedIncome } from "./projected-income";
+import { projectedWealth } from "./projected-wealth";
 
 export const storeValidator = z.object({
   wealth: wealth,

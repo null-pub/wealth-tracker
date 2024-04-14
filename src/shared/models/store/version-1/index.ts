@@ -5,5 +5,5 @@ export * from "../version-0/mortgage";
 export * from "../version-0/net-wealth";
 export * from "../version-0/projected-income";
 export * from "../version-0/projected-wealth";
-export * from "./store";
 export * from "./get-default";
+export * from "./store";

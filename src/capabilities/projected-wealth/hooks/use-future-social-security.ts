@@ -1,9 +1,9 @@
 import { useStore } from "@tanstack/react-store";
+import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { store } from "shared/store";
 import { scenarioStore } from "shared/store/scenario-store";
 import { getLocalDateTime } from "shared/utility/current-date";
-import { DateTime } from "luxon";
 
 interface SocialSecurity {
   total: number;
@@ -49,19 +49,22 @@ const useThresholdTax = (threshold: number, taxRate: number) => {
             };
           })
           .filter((x) => x.firstOccurrence) as SocialSecurity[]
-      ).reduce((acc, curr, i) => {
-        if (i == 0) {
-          return { min: curr, max: curr };
-        } else {
-          if (curr.total < acc.min!.total) {
-            acc.min = curr;
+      ).reduce(
+        (acc, curr, i) => {
+          if (i == 0) {
+            return { min: curr, max: curr };
+          } else {
+            if (curr.total < acc.min!.total) {
+              acc.min = curr;
+            }
+            if (curr.total > acc.max!.total) {
+              acc.max = curr;
+            }
           }
-          if (curr.total > acc.max!.total) {
-            acc.max = curr;
-          }
-        }
-        return acc;
-      }, {} as Partial<Record<"min" | "max", SocialSecurity>>),
+          return acc;
+        },
+        {} as Partial<Record<"min" | "max", SocialSecurity>>
+      ),
     [threshold, taxRate, scenarios]
   );
   console.log(data);

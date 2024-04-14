@@ -1,6 +1,5 @@
 import { create } from "mutative";
-import { Loan } from "shared/models/store/current";
-import { Mortgage } from "shared/models/store/current";
+import { Loan, Mortgage } from "shared/models/store/current";
 import { store } from "./store";
 
 export const setLoan = (accountName: string, loan: Loan) =>

@@ -1,8 +1,8 @@
 import { useStore } from "@tanstack/react-store";
 import { useMemo } from "react";
 import { store } from "shared/store";
-import { getLocalDateTime } from "shared/utility/current-date";
 import { scenarioStore } from "shared/store/scenario-store";
+import { getLocalDateTime } from "shared/utility/current-date";
 
 export const useFutureRetirementContributions = () => {
   const currentYear = getLocalDateTime().year;

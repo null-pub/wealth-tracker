@@ -1,22 +1,22 @@
+import { Alert, CircularProgress, Tooltip } from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useMemo, useState } from "react";
+import { Card } from "shared/components/card";
+import { Cash } from "shared/components/formatters/cash";
+import { ClusterValues } from "shared/components/formatters/cluster-value";
 import { Duration } from "shared/components/formatters/duration";
 import { useDateRanges, useDates } from "shared/hooks/use-dates";
+import { IncomePerPeriod } from "shared/models/IncomePerPeriod";
+import { scenarioStore } from "shared/store/scenario-store";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { Layout } from "./components/data-entry/data-entry";
-import { useClusters } from "./hooks/use-gradient";
-import { Alert, CircularProgress, Tooltip } from "@mui/material";
-import { Cash } from "shared/components/formatters/cash";
-import { Value } from "./components/value";
 import { IncomePerPeriodTooltip } from "./components/income-per-period";
+import { Value } from "./components/value";
+import { useClusters } from "./hooks/use-gradient";
 import { useHasMeritPairs } from "./hooks/use-has-merit-pairs";
-import { IncomePerPeriod } from "shared/models/IncomePerPeriod";
-import { Card } from "shared/components/card";
-import { ClusterValues } from "shared/components/formatters/cluster-value";
-import { scenarioStore } from "shared/store/scenario-store";
 
 export const ProjectedIncome = () => {
   const [selectedYear, setSelectedYear] = useState(getLocalDateTime().year);
@@ -52,15 +52,18 @@ export const ProjectedIncome = () => {
       }) ?? [];
 
     return payPeriods
-      .reduceRight((acc, curr) => {
-        if (acc[0]?.[0]?.value === curr.value) {
-          acc[0].unshift(curr);
-        } else {
-          acc.unshift([curr]);
-        }
+      .reduceRight(
+        (acc, curr) => {
+          if (acc[0]?.[0]?.value === curr.value) {
+            acc[0].unshift(curr);
+          } else {
+            acc.unshift([curr]);
+          }
 
-        return acc;
-      }, [] as (typeof payPeriods)[])
+          return acc;
+        },
+        [] as (typeof payPeriods)[]
+      )
       .reduce((acc, curr) => {
         acc.push({
           start: DateTime.fromISO(curr[0].payedOn),

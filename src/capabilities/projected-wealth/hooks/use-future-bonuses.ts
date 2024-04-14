@@ -1,10 +1,10 @@
+import { useStore } from "@tanstack/react-store";
+import { useClusters } from "capabilities/projected-income/hooks/use-gradient";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { useDates } from "shared/hooks/use-dates";
-import { useClusters } from "capabilities/projected-income/hooks/use-gradient";
-import { findMostMostLikely, scaleCluster } from "shared/utility/cluster-helpers";
-import { useStore } from "@tanstack/react-store";
 import { store } from "shared/store";
+import { findMostMostLikely, scaleCluster } from "shared/utility/cluster-helpers";
 
 export const useFutureBonuses = () => {
   const local = DateTime.local();

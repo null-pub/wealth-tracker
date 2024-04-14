@@ -63,7 +63,7 @@ export const WealthChart = () => {
       ],
       series,
     }),
-    [data, series],
+    [data, series]
   );
   return <AgChartsReact options={options} />;
 };

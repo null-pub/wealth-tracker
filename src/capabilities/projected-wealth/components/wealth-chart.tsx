@@ -41,7 +41,7 @@ export const WealthChart = () => {
       theme: "ag-default-dark",
       title: {
         text: `${data[data.length - 1].date.toFormat(shortDate)} Projected wealth ${formatCashShort(
-          (data[data.length - 1]?.wealth ?? 0) as number,
+          (data[data.length - 1]?.wealth ?? 0) as number
         )}`,
       },
       data,
@@ -61,7 +61,7 @@ export const WealthChart = () => {
       ],
       series,
     }),
-    [data, series],
+    [data, series]
   );
   return <AgChartsReact options={options} />;
 };

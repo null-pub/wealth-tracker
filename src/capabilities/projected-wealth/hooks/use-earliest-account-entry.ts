@@ -13,6 +13,6 @@ export const useEarliestAccountEntry = () => {
         }
         return getLocalDateTime();
       })
-      .reduce((acc, curr) => Math.min(acc, curr?.toMillis() ?? Infinity), getLocalDateTime().toMillis()),
+      .reduce((acc, curr) => Math.min(acc, curr?.toMillis() ?? Infinity), getLocalDateTime().toMillis())
   );
 };
