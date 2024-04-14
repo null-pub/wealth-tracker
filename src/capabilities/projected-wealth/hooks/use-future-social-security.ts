@@ -18,7 +18,13 @@ export const useFutureSocialSecurity = (year: number): TresholdTax => {
 
 export const useFutureMedicareTax = (year: number): TresholdTax => {
   const config = useStore(store, (x) => x.projectedWealth);
-  return useThresholdTax(year, config.medicareSupplementalTaxThreshold, -1 * config.medicareSupplementalTaxRate);
+  const taxes = useThresholdTax(year, config.medicareSupplementalTaxThreshold, -1 * config.medicareSupplementalTaxRate);
+  return useMemo(() => {
+    return {
+      min: taxes.max,
+      max: taxes.min,
+    };
+  }, [taxes]);
 };
 
 export type TresholdTax = Partial<Record<"min" | "max", ThresholdTaxData>>;

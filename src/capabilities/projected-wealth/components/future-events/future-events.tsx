@@ -109,8 +109,8 @@ export const FutureEvents = (props: { year: number; onChange: (year: number) => 
         {isFuture(dates.retirementBonus) && (
           <ClusterCard title="Retirement Bonus" date={dates.retirementBonus} cluster={clusters.retirementBonus} />
         )}
-        {!!socialSecurity.min && <ThresholdTaxCard thresholdTax={socialSecurity} />}
-        {!!medicare.min && <ThresholdTaxCard thresholdTax={medicare} />}
+        {!!socialSecurity.min && <ThresholdTaxCard thresholdTax={socialSecurity} title={"Social Security Limit"} />}
+        {!!medicare.min && <ThresholdTaxCard thresholdTax={medicare} title={"Medicare Supplmental Tax"} />}
 
         <Card title={"Savings & Retirement"}>
           {!!savings.perMonth && (
@@ -132,13 +132,13 @@ export const FutureEvents = (props: { year: number; onChange: (year: number) => 
   );
 };
 
-const ThresholdTaxCard = (props: { thresholdTax: TresholdTax }) => {
-  const { thresholdTax } = props;
+const ThresholdTaxCard = (props: { thresholdTax: TresholdTax; title: string }) => {
+  const { thresholdTax, title } = props;
   return (
     <Card
       title={
         <Box display={"flex"} width={"max-content"} gap={1} marginRight={2}>
-          <span>Social Security Limit</span>
+          <span>{title}</span>
 
           <CountDown dateFormat={monthDay} variant="date" dateTime={thresholdTax.max?.firstOccurrence} />
           {thresholdTax.min &&
