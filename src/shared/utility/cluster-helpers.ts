@@ -16,6 +16,9 @@ export const ExpectedValue = (Clusers: Cluster[][]) => {
   return [
     Clusers.reduce(
       (acc, curr) => {
+        if (curr.length === 0) {
+          return acc;
+        }
         const mostLikely = curr.reduce((acc, curr) => {
           return acc.probability > curr.probability ? acc : curr;
         });
@@ -24,7 +27,6 @@ export const ExpectedValue = (Clusers: Cluster[][]) => {
         acc.min += mostLikely.min;
         return acc;
       },
-
       { min: 0, max: 0, title: "Actual", probability: 0 }
     ),
   ];
