@@ -89,7 +89,7 @@ export const useTimeSeriesWealth = (year: number) => {
         };
       })
       .map((x, idx, arr) => {
-        if (x.date <= localDateTime) {
+        if (x.date <= localDateTime || x.date.year === localDateTime.year + 2) {
           const benchmarkWealth = arr[idx - 1]?.wealth;
           if (!benchmarkWealth) {
             return x;
