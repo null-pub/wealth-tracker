@@ -21,18 +21,23 @@ export const CountDown = (props: DurationProps) => {
     if (variant === "countdown") {
       const diff = dateTime?.diff(getLocalDateTime(), ["years", "months", "days", "hours"]);
 
-      return toHuman(diff, "days").replaceAll(",", "");
+      return toHuman(diff, "days");
     }
 
     return dateTime?.toFormat(dateFormat);
   }, [dateFormat, dateTime, variant]);
 
   const tooltipStr = useMemo(() => {
+    if (!dateTime) {
+      return "??";
+    }
+
     if (variant === "countdown") {
       return dateTime?.toFormat(dateFormat);
     }
+    const diff = dateTime?.diff(getLocalDateTime(), ["years", "months", "days", "hours"]);
 
-    return dateTime?.diffNow(["months", "days", "hours"]).toFormat("d 'days'");
+    return toHuman(diff, "days");
   }, [dateFormat, dateTime, variant]);
 
   const countDownColor = useMemo(() => {
@@ -43,7 +48,7 @@ export const CountDown = (props: DurationProps) => {
     const days = dateTime.diffNow("days").days;
     if (days < 30) {
       return "green";
-    } else if (days < 60) {
+    } else if (days <= 60) {
       return "yellow";
     }
 

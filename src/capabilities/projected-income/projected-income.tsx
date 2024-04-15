@@ -13,6 +13,7 @@ import { useDateRanges, useDates } from "shared/hooks/use-dates";
 import { IncomePerPeriod } from "shared/models/IncomePerPeriod";
 import { scenarioStore } from "shared/store/scenario-store";
 import { getLocalDateTime } from "shared/utility/current-date";
+import { monthDay } from "shared/utility/format-date";
 import { Layout } from "./components/data-entry/data-entry";
 import { IncomePerPeriodTooltip } from "./components/income-per-period";
 import { useClusters } from "./hooks/use-gradient";
@@ -86,7 +87,7 @@ export const ProjectedIncome = () => {
             title={
               <Box display="flex" alignItems={"center"} gap={2} width={"100%"}>
                 <span>Income</span>
-                <CountDown dateTime={dates.companyBonus} />
+                <CountDown dateTime={dates.companyBonus} variant="date" dateFormat={monthDay} />
                 <Box sx={{ display: "flex", marginLeft: "auto", alignItems: "center", flexWrap: "wrap" }}>
                   {scenarios.loading && <CircularProgress style={{ width: 20, height: 20 }} />}
                 </Box>
@@ -116,7 +117,7 @@ export const ProjectedIncome = () => {
             title={
               <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
                 <span>Paycheck</span>
-                <CountDown dateTime={dates.meritIncrease} />
+                <CountDown dateTime={dates.meritIncrease} variant="date" dateFormat={monthDay} />
               </Box>
             }
           >
@@ -149,7 +150,7 @@ export const ProjectedIncome = () => {
             title={
               <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
                 <span>Merit Increase</span>
-                <CountDown dateTime={dates.meritIncrease} />
+                <CountDown dateTime={dates.meritIncrease} variant="date" dateFormat={monthDay} />
               </Box>
             }
           >
@@ -160,7 +161,7 @@ export const ProjectedIncome = () => {
             title={
               <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
                 <span>Merit Bonus</span>
-                <CountDown dateTime={dates.meritBonus} />
+                <CountDown dateTime={dates.meritBonus} variant="date" dateFormat={monthDay} />
               </Box>
             }
           >
@@ -170,7 +171,7 @@ export const ProjectedIncome = () => {
             title={
               <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
                 <span>Company Bonus</span>
-                <CountDown dateTime={dates.companyBonus} />
+                <CountDown dateTime={dates.companyBonus} variant="date" dateFormat={monthDay} />
               </Box>
             }
           >
@@ -180,7 +181,7 @@ export const ProjectedIncome = () => {
             title={
               <Box display={"flex"} width={"max-content"} gap={2} marginRight={2}>
                 <span>Retirement Bonus</span>
-                <CountDown dateTime={dates.retirementBonus} />
+                <CountDown dateTime={dates.retirementBonus} variant="date" dateFormat={monthDay} />
               </Box>
             }
           >

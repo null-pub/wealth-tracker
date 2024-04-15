@@ -10,5 +10,5 @@ export function toHuman(dur: Duration, smallestUnit: DurationUnit = "seconds"): 
       .toObject()
   ).filter(([, amount], idx) => amount > 0 && idx <= smallestIdx);
   const dur2 = Duration.fromObject(entries.length === 0 ? { [smallestUnit]: 0 } : Object.fromEntries(entries));
-  return dur2.toHuman();
+  return dur2.toHuman().replaceAll(",", "");
 }
