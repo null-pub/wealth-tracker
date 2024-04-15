@@ -3,6 +3,7 @@ import { DateTime } from "luxon";
 import { ReactNode, useMemo } from "react";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { shortDate } from "shared/utility/format-date";
+import { toHuman } from "shared/utility/to-human";
 
 interface DurationProps {
   dateTime?: DateTime;
@@ -19,11 +20,8 @@ export const CountDown = (props: DurationProps) => {
     }
     if (variant === "countdown") {
       const diff = dateTime?.diff(getLocalDateTime(), ["years", "months", "days", "hours"]);
-      const format = `${diff.years > 0 ? "y 'years' " : ""}${diff.months > 0 ? "M 'months' " : ""}${
-        diff.days > 0 && diff.months == 0 && diff.years === 0 ? "d 'days'" : ""
-      }${diff.hours > 0 && diff.days === 0 && diff.months === 0 && diff.years === 0 ? "h 'hours'" : ""}`;
 
-      return diff?.toFormat(format);
+      return toHuman(diff, "days").replaceAll(",", "");
     }
 
     return dateTime?.toFormat(dateFormat);
