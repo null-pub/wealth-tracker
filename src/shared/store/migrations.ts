@@ -27,5 +27,7 @@ export const migration = (data: unknown) => {
     }
   }
 
-  return storeValidator.parse(data);
+  const next = storeValidator.parse(data);
+  console.log(next);
+  return next;
 };
