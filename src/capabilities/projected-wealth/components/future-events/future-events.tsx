@@ -159,10 +159,10 @@ const ThresholdTaxCard = (props: { thresholdTax: TresholdTax; title: string }) =
       )}
       {thresholdTax.max && thresholdTax.max.total !== thresholdTax.min?.total && (
         <>
-          <Value title={"Early"}>
+          <Value title={thresholdTax.max.firstOccurrence > getLocalDateTime() ? "Early" : "Low"}>
             <Cash value={thresholdTax.max?.remaining} compact={false} />
           </Value>
-          <Value title={"Late"}>
+          <Value title={thresholdTax.max.firstOccurrence > getLocalDateTime() ? "Late" : "High"}>
             <Cash value={thresholdTax.min?.total} compact={false} />
           </Value>
         </>
