@@ -160,6 +160,7 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
       end: dates.meritBonus.toISO()!,
       payedOn: dates.meritBonus.toISO()!,
       cumulative: 0,
+      type: "bonus",
     });
 
     const payBeforeCompanyBonus = findNearestIdxOnOrBefore(dates.companyBonus, x.payments, (x) =>
@@ -171,6 +172,7 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
       end: dates.companyBonus.toISO()!,
       payedOn: dates.companyBonus.toISO()!,
       cumulative: 0,
+      type: "bonus",
     });
     const taxablePay = Math.round([basePay, meritBonus, companyBonus].reduce((acc, curr) => acc + curr, 0));
 

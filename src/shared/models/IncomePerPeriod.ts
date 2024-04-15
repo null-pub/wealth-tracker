@@ -6,4 +6,5 @@ export type IncomePerPeriod = {
   start: DateTime;
   end: DateTime;
   value: number;
+  type: "regular" | "bonus";
 };

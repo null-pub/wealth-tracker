@@ -19,6 +19,7 @@ export interface Scenario {
     payedOn: string;
     value: number;
     cumulative: number;
+    type: "regular" | "bonus";
   }[];
   equityIncreasePct: number;
   retirementBonusPct: number;

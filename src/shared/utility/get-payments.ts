@@ -10,6 +10,7 @@ export interface PaymentPeriod {
   payedOn: string;
   value: number;
   cumulative: number;
+  type: "regular" | "bonus";
 }
 
 interface ProjectedPay {
@@ -41,6 +42,7 @@ export function getPayments(startDate: DateTime, endDate: DateTime, pay: Project
       start: payPeriod.start.toISO()!,
       end: payPeriod.end.toISO()!,
       payedOn: payPeriod.payedOn.toISO()!,
+      type: "regular",
     };
   });
 }

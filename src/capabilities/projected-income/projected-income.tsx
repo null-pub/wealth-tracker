@@ -53,6 +53,7 @@ export const ProjectedIncome = () => {
       }) ?? [];
 
     return payPeriods
+      .filter((x) => x.type !== "bonus")
       .reduceRight(
         (acc, curr) => {
           if (acc[0]?.[0]?.value === curr.value) {
@@ -72,7 +73,9 @@ export const ProjectedIncome = () => {
           value: curr.reduce((acc, curr) => acc + curr.value, 0),
           perPayday: curr[0].value,
           count: curr.length,
+          type: curr[0].type,
         });
+
         return acc;
       }, [] as IncomePerPeriod[]);
   }, [clusters.pay.length, clusters.scenarios, dateRanges.base.end, dateRanges.base.start]);
@@ -124,6 +127,7 @@ export const ProjectedIncome = () => {
             <ClusterValues clusters={clusters.pay} eventDate={dates.meritIncrease} compact={false} />
             {basePay && (
               <Tooltip
+                placement="right"
                 componentsProps={{
                   tooltip: {
                     sx: {
