@@ -31,7 +31,7 @@ export const createAccountColumnConfig = (accountName: string): ColDef<AccountDa
       return (
         <Button
           onClick={() => {
-            props.data && removeAccountEntry(accountName, props.data?.id);
+            props.data && removeAccountEntry(accountName, props.data);
           }}
           color="error"
           fullWidth

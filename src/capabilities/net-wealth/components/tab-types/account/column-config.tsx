@@ -20,7 +20,7 @@ export const createAccountColumnConfig = (accountName: string): ColDef<AccountDa
     valueSetter: (x) => {
       const date = DateTime.fromJSDate(x.newValue);
       if (date.isValid) {
-        updateAccountDate(accountName, x.data.id, date);
+        updateAccountDate(accountName, x.data, date);
       }
       return date.isValid;
     },
@@ -29,7 +29,7 @@ export const createAccountColumnConfig = (accountName: string): ColDef<AccountDa
     headerName: "Value",
     valueGetter: (x) => x.data?.value,
     valueSetter: (x) => {
-      updateAccountValue(accountName, x.data.id, +x.newValue);
+      updateAccountValue(accountName, x.data, +x.newValue);
       return true;
     },
     cellRenderer: (x: CustomCellRendererProps<AccountData>) => <Cash value={x.value} placement="left" />,
@@ -47,7 +47,7 @@ export const createAccountColumnConfig = (accountName: string): ColDef<AccountDa
       return (
         <Button
           onClick={() => {
-            props.data && removeAccountEntry(accountName, props.data.id);
+            props.data && removeAccountEntry(accountName, props.data);
           }}
           color="error"
           fullWidth

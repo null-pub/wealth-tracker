@@ -1,7 +1,6 @@
 import { Box, Stack } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useStore } from "@tanstack/react-store";
-import { Value } from "capabilities/projected-income/components/value";
 import { Cluster, useClusters } from "capabilities/projected-income/hooks/use-gradient";
 import { useFutureRetirementContributions } from "capabilities/projected-wealth/hooks/use-future-retirement-contributions";
 import { useFutureSavings } from "capabilities/projected-wealth/hooks/use-future-savings";
@@ -16,6 +15,7 @@ import { Card } from "shared/components/card";
 import { Cash } from "shared/components/formatters/cash";
 import { ClusterValues } from "shared/components/formatters/cluster-value";
 import { CountDown } from "shared/components/formatters/countdown";
+import { Value } from "shared/components/formatters/value";
 import { useDates } from "shared/hooks/use-dates";
 import { store } from "shared/store";
 import { ExpectedValue, scaleClusters } from "shared/utility/cluster-helpers";

@@ -2,7 +2,6 @@ import { DateTime } from "luxon";
 import { create } from "mutative";
 import { TimeSeries } from "shared/models/store/current";
 import { sortByDate } from "shared/utility/sort-by-date";
-import { v4 as uuid } from "uuid";
 import { store } from "./store";
 
 export const addProjectedIncome = (date: DateTime, timeSeries: TimeSeries, value: number) => {
@@ -12,7 +11,6 @@ export const addProjectedIncome = (date: DateTime, timeSeries: TimeSeries, value
         .concat({
           date: date.startOf("day").toString(),
           value,
-          id: uuid(),
         })
         .sort(sortByDate((x) => DateTime.fromISO(x.date), "asc"));
     });

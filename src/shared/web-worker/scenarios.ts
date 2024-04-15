@@ -90,7 +90,6 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
             next.push({
               date: date.toISO()!,
               value: prior.value * (1 + merits[i - initial].meritIncreasePct + equity),
-              id: "",
             });
           }
 

@@ -39,7 +39,7 @@ export const createAccountColumnConfig = (
     valueSetter: (x) => {
       const date = DateTime.fromJSDate(x.newValue);
       if (date.isValid) {
-        updateProjectedIncomeDate(accountName, x.data.id, DateTime.fromJSDate(x.newValue));
+        updateProjectedIncomeDate(accountName, x.data, DateTime.fromJSDate(x.newValue));
       }
       return date.isValid;
     },
@@ -53,7 +53,7 @@ export const createAccountColumnConfig = (
     editable: true,
     cellEditor: "agNumberCellEditor",
     valueSetter: (x) => {
-      updateProjectedIncome(accountName, x.data.id, +x.newValue);
+      updateProjectedIncome(accountName, x.data, +x.newValue);
       return true;
     },
   },
@@ -67,7 +67,7 @@ export const createAccountColumnConfig = (
       return (
         <Button
           onClick={() => {
-            props.data && removeProjectedIncome(accountName, props.data?.id);
+            props.data && removeProjectedIncome(accountName, props.data);
           }}
           color="error"
           fullWidth
