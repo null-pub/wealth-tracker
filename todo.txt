@@ -1,12 +1,3 @@
-
-Projected income
- add new time series with merged columns
-    new input structure
-    company bonus Factor, company bonus cash
-    Merit , Equity, MeritBonus, MeritBonusCash. Does pay belong here too?
-    write migrations
-    
-
 net wealth 
     redesign to make better
 
