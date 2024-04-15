@@ -85,10 +85,10 @@ export const ProjectedIncome = () => {
   return (
     <Box display="flex" flexDirection="row" height="100%" width={"100%"}>
       <Box flex="0 1 auto">
-        {!hasMissingPairs && (
-          <Alert severity="error">Every Merit Increase must have a paired Merit Bonus percent</Alert>
-        )}
         <Stack gap={2} direction={"column"} overflow={"auto"} height="100%" paddingRight={1}>
+          {!hasMissingPairs && (
+            <Alert severity="error">Every Merit Increase must have a paired Merit Bonus percent</Alert>
+          )}
           <Card
             title={
               <Box display="flex" alignItems={"center"} gap={2} width={"100%"}>
