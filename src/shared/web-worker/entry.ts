@@ -14,7 +14,7 @@ const maxYear = (() => {
       return Math.max(currentYear, i - 1);
     }
   }
-  return currentYear + 10;
+  return currentYear + 3;
 })();
 
 const worker = new Worker(new URL("worker.js", import.meta.url), { type: "module" });
@@ -36,12 +36,12 @@ const loadAllScenarios = () => {
   const first = projectedIncome.timeSeries.paycheck[1]?.date;
   const date = first ? DateTime.fromISO(first) : getLocalDateTime();
   const oldestYear = date.year;
-  worker.postMessage({ year: 2024, projectedIncome });
   for (let i = oldestYear; i < currentYear; i++) {
     worker.postMessage({ year: i, projectedIncome });
   }
   for (let i = currentYear; i <= maxYear; i++) {
-    worker.postMessage({ year: i, projectedIncome });
+    const size = getScenarioSize(i, projectedIncome);
+    size < 2499 && size > 0 && worker.postMessage({ year: i, projectedIncome });
   }
 };
 loadAllScenarios();
