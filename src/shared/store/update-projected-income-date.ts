@@ -8,6 +8,10 @@ export const updateProjectedIncomeDate = (timeSeries: TimeSeries, data: AccountD
     const next = create(prev, (next) => {
       const account = next.projectedIncome.timeSeries[timeSeries];
       const idx = account.findIndex((x) => x === data);
+      if (idx < 0) {
+        throw new Error("failed to find data");
+      }
+
       account[idx].date = date.toISO()!;
     });
     return next;

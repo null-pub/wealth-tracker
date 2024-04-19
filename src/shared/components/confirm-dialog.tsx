@@ -23,7 +23,14 @@ export const ConfirmDialog = (props: ConfirmDialogProps) => {
           <Button sx={{ marginRight: "auto" }} onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
-          <Button variant="contained" color="error" onClick={onConfirm}>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              onConfirm?.();
+              setIsOpen(false);
+            }}
+          >
             Confirm
           </Button>
         </DialogActions>

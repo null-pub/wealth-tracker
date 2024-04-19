@@ -1,5 +1,5 @@
 import { useStore } from "@tanstack/react-store";
-import { AgAreaSeriesOptions, AgCartesianChartOptions, AgLineSeriesOptions } from "ag-charts-community";
+import { AgAreaSeriesOptions, AgCartesianChartOptions, AgLineSeriesOptions, time } from "ag-charts-community";
 import { AgChartsReact } from "ag-charts-react";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
@@ -54,6 +54,10 @@ export const WealthChart = () => {
           position: "bottom",
           label: {
             format: "%Y",
+          },
+          nice: false,
+          tick: {
+            interval: time.year.every(1, { snapTo: "start" }),
           },
         },
         {

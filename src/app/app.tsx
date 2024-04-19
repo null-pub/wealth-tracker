@@ -1,96 +1,15 @@
-import CloseIcon from "@mui/icons-material/Close";
-import DeleteForever from "@mui/icons-material/DeleteForever";
-import SettingsIcon from "@mui/icons-material/Settings";
-import { Box, Button, IconButton, Modal, Paper, Stack, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Stack, Tab, Tabs } from "@mui/material";
 import { NetWealth } from "capabilities/net-wealth";
 import { ProjectedIncome } from "capabilities/projected-income";
 import { ProjectedWealth } from "capabilities/projected-wealth";
 import { useState } from "react";
-import { ConfirmDialog } from "shared/components/confirm-dialog";
-import { downloadJson, useExport } from "shared/hooks/use-export";
-import { useImport } from "shared/hooks/use-import";
-import { useStoreDataError } from "shared/hooks/use-store-data-error";
-import { resetStore } from "shared/store";
-import { getLocalDateTime } from "shared/utility/current-date";
-import { shortDate } from "shared/utility/format-date";
-import { Config } from "./config";
-import InvalidDataDialog from "./invalid-data-dialog";
+import { ConfigModal } from "./config/config-modal";
 
 export const App = () => {
   const [tab, setTab] = useState<string>("wealth");
-  const onExport = useExport();
-  const onImport = useImport();
-  const { hadError, parseError, resetError, invalidData } = useStoreDataError();
-  const [error, setError] = useState(parseError);
-  const [isOpen, setIsOpen] = useState(hadError);
-
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   return (
     <>
-      <Modal open={isSettingsOpen} onClose={() => setIsSettingsOpen(false)}>
-        <Paper
-          sx={{
-            padding: 2,
-            width: 600,
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            position: "absolute",
-          }}
-        >
-          <Stack spacing={2}>
-            <Box display={"flex"}>
-              <Typography variant="h5">Configuration</Typography>
-              <IconButton sx={{ marginLeft: "auto" }} onClick={() => setIsSettingsOpen(false)}>
-                <CloseIcon />
-              </IconButton>
-            </Box>
-            <Config />
-          </Stack>
-        </Paper>
-      </Modal>
-      <InvalidDataDialog open={isOpen} error={error}>
-        {hadError && (
-          <>
-            <Button
-              color="error"
-              onClick={() => {
-                setIsOpen(false);
-                resetError?.();
-                resetStore();
-              }}
-            >
-              Reset
-            </Button>
-            <Button
-              onClick={() => {
-                downloadJson(`invalid-data-wealth-tracker-${getLocalDateTime().toFormat(shortDate)}.json`, invalidData);
-              }}
-            >
-              Download Data
-            </Button>
-
-            <Button
-              onClick={() => {
-                setIsOpen(false);
-                resetError?.();
-              }}
-            >
-              Ignore
-            </Button>
-          </>
-        )}
-        {!hadError && (
-          <Button
-            onClick={() => {
-              setIsOpen(false);
-            }}
-          >
-            Cancel
-          </Button>
-        )}
-      </InvalidDataDialog>
       <Box display={"flex"} flexDirection={"column"} height="100%">
         <Box flex="0 1 auto">
           <Stack direction="row">
@@ -100,26 +19,7 @@ export const App = () => {
               <Tab value="projected-wealth" label="Projected Wealth" />
             </Tabs>
             <Box marginLeft={"auto"} gap={2} display={"flex"}>
-              <Button onClick={() => setIsSettingsOpen(true)}>
-                <SettingsIcon />
-              </Button>
-              <Button
-                onClick={() =>
-                  onImport().catch((err) => {
-                    setIsOpen(true);
-                    setError(err);
-                  })
-                }
-              >
-                Import
-              </Button>
-              <Button onClick={onExport}>Export</Button>
-              <ConfirmDialog title="Reset Everything" onConfirm={resetStore}>
-                <Button color="error">
-                  <DeleteForever />
-                  Reset
-                </Button>
-              </ConfirmDialog>
+              <ConfigModal />
             </Box>
           </Stack>
         </Box>

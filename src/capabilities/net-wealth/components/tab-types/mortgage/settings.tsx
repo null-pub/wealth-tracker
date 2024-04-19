@@ -1,6 +1,7 @@
 import Close from "@mui/icons-material/Close";
 import SettingsIcon from "@mui/icons-material/Settings";
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -64,13 +65,13 @@ export const AccountSettings = (props: AccountSettingsProps) => {
         <SettingsIcon />
       </IconButton>
       <Dialog open={isOpen} onClose={handleClose}>
-        <DialogTitle>
-          <Stack direction={"row"} width="100%" alignItems={"center"} justify-content={"space-between"}>
+        <DialogTitle sx={{ width: "100%" }}>
+          <Box display={"flex"} width="100%" alignItems={"center"} sx={{ justifyContent: "space-between" }}>
             <Typography variant="h6">{accountName} Settings</Typography>
-            <IconButton onClick={handleClose}>
+            <IconButton sx={{ marginLeft: "auto" }} onClick={handleClose}>
               <Close />
             </IconButton>
-          </Stack>
+          </Box>
         </DialogTitle>
         <DialogContent>
           <Stack spacing={2} marginTop={1}>

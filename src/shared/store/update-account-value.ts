@@ -7,9 +7,11 @@ export const updateAccountValue = (accountName: string, data: AccountData, value
     const next = create(prev, (next) => {
       const account = next.wealth[accountName];
       const idx = account?.data.findIndex((x) => x === data);
-      if (idx >= 0) {
-        account.data[idx].value = value;
+      if (idx < 0) {
+        throw new Error("failed to find data");
       }
+
+      account.data[idx].value = value;
     });
     return next;
   });

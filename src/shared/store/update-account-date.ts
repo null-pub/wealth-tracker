@@ -8,9 +8,11 @@ export const updateAccountDate = (accountName: string, data: AccountData, date: 
     const next = create(prev, (next) => {
       const account = next.wealth[accountName];
       const idx = account?.data.findIndex((x) => x === data);
-      if (idx >= 0) {
-        account.data[idx].date = date.toISO()!;
+      if (idx < 0) {
+        throw new Error("failed to find data");
       }
+
+      account.data[idx].date = date.toISO()!;
     });
     return next;
   });

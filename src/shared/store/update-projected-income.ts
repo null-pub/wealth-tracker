@@ -7,6 +7,9 @@ export const updateProjectedIncome = (timeSeries: TimeSeries, data: AccountData,
     const next = create(prev, (next) => {
       const account = next.projectedIncome.timeSeries[timeSeries];
       const idx = account.findIndex((x) => x === data);
+      if (idx < 0) {
+        throw new Error("failed to find data");
+      }
       account[idx].value = value;
     });
     return next;

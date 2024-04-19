@@ -43,7 +43,7 @@ export const AccountTab = (props: { accountName: string }) => {
       {missingYears.length > 0 && (
         <Grid xs={12}>
           <Paper elevation={3}>
-            <Alert severity="warning">Ensure an entry for Jan 1st for each year {missingYears.join(", ")}</Alert>
+            <Alert severity="warning">Ensure an entry for Jan 1st for {missingYears.join(", ")}</Alert>
           </Paper>
         </Grid>
       )}

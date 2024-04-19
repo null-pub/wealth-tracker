@@ -19,21 +19,19 @@ export const AccountTabs = () => {
 
   return (
     <Box display="flex" width="100%" height="100%" gap={2}>
-      <Box display={"flex"} flex={"0 1 auto"}>
-        {Object.keys(accounts).length > 0 && (
-          <Tabs
-            orientation="vertical"
-            value={account}
-            onChange={(_, value) => {
-              setAccount(value as string);
-            }}
-          >
-            {Object.keys(accounts).map((account) => {
-              return <Tab key={account} value={account} label={account} />;
-            })}
-            <Tab component={NewAccount} />
-          </Tabs>
-        )}
+      <Box display={"flex"} flexDirection={"column"} flex={"0 1 auto"}>
+        <Tabs
+          orientation="vertical"
+          value={account}
+          onChange={(_, value) => {
+            setAccount(value as string);
+          }}
+        >
+          {Object.keys(accounts).map((account) => {
+            return <Tab key={account} value={account} label={account} />;
+          })}
+          <Tab component={NewAccount} />
+        </Tabs>
       </Box>
       <Box flex={"1 1 auto"} overflow={"auto"}>
         {accounts[account]?.type === "account" && <AccountTab accountName={account} />}

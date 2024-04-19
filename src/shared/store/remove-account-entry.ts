@@ -5,8 +5,12 @@ import { store } from "./store";
 export const removeAccountEntry = (accountName: string, data: AccountData) =>
   store.setState((prev) => {
     return create(prev, (next) => {
-      const idxToRemove = next.wealth[accountName].data.findIndex((x) => x === data);
-      next.wealth[accountName].data.splice(idxToRemove, 1);
+      const idx = prev.wealth[accountName].data.findIndex((x) => x === data);
+      if (idx < 0) {
+        throw new Error("failed to find data");
+      }
+
+      next.wealth[accountName].data.splice(idx, 1);
       return next;
     });
   });
