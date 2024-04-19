@@ -1,8 +1,5 @@
-net wealth 
-    redesign to make better
 
 config
-    move import/export/reset to settings
     allow soft deleting accounts
-    switch to modal for reset
     set default tab
+    import migrations need help
