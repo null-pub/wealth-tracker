@@ -1,23 +1,28 @@
 import { Button, InputAdornment, TextField } from "@mui/material";
 import { Stack } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
+import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
-import { useRef, useState } from "react";
-import { AddAccountEntry } from "shared/store";
+import { useMemo, useState } from "react";
+import { addAccountEntry, store } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
 
 export const AddEntry = (props: { accountName: string }) => {
   const { accountName } = props;
-  const inputRef = useRef<HTMLInputElement>(null);
   const [date, setDate] = useState<DateTime>();
+  const [amount, setAmount] = useState<number | null>(null);
 
   const onAddEntry = () => {
-    const value = inputRef.current?.value;
-    if (!date || !value) {
-      return;
+    if (date != undefined && amount != null) {
+      addAccountEntry(accountName, date, amount);
+      setAmount(null);
     }
-    AddAccountEntry(accountName, date, +value);
   };
+
+  const account = useStore(store, (state) => state.wealth[accountName]);
+  const hasSameDate = useMemo(() => {
+    return !!account?.data?.find((x) => date?.hasSame(DateTime.fromISO(x.date), "day"));
+  }, [account?.data, date]);
 
   return (
     <Stack spacing={2}>
@@ -28,16 +33,18 @@ export const AddEntry = (props: { accountName: string }) => {
         }}
       />
       <TextField
-        key={accountName}
-        label="Home value"
-        type="numeric"
-        inputRef={inputRef}
+        label="amount"
+        value={amount ?? ""}
+        type="number"
+        onChange={(event) => (event.target.value === "" ? setAmount(null) : setAmount(+event.target.value))}
         InputProps={{
           startAdornment: <InputAdornment position="start">$</InputAdornment>,
         }}
         placeholder="0"
       />
-      <Button onClick={onAddEntry}>Add Home Value</Button>
+      <Button disabled={amount === null || !date || hasSameDate} onClick={onAddEntry}>
+        Add Home Value
+      </Button>
     </Stack>
   );
 };

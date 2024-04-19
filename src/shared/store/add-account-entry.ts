@@ -4,7 +4,7 @@ import { Account } from "shared/models/store/current";
 import { sortByDate } from "../utility/sort-by-date";
 import { store } from "./store";
 
-export const AddAccountEntry = (accountName: string, date: DateTime<true>, amount: number) => {
+export const addAccountEntry = (accountName: string, date: DateTime<true>, amount: number) => {
   store.setState((prev) => {
     return create(prev, (next) => {
       (next.wealth[accountName] as Account).data.push({

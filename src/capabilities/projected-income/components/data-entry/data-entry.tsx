@@ -50,7 +50,8 @@ const DataEntry = (props: {
         />
         <TextField
           label="amount"
-          value={amount ?? ""}
+          value={amount ?? null}
+          placeholder="0"
           type="number"
           onChange={(event) => (event.target.value === "" ? setAmount(null) : setAmount(+event.target.value))}
           InputProps={{

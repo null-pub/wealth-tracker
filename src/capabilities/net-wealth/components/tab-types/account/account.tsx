@@ -3,10 +3,10 @@ import Grid from "@mui/system/Unstable_Grid";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { AgGrid } from "shared/components/ag-grid";
 import { Account } from "shared/models/store/current";
-import { AddAccountEntry, store } from "shared/store";
+import { addAccountEntry, store } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { shortDate } from "shared/utility/format-date";
 import { createAccountColumnConfig } from "./column-config";
@@ -17,7 +17,7 @@ export const AccountTab = (props: { accountName: string }) => {
   const { accountName } = props;
   const account = useStore(store, (state) => state.wealth[accountName]) as Account;
   const [date, setDate] = useState(getLocalDateTime());
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [amount, setAmount] = useState<number | null>(null);
 
   const missingYears = useMissingYears(account);
   const hasSameDate = useMemo(() => {
@@ -25,7 +25,10 @@ export const AccountTab = (props: { accountName: string }) => {
   }, [account?.data, date]);
 
   const onAddEntry = () => {
-    inputRef.current && AddAccountEntry(accountName, date, +inputRef.current?.value);
+    if (amount != null) {
+      addAccountEntry(accountName, date, amount);
+      setAmount(null);
+    }
   };
 
   const accountColumnConfig = useMemo(() => {
@@ -56,16 +59,16 @@ export const AccountTab = (props: { accountName: string }) => {
         onChange={(value) => value && setDate(value)}
       />
       <TextField
-        key={accountName}
         label="amount"
+        value={amount ?? ""}
         type="number"
-        inputRef={inputRef}
+        onChange={(event) => (event.target.value === "" ? setAmount(null) : setAmount(+event.target.value))}
         InputProps={{
           startAdornment: <InputAdornment position="start">$</InputAdornment>,
         }}
         placeholder="0"
       />
-      <Button disabled={!date || hasSameDate} onClick={onAddEntry}>
+      <Button disabled={amount === null || !date || hasSameDate} onClick={onAddEntry}>
         Add Entry
       </Button>
 
