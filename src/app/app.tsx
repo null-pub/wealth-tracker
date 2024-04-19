@@ -6,7 +6,7 @@ import { NetWealth } from "capabilities/net-wealth";
 import { ProjectedIncome } from "capabilities/projected-income";
 import { ProjectedWealth } from "capabilities/projected-wealth";
 import { useState } from "react";
-import { SafetyButton } from "shared/components/safety-button";
+import { ConfirmDialog } from "shared/components/confirm-dialog";
 import { downloadJson, useExport } from "shared/hooks/use-export";
 import { useImport } from "shared/hooks/use-import";
 import { useStoreDataError } from "shared/hooks/use-store-data-error";
@@ -91,42 +91,43 @@ export const App = () => {
           </Button>
         )}
       </InvalidDataDialog>
-      <Stack direction="row">
-        <Tabs value={tab} onChange={(_, value) => setTab(value)}>
-          <Tab value="wealth" label="Total Wealth" />
-          <Tab value="projected-income" label="Projected Income" />
-          <Tab value="projected-wealth" label="Projected Wealth" />
-        </Tabs>
-        <Box marginLeft={"auto"} gap={2} display={"flex"}>
-          <Button onClick={() => setIsSettingsOpen(true)}>
-            <SettingsIcon />
-          </Button>
-          <Button
-            onClick={() =>
-              onImport().catch((err) => {
-                setIsOpen(true);
-                setError(err);
-              })
-            }
-          >
-            Import
-          </Button>
-          <Button onClick={onExport}>Export</Button>
-          <SafetyButton
-            onConfirm={resetStore}
-            inactiveLabel="Reset"
-            activatingLabel="Activating"
-            activeLabel="Confirm"
-            confirmedLabel="confirmed"
-            color="error"
-            icon={<DeleteForever />}
-          />
+      <Box display={"flex"} flexDirection={"column"} height="100%">
+        <Box flex="0 1 auto">
+          <Stack direction="row">
+            <Tabs value={tab} onChange={(_, value) => setTab(value)}>
+              <Tab value="wealth" label="Total Wealth" />
+              <Tab value="projected-income" label="Projected Income" />
+              <Tab value="projected-wealth" label="Projected Wealth" />
+            </Tabs>
+            <Box marginLeft={"auto"} gap={2} display={"flex"}>
+              <Button onClick={() => setIsSettingsOpen(true)}>
+                <SettingsIcon />
+              </Button>
+              <Button
+                onClick={() =>
+                  onImport().catch((err) => {
+                    setIsOpen(true);
+                    setError(err);
+                  })
+                }
+              >
+                Import
+              </Button>
+              <Button onClick={onExport}>Export</Button>
+              <ConfirmDialog title="Reset Everything" onConfirm={resetStore}>
+                <Button color="error">
+                  <DeleteForever />
+                  Reset
+                </Button>
+              </ConfirmDialog>
+            </Box>
+          </Stack>
         </Box>
-      </Stack>
-      <Box padding={2} height={"95%"} width={"100%"}>
-        {tab === "wealth" && <NetWealth />}
-        {tab === "projected-income" && <ProjectedIncome />}
-        {tab === "projected-wealth" && <ProjectedWealth />}
+        <Box flex="1 1 auto" padding={2} height={"100%"} width={"100%"} overflow="hidden">
+          {tab === "wealth" && <NetWealth />}
+          {tab === "projected-income" && <ProjectedIncome />}
+          {tab === "projected-wealth" && <ProjectedWealth />}
+        </Box>
       </Box>
     </>
   );

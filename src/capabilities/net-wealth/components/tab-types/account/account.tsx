@@ -1,4 +1,4 @@
-import { Alert, Button, InputAdornment, Paper, Stack, TextField } from "@mui/material";
+import { Alert, Box, Button, InputAdornment, Paper, Stack, TextField, Typography } from "@mui/material";
 import Grid from "@mui/system/Unstable_Grid";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useStore } from "@tanstack/react-store";
@@ -9,10 +9,9 @@ import { Account } from "shared/models/store/current";
 import { AddAccountEntry, store } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { shortDate } from "shared/utility/format-date";
-import { DeleteAccount } from "../components/delete-account";
-import { RenameAccount } from "../components/update-account";
 import { createAccountColumnConfig } from "./column-config";
 import { useMissingYears } from "./hooks/useMissingYears";
+import { AccountSettings } from "./settings";
 
 export const AccountTab = (props: { accountName: string }) => {
   const { accountName } = props;
@@ -34,64 +33,51 @@ export const AccountTab = (props: { accountName: string }) => {
   }, [accountName]);
 
   return (
-    <Grid container height="100%" width={"100%"} padding={1} spacing={2}>
-      <Grid lg={3} xl={3}>
-        <AgGrid
-          key={accountName}
-          reactiveCustomComponents
-          rowData={account?.data ?? []}
-          columnDefs={accountColumnConfig}
-          id={account + "-history"}
-          autoSizeStrategy={{ type: "fitGridWidth" }}
-          stopEditingWhenCellsLoseFocus
-        />
-      </Grid>
-      <Grid xl={9} lg={8}>
-        <div>
-          <Grid container spacing={2}>
-            {missingYears.length > 0 && (
-              <Grid xs={12}>
-                <Paper elevation={3}>
-                  <Alert severity="warning">Ensure an entry for Jan 1st for each year {missingYears.join(", ")}</Alert>
-                </Paper>
-              </Grid>
-            )}
-            <Grid xl={2} lg={3}>
-              <Paper elevation={3} sx={{ padding: 2 }}>
-                <Stack spacing={1}>
-                  <DatePicker
-                    format={shortDate}
-                    sx={{ color: "white" }}
-                    label="Date"
-                    defaultValue={date}
-                    onChange={(value) => value && setDate(value)}
-                  />
-                  <TextField
-                    label="amount"
-                    type="number"
-                    defaultValue={0}
-                    inputRef={inputRef}
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                    }}
-                    placeholder="0"
-                  />
-                  <Button disabled={!date || hasSameDate} onClick={onAddEntry}>
-                    Add Entry
-                  </Button>
-                </Stack>
-              </Paper>
-            </Grid>
-            <Grid xl={8} lg={0}></Grid>
-            <Grid xl={2} lg={4}>
-              <Stack spacing={2}>
-                <DeleteAccount accountName={accountName} />
-                <RenameAccount key={accountName} accountName={accountName} />
-              </Stack>
-            </Grid>
-          </Grid>
-        </div>
-      </Grid>
-    </Grid>
+    <Stack height="100%" spacing={2}>
+      <Stack direction={"row"}>
+        <Typography variant="h5">{accountName}</Typography>
+        <Box sx={{ marginLeft: "auto" }}>
+          <AccountSettings key={accountName} accountName={accountName} />
+        </Box>
+      </Stack>
+      {missingYears.length > 0 && (
+        <Grid xs={12}>
+          <Paper elevation={3}>
+            <Alert severity="warning">Ensure an entry for Jan 1st for each year {missingYears.join(", ")}</Alert>
+          </Paper>
+        </Grid>
+      )}
+
+      <DatePicker
+        format={shortDate}
+        sx={{ color: "white" }}
+        label="Date"
+        defaultValue={date}
+        onChange={(value) => value && setDate(value)}
+      />
+      <TextField
+        key={accountName}
+        label="amount"
+        type="number"
+        inputRef={inputRef}
+        InputProps={{
+          startAdornment: <InputAdornment position="start">$</InputAdornment>,
+        }}
+        placeholder="0"
+      />
+      <Button disabled={!date || hasSameDate} onClick={onAddEntry}>
+        Add Entry
+      </Button>
+
+      <AgGrid
+        reactiveCustomComponents
+        rowData={account.data}
+        columnDefs={accountColumnConfig}
+        id={account + "-history"}
+        autoSizeStrategy={{ type: "fitGridWidth" }}
+        onRowDataUpdated={(x) => x.api.sizeColumnsToFit()}
+        stopEditingWhenCellsLoseFocus
+      />
+    </Stack>
   );
 };

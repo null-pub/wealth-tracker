@@ -20,7 +20,7 @@ export const NewAccount = forwardRef<HTMLButtonElement, { children?: ReactNode }
           setError(false);
           setAccountType(undefined);
         }}
-        sx={{ marginLeft: "auto" }}
+        sx={{ marginTop: 3 }}
       >
         add account
       </Button>

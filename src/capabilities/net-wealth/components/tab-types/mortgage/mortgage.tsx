@@ -1,5 +1,3 @@
-import { Stack } from "@mui/system";
-import Grid from "@mui/system/Unstable_Grid";
 import { useStore } from "@tanstack/react-store";
 import { useMemo } from "react";
 import { AgGrid } from "shared/components/ag-grid";
@@ -9,11 +7,12 @@ import { store } from "shared/store";
 import { findNearestOnOrBefore } from "shared/utility/find-nearest-on-or-before";
 import { getGraphDates } from "shared/utility/get-graph-dates";
 import { calcEquity, calcLoanBalance } from "shared/utility/mortgage-calc";
-import { DeleteAccount } from "../components/delete-account";
-import { RenameAccount } from "../components/update-account";
+
+import { Typography } from "@mui/material";
+import { Box, Stack } from "@mui/system";
 import { AddEntry } from "./add-entry";
-import { AddLoan } from "./add-loan";
 import { createAccountColumnConfig, mortgageColumnConfig } from "./column-config";
+import { AccountSettings } from "./settings";
 
 export const MortgageTab = (props: { accountName: string }) => {
   const { accountName } = props;
@@ -47,43 +46,28 @@ export const MortgageTab = (props: { accountName: string }) => {
   }, [account, allAccounts]);
 
   return (
-    <Grid container height="100%" width={"100%"} padding={1} spacing={2}>
-      <Grid lg={3}>
-        <AgGrid
-          reactiveCustomComponents
-          rowData={account?.data ?? []}
-          columnDefs={accountColumnConfig}
-          id={account + "-history"}
-          autoSizeStrategy={{ type: "fitGridWidth" }}
-        />
-      </Grid>
-      <Grid lg={3}>
-        <AgGrid
-          rowData={mortgageData}
-          columnDefs={mortgageColumnConfig}
-          id={account + "-history"}
-          autoSizeStrategy={{ type: "fitGridWidth" }}
-        />
-      </Grid>
-      <Grid lg={6}>
-        <div>
-          <Grid container spacing={2}>
-            <Grid xl={3}>
-              <AddLoan accountName={accountName} />
-            </Grid>
-            <Grid xl={3}>
-              <AddEntry accountName={accountName} />
-            </Grid>
-            <Grid xl={0}></Grid>
-            <Grid xl={3}>
-              <Stack spacing={2}>
-                <DeleteAccount accountName={accountName} />
-                <RenameAccount key={accountName} accountName={accountName} />
-              </Stack>
-            </Grid>
-          </Grid>
-        </div>
-      </Grid>
-    </Grid>
+    <Stack height="100%" spacing={2}>
+      <Stack direction={"row"}>
+        <Typography variant="h5">{accountName}</Typography>
+        <Box sx={{ marginLeft: "auto" }}>
+          <AccountSettings key={accountName} accountName={accountName} />
+        </Box>
+      </Stack>
+      <AddEntry accountName={accountName} />
+      <AgGrid
+        reactiveCustomComponents
+        rowData={account?.data ?? []}
+        columnDefs={accountColumnConfig}
+        id={account + "-history"}
+        autoSizeStrategy={{ type: "fitGridWidth" }}
+      />
+
+      <AgGrid
+        rowData={mortgageData}
+        columnDefs={mortgageColumnConfig}
+        id={account + "-history"}
+        autoSizeStrategy={{ type: "fitGridWidth" }}
+      />
+    </Stack>
   );
 };

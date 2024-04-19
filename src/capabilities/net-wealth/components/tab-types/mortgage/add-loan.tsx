@@ -1,4 +1,4 @@
-import { Button, Paper, Stack, TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
@@ -35,87 +35,85 @@ export const AddLoan = (props: { accountName: string }) => {
   const [error, setError] = useState<Partial<Record<keyof Loan, ZodIssue>>>({});
 
   return (
-    <Paper elevation={3} sx={{ padding: 2 }}>
-      <Stack spacing={1}>
-        <DatePicker
-          defaultValue={ref.current?.firstPaymentDate ? DateTime.fromISO(ref.current.firstPaymentDate) : null}
-          label="First Payment"
-          slotProps={{
-            textField: {
-              error: !!error.firstPaymentDate,
-            },
-          }}
-          onChange={(value: DateTime | null) => {
-            if (value) {
-              ref.current.firstPaymentDate = value.startOf("day").toISO()!;
-            }
-          }}
-        />
-        <TextField
-          error={!!error.principal}
-          defaultValue={loan?.principal}
-          onChange={(event) => {
-            ref.current.principal = +event.target.value;
-          }}
-          variant="outlined"
-          label="Principal"
-          type="number"
-        />
-        <TextField
-          error={!!error.ratePct}
-          defaultValue={loan?.ratePct}
-          onChange={(event) => {
-            ref.current.ratePct = convertPct(+event.target.value);
-          }}
-          variant="outlined"
-          label="Rate"
-          type="number"
-        />
-        <TextField
-          error={!!error.paymentsPerYear}
-          defaultValue={loan?.paymentsPerYear}
-          onChange={(event) => {
-            ref.current.paymentsPerYear = +event.target.value;
-          }}
-          variant="outlined"
-          label="Payments Per Year"
-          type="number"
-        />
-        <TextField
-          defaultValue={loan?.payment}
-          error={!!error.payment}
-          onChange={(event) => {
-            ref.current.payment = +event.target.value;
-          }}
-          variant="outlined"
-          label="Payment"
-          type="number"
-        />
-        <TextField
-          defaultValue={loan?.ownershipPct}
-          error={!!error.ownershipPct}
-          onChange={(event) => {
-            ref.current.ownershipPct = convertPct(+event.target.value);
-          }}
-          variant="outlined"
-          label="Ownership (%)"
-          type="number"
-        />
-        <Button
-          onClick={() => {
-            const parsed = validator.safeParse(ref.current);
-            if (parsed.success) {
-              setError({});
-              setLoan(accountName, parsed.data);
-            } else {
-              const issues = Object.groupBy(parsed.error.issues, (x) => x.path.join(""));
-              setError(issues);
-            }
-          }}
-        >
-          Set Loan
-        </Button>
-      </Stack>
-    </Paper>
+    <>
+      <DatePicker
+        defaultValue={ref.current?.firstPaymentDate ? DateTime.fromISO(ref.current.firstPaymentDate) : null}
+        label="First Payment"
+        slotProps={{
+          textField: {
+            error: !!error.firstPaymentDate,
+          },
+        }}
+        onChange={(value: DateTime | null) => {
+          if (value) {
+            ref.current.firstPaymentDate = value.startOf("day").toISO()!;
+          }
+        }}
+      />
+      <TextField
+        error={!!error.principal}
+        defaultValue={loan?.principal}
+        onChange={(event) => {
+          ref.current.principal = +event.target.value;
+        }}
+        variant="outlined"
+        label="Principal"
+        type="number"
+      />
+      <TextField
+        error={!!error.ratePct}
+        defaultValue={loan?.ratePct}
+        onChange={(event) => {
+          ref.current.ratePct = convertPct(+event.target.value);
+        }}
+        variant="outlined"
+        label="Rate"
+        type="number"
+      />
+      <TextField
+        error={!!error.paymentsPerYear}
+        defaultValue={loan?.paymentsPerYear}
+        onChange={(event) => {
+          ref.current.paymentsPerYear = +event.target.value;
+        }}
+        variant="outlined"
+        label="Payments Per Year"
+        type="number"
+      />
+      <TextField
+        defaultValue={loan?.payment}
+        error={!!error.payment}
+        onChange={(event) => {
+          ref.current.payment = +event.target.value;
+        }}
+        variant="outlined"
+        label="Payment"
+        type="number"
+      />
+      <TextField
+        defaultValue={loan?.ownershipPct}
+        error={!!error.ownershipPct}
+        onChange={(event) => {
+          ref.current.ownershipPct = convertPct(+event.target.value);
+        }}
+        variant="outlined"
+        label="Ownership (%)"
+        type="number"
+      />
+      <Button
+        onClick={() => {
+          const parsed = validator.safeParse(ref.current);
+          if (parsed.success) {
+            setError({});
+            setLoan(accountName, parsed.data);
+          } else {
+            const issues = Object.groupBy(parsed.error.issues, (x) => x.path.join(""));
+            setError(issues);
+          }
+        }}
+      >
+        Set Loan
+      </Button>
+    </>
   );
 };
