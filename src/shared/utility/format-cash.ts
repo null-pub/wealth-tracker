@@ -2,7 +2,7 @@ export const formatCashShort = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
   notation: "compact",
-  maximumFractionDigits: 0,
+  maximumSignificantDigits: 3,
 }).format;
 
 export const formatCash = new Intl.NumberFormat("en-US", {

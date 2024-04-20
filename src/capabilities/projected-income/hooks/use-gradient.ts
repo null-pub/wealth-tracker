@@ -25,7 +25,8 @@ const clusters = (values?: number[]): Cluster[] => {
   if (!values) {
     return [];
   }
-  return ckmeans(values, Math.min(3, values.length)).map((x, i, arr) => {
+  const clusters = values.length < 5 ? Math.min(2, values.length) : Math.min(3, values.length);
+  return ckmeans(values, clusters).map((x, i, arr) => {
     return {
       min: Math.min(...x),
       max: Math.max(...x),
