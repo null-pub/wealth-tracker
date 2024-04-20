@@ -7,3 +7,7 @@ config
 
 cache clusters
     only regen scenarios when income changes
+
+
+net-wealth
+    set date range for graph

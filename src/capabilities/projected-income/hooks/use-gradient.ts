@@ -21,12 +21,21 @@ export interface Cluster {
   title: string;
 }
 
+const getClusterCount = (length: number) => {
+  if (length < 3) {
+    return length;
+  } else if (length === 4) {
+    return 2;
+  }
+  return 3;
+};
+
 const clusters = (values?: number[]): Cluster[] => {
-  if (!values) {
+  if (!values || values.length === 0) {
     return [];
   }
-  const clusters = values.length < 5 ? Math.min(2, values.length) : Math.min(3, values.length);
-  return ckmeans(values, clusters).map((x, i, arr) => {
+
+  return ckmeans(values, getClusterCount(values.length)).map((x, i, arr) => {
     return {
       min: Math.min(...x),
       max: Math.max(...x),
