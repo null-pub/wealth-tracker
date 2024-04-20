@@ -3,3 +3,7 @@ config
     allow soft deleting accounts
     set default tab
     import migrations need help
+
+
+cache clusters
+    only regen scenarios when income changes
