@@ -5,13 +5,12 @@ import { store } from ".";
 export const updateAccountValue = (accountName: string, data: AccountData, value: number) => {
   store.setState((prev) => {
     const next = create(prev, (next) => {
-      const account = next.wealth[accountName];
-      const idx = account?.data.findIndex((x) => x === data);
+      const idx = prev.wealth[accountName]?.data.findIndex((x) => x === data);
       if (idx < 0) {
         throw new Error("failed to find data");
       }
 
-      account.data[idx].value = value;
+      next.wealth[accountName].data[idx].value = value;
     });
     return next;
   });

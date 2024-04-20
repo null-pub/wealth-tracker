@@ -15,13 +15,15 @@ import { shortDate } from "shared/utility/format-date";
 
 export const createAccountColumnConfig = (
   accountName: TimeSeries,
-  variant: "number" | "cash" | "percent"
+  variant: "number" | "cash" | "percent",
+  dateVariant: "date" | "year"
 ): ColDef<AccountData>[] => [
   {
     headerName: "Date",
     sort: "desc",
-    valueFormatter: (x) => x.value?.toFormat(shortDate),
+    valueFormatter: (x) => x.value?.toFormat(dateVariant === "date" ? shortDate : "yyyy"),
     valueGetter: (x) => x.data && DateTime.fromISO(x.data.date),
+    tooltipValueGetter: (x) => (dateVariant === "year" ? x.value?.toFormat(shortDate) : undefined),
     cellRenderer: (x: ICellRendererParams<unknown, DateTime>) => {
       return (
         <Stack direction={"row"} alignItems={"center"}>

@@ -6,13 +6,12 @@ import { store } from ".";
 export const updateAccountDate = (accountName: string, data: AccountData, date: DateTime) => {
   store.setState((prev) => {
     const next = create(prev, (next) => {
-      const account = next.wealth[accountName];
-      const idx = account?.data.findIndex((x) => x === data);
+      const idx = prev.wealth[accountName]?.data.findIndex((x) => x === data);
       if (idx < 0) {
         throw new Error("failed to find data");
       }
 
-      account.data[idx].date = date.toISO()!;
+      next.wealth[accountName].data[idx].date = date.toISO()!;
     });
     return next;
   });

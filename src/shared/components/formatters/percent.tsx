@@ -22,5 +22,5 @@ const getColor = (probability?: number) => {
 };
 
 export const Percent = ({ value, probability, fallback }: PercentProps) => {
-  return <Box color={getColor(probability)}>{value ? formatPercent(value) : fallback}</Box>;
+  return <Box color={getColor(probability)}>{value != undefined ? formatPercent(value) : fallback}</Box>;
 };

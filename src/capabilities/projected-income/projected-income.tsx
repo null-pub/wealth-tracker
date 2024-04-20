@@ -213,15 +213,29 @@ export const ProjectedIncome = () => {
             accountName="meritIncreasePct"
             variant="percent"
             defaultDate={dates.meritIncrease}
+            dateVariant="year"
           />
-          <Layout title="Equity Increase" accountName="equityPct" variant="percent" defaultDate={dates.meritIncrease} />
-          <Layout title="Merit Bonus" accountName="meritBonusPct" variant="percent" defaultDate={dates.meritBonus} />
+          <Layout
+            title="Equity Increase"
+            accountName="equityPct"
+            variant="percent"
+            defaultDate={dates.meritIncrease}
+            dateVariant="year"
+          />
+          <Layout
+            title="Merit Bonus"
+            accountName="meritBonusPct"
+            variant="percent"
+            defaultDate={dates.meritBonus}
+            dateVariant="year"
+          />
           <Layout title="Merit Bonus" accountName="meritBonus" variant="cash" defaultDate={dates.meritBonus} />
           <Layout
             title="Company Bonus Factor"
             accountName="companyBonusPct"
             defaultDate={dates.companyBonus}
             variant="percent"
+            dateVariant="year"
           />
           <Layout title="Company Bonus" accountName="companyBonus" defaultDate={dates.companyBonus} variant="cash" />
           <Layout

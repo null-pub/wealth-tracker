@@ -6,13 +6,12 @@ import { store } from ".";
 export const updateProjectedIncomeDate = (timeSeries: TimeSeries, data: AccountData, date: DateTime) => {
   store.setState((prev) => {
     const next = create(prev, (next) => {
-      const account = next.projectedIncome.timeSeries[timeSeries];
-      const idx = account.findIndex((x) => x === data);
+      const idx = prev.projectedIncome.timeSeries[timeSeries].findIndex((x) => x === data);
       if (idx < 0) {
         throw new Error("failed to find data");
       }
 
-      account[idx].date = date.toISO()!;
+      next.projectedIncome.timeSeries[timeSeries][idx].date = date.toISO()!;
     });
     return next;
   });

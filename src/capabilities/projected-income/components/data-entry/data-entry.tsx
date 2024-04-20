@@ -13,8 +13,9 @@ const DataEntry = (props: {
   timeSeries: TimeSeries;
   defaultDate: DateTime;
   variant?: "number" | "cash" | "percent";
+  dateVariant?: "date" | "year";
 }) => {
-  const { timeSeries, defaultDate, variant = "number" } = props;
+  const { timeSeries, defaultDate, variant = "number", dateVariant = "date" } = props;
   const account = useStore(store, (state) => state.projectedIncome.timeSeries[timeSeries]);
 
   const [date, setDate] = useState(defaultDate);
@@ -32,14 +33,15 @@ const DataEntry = (props: {
   };
 
   const accountColumnConfig = useMemo(() => {
-    return createAccountColumnConfig(timeSeries, variant);
-  }, [timeSeries, variant]);
+    return createAccountColumnConfig(timeSeries, variant, dateVariant);
+  }, [timeSeries, variant, dateVariant]);
 
   return (
     <Box display={"flex"} flexDirection={"column"} height="100%">
       <Stack spacing={2} flex="0 1 auto">
         <DatePicker
-          format={shortDate}
+          format={dateVariant === "year" ? "yyyy" : shortDate}
+          views={dateVariant === "year" ? ["year"] : undefined}
           sx={{ color: "white" }}
           label="Date"
           value={date}
@@ -85,10 +87,11 @@ interface LayoutProps {
   accountName: TimeSeries;
   defaultDate: DateTime;
   variant: "percent" | "number" | "cash";
+  dateVariant?: "date" | "year";
 }
 
 export const Layout = (props: LayoutProps) => {
-  const { title, accountName, defaultDate, variant } = props;
+  const { title, accountName, defaultDate, variant, dateVariant = "date" } = props;
   return (
     <Paper sx={{ padding: 2, height: "100%", width: 450, flexShrink: 0 }}>
       <Box display="flex" flexDirection="column" height="100%">
@@ -116,7 +119,7 @@ export const Layout = (props: LayoutProps) => {
           </Typography>
         </Box>
         <Box flex="1 1 auto">
-          <DataEntry variant={variant} timeSeries={accountName} defaultDate={defaultDate} />
+          <DataEntry variant={variant} timeSeries={accountName} defaultDate={defaultDate} dateVariant={dateVariant} />
         </Box>
       </Box>
     </Paper>
