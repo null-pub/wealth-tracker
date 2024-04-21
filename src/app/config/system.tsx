@@ -1,6 +1,5 @@
 import DeleteForever from "@mui/icons-material/DeleteForever";
-import { Button } from "@mui/material";
-import { Box } from "@mui/system";
+import { Button, Card, CardActions, CardHeader, Stack } from "@mui/material";
 import InvalidDataDialog from "app/invalid-data-dialog";
 import { useState } from "react";
 import { ConfirmDialog } from "shared/components/confirm-dialog";
@@ -19,24 +18,31 @@ export const System = () => {
   const [isOpen, setIsOpen] = useState(hadError);
 
   return (
-    <Box marginLeft={"auto"} gap={2} display={"flex"}>
-      <Button
-        onClick={() =>
-          onImport().catch((err) => {
-            setIsOpen(true);
-            setError(err);
-          })
-        }
-      >
-        Import
-      </Button>
-      <Button onClick={onExport}>Export</Button>
-      <ConfirmDialog title="Reset Everything" onConfirm={resetStore}>
-        <Button color="error">
-          <DeleteForever />
-          Reset
-        </Button>
-      </ConfirmDialog>
+    <>
+      <Stack spacing={2}>
+        <Card>
+          <CardHeader title="Data" />
+          <CardActions>
+            <Button
+              onClick={() =>
+                onImport().catch((err) => {
+                  setIsOpen(true);
+                  setError(err);
+                })
+              }
+            >
+              Import
+            </Button>
+            <Button onClick={onExport}>Export</Button>
+            <ConfirmDialog title="Reset Everything" onConfirm={resetStore}>
+              <Button color="error">
+                <DeleteForever />
+                Reset
+              </Button>
+            </ConfirmDialog>
+          </CardActions>
+        </Card>
+      </Stack>
       <InvalidDataDialog open={isOpen} error={error}>
         {hadError && (
           <>
@@ -78,6 +84,6 @@ export const System = () => {
           </Button>
         )}
       </InvalidDataDialog>
-    </Box>
+    </>
   );
 };

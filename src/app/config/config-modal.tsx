@@ -14,18 +14,18 @@ export const ConfigModal = () => {
       <Button onClick={() => setIsOpen(true)}>
         <SettingsIcon />
       </Button>
-      <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
+      <Dialog maxWidth={false} open={isOpen} onClose={() => setIsOpen(false)}>
         <DialogTitle sx={{ display: "flex" }}>
           <Tabs value={tab} onChange={(_, value) => setTab(value)}>
             <Tab value="projected-wealth" label="Projected Wealth" />
-            <Tab value="system" label="Data" />
+            <Tab value="system" label="System" />
           </Tabs>
           <IconButton sx={{ height: "min-content", marginLeft: "auto" }} onClick={() => setIsOpen(false)}>
             <CloseIcon />
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <Box width={550} height={350} marginTop={2}>
+          <Box width={600} height={450}>
             {tab === "projected-wealth" && <Config />}
             {tab === "system" && <System />}
           </Box>
