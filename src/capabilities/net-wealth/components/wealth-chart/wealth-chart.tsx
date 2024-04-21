@@ -14,9 +14,10 @@ import { useGraphData } from "./use-graph-data";
 export const WealthChart = () => {
   const wealth = useStore(store, (x) => x.wealth);
   const data = useGraphData();
-  const initialFromDate = useEarliestAccountEntry();
-  const [fromDate, setFromDate] = useState(initialFromDate.startOf("year"));
-  const [toDate, setToDate] = useState(getLocalDateTime().endOf("year"));
+  const initialFromDate = useEarliestAccountEntry().startOf("year");
+  const intialToDate = getLocalDateTime().endOf("year");
+  const [fromDate, setFromDate] = useState<DateTime>(initialFromDate);
+  const [toDate, setToDate] = useState<DateTime>(intialToDate);
 
   const filteredData = useMemo(() => {
     return data.filter((x) => {
@@ -91,6 +92,8 @@ export const WealthChart = () => {
           sx={{ backgroundColor: "#121212" }}
           views={["year"]}
           label="From"
+          minDate={initialFromDate}
+          maxDate={intialToDate}
           value={fromDate}
           onChange={(value) => {
             value && setFromDate(value);
@@ -101,6 +104,8 @@ export const WealthChart = () => {
           sx={{ backgroundColor: "#121212" }}
           views={["year"]}
           value={toDate}
+          minDate={initialFromDate}
+          maxDate={intialToDate}
           onChange={(value) => {
             value && setToDate(value);
           }}
