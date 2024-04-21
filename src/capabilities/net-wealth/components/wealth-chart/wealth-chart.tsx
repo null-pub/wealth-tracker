@@ -1,15 +1,29 @@
+import { Box } from "@mui/system";
+import { DatePicker } from "@mui/x-date-pickers";
 import { useStore } from "@tanstack/react-store";
 import { AgAreaSeriesOptions, AgCartesianChartOptions, AgLineSeriesOptions, time } from "ag-charts-community";
 import { AgChartsReact } from "ag-charts-react";
 import { DateTime } from "luxon";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { useEarliestAccountEntry } from "shared/hooks/use-earliest-account-entry";
 import { store } from "shared/store";
+import { getLocalDateTime } from "shared/utility/current-date";
 import { formatCashShort } from "shared/utility/format-cash";
 import { useGraphData } from "./use-graph-data";
 
 export const WealthChart = () => {
   const wealth = useStore(store, (x) => x.wealth);
   const data = useGraphData();
+  const initialFromDate = useEarliestAccountEntry();
+  const [fromDate, setFromDate] = useState(initialFromDate.startOf("year"));
+  const [toDate, setToDate] = useState(getLocalDateTime().endOf("year"));
+
+  const filteredData = useMemo(() => {
+    return data.filter((x) => {
+      const year = (x["date"] as Date).getFullYear();
+      return year >= fromDate.year && year <= toDate.year;
+    });
+  }, [data, fromDate.year, toDate.year]);
 
   const series = useMemo(() => {
     return [
@@ -47,7 +61,7 @@ export const WealthChart = () => {
       title: {
         text: `Total Wealth ${formatCashShort((data[data.length - 1]?.total ?? 0) as number)}`,
       },
-      data,
+      data: filteredData,
       axes: [
         {
           type: "time",
@@ -67,7 +81,31 @@ export const WealthChart = () => {
       ],
       series,
     }),
-    [data, series]
+    [data, filteredData, series]
   );
-  return <AgChartsReact options={options} />;
+  return (
+    <Box position={"relative"} height="100%" width="100%">
+      <AgChartsReact options={options} />
+      <Box position={"absolute"} top={16} right={16} zIndex={100} width={250} display={"flex"} gap={2}>
+        <DatePicker
+          sx={{ backgroundColor: "#121212" }}
+          views={["year"]}
+          label="From"
+          value={fromDate}
+          onChange={(value) => {
+            value && setFromDate(value);
+          }}
+        />
+        <DatePicker
+          label="To"
+          sx={{ backgroundColor: "#121212" }}
+          views={["year"]}
+          value={toDate}
+          onChange={(value) => {
+            value && setToDate(value);
+          }}
+        />
+      </Box>
+    </Box>
+  );
 };

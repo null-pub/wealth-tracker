@@ -5,7 +5,7 @@ import { store } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { findNearestIdxOnOrBefore, findNearestOnOrBefore } from "shared/utility/find-nearest-on-or-before";
 import { calcEquity, calcLoanBalance } from "shared/utility/mortgage-calc";
-import { useEarliestAccountEntry } from "./use-earliest-account-entry";
+import { useEarliestAccountEntry } from "../../../shared/hooks/use-earliest-account-entry";
 import { useFutureBonuses } from "./use-future-bonuses";
 import { useFutureRetirementContributions } from "./use-future-retirement-contributions";
 import { useFutureSavings } from "./use-future-savings";
