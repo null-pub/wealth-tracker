@@ -17,6 +17,7 @@ export const ConfigModal = () => {
       <Dialog maxWidth={false} open={isOpen} onClose={() => setIsOpen(false)}>
         <DialogTitle sx={{ display: "flex" }}>
           <Tabs value={tab} onChange={(_, value) => setTab(value)}>
+            <Tab value="wealth" label="Total Wealth" />
             <Tab value="projected-wealth" label="Projected Wealth" />
             <Tab value="system" label="System" />
           </Tabs>
@@ -26,6 +27,7 @@ export const ConfigModal = () => {
         </DialogTitle>
         <DialogContent>
           <Box width={600} height={450}>
+            {tab === "wealth" && <></>}
             {tab === "projected-wealth" && <Config />}
             {tab === "system" && <System />}
           </Box>

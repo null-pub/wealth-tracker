@@ -18,7 +18,7 @@ import { CountDown } from "shared/components/formatters/countdown";
 import { Value } from "shared/components/formatters/value";
 import { useDates } from "shared/hooks/use-dates";
 import { store } from "shared/store";
-import { ExpectedValue, scaleClusters } from "shared/utility/cluster-helpers";
+import { SumClusters, scaleClusters } from "shared/utility/cluster-helpers";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { monthDay } from "shared/utility/format-date";
 
@@ -40,13 +40,13 @@ export const FutureEvents = (props: { year: number; onChange: (year: number) => 
       isFuture(dates.meritBonus) && scaleClusters(clusters.meritBonus, bonusTakehomeFactor),
       isFuture(dates.companyBonus) && scaleClusters(clusters.companyBonus, bonusTakehomeFactor),
       isFuture(dates.retirementBonus) && clusters.retirementBonus,
-      [{ min: savings.remaining, max: savings.remaining, probability: 1, median: 1 }],
-      [{ min: retirement.remaining, max: retirement.remaining, probability: 1, median: 1 }],
-      [{ min: socialSecurity.min?.remaining ?? 0, max: socialSecurity.max?.remaining ?? 0, probability: 1, median: 1 }],
-      [{ min: medicare.min?.remaining, max: medicare.max?.remaining, probability: 1, median: 1 }],
+      [{ min: savings.remaining, max: savings.remaining, probability: 0, median: 1 }],
+      [{ min: retirement.remaining, max: retirement.remaining, probability: 0, median: 1 }],
+      [{ min: socialSecurity.min?.remaining ?? 0, max: socialSecurity.max?.remaining ?? 0, probability: 0, median: 1 }],
+      [{ min: medicare.min?.remaining, max: medicare.max?.remaining, probability: 0, median: 1 }],
     ].filter((x) => x !== false) as Cluster[][];
 
-    return ExpectedValue(remaining);
+    return SumClusters(remaining);
   }, [
     bonusTakehomeFactor,
     clusters.companyBonus,

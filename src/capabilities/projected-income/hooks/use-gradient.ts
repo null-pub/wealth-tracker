@@ -1,17 +1,8 @@
 import { useStore } from "@tanstack/react-store";
 import { useMemo } from "react";
 import { scenarioStore } from "shared/store/scenario-store";
+import { clusterTitle } from "shared/utility/cluster-helpers";
 import { ckmeans, median } from "simple-statistics";
-
-const clusterTitle = (index: number, length: number) => {
-  if (length === 1) {
-    return "Actual";
-  } else if (length == 2) {
-    return ["Low", "High"][index];
-  } else {
-    return ["Low", "Med", "High"][index];
-  }
-};
 
 export interface Cluster {
   min: number;

@@ -17,13 +17,12 @@ const ClusterValue = (props: ClusterValueProps) => {
       title={
         <Box display={"flex"} gap={1}>
           <span>{title}</span>
-          {probability < 1 && <Percent probability={probability} value={probability} />}
+          {probability < 1 && probability >= 0 && <Percent probability={probability} value={probability} />}
         </Box>
       }
     >
       {min < 1 && min > 0 && <PercentRange min={min} max={max} />}
       {min > 1 && <CashRange compact={compact} min={min} max={max} />}
-      {min === 0 && 0}
     </Value>
   );
 };

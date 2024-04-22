@@ -21,25 +21,62 @@ export const findMostMostLikely = (cluster: Cluster[]) => {
   return mostLikely;
 };
 
-export const ExpectedValue = (Clusers: Cluster[][]) => {
-  if (Clusers.length == 0) {
+export const clusterTitle = (index: number, length: number) => {
+  if (length === 1) {
+    return "Actual";
+  } else if (length == 2) {
+    return ["Low", "High"][index];
+  } else {
+    return ["Low", "Med", "High"][index];
+  }
+};
+
+export const SumClusters = (clusters: Cluster[][]) => {
+  if (clusters.length == 0) {
     return [];
   }
 
-  return [
-    Clusers.reduce(
-      (acc, curr) => {
-        if (curr.length === 0) {
-          return acc;
-        }
-        const mostLikely = findMostMostLikely(curr);
+  const numClusters = clusters.reduce((acc, curr) => Math.max(acc, curr.length), 0);
+  const expandedClusters = clusters.map((cluster) => {
+    if (cluster.length === 1) {
+      return new Array(numClusters).fill(cluster[0]) as Cluster[];
+    }
+    if (cluster.length === 2 && numClusters === 3) {
+      const min = cluster[0];
+      const max = cluster[1];
+      return [
+        min,
+        {
+          min: (min.min + max.min) / 2,
+          max: (min.max + max.max) / 2,
+          median: (min.median + max.median) / 2,
+          probability: (min.probability + max.probability) / 2,
+          title: "Med",
+        },
+        max,
+      ].map((x, _i, arr) => {
+        const probability = x.probability / arr.reduce((acc, curr) => acc + curr.probability, 0);
+        return { ...x, probability };
+      }) as Cluster[];
+    }
+    return cluster;
+  });
 
-        acc.max += mostLikely?.max ?? 0;
-        acc.min += mostLikely?.min ?? 0;
-        acc.median += mostLikely?.median ?? 0;
-        return acc;
-      },
-      { min: 0, max: 0, median: 0, title: "Actual", probability: 0 }
-    ),
-  ];
+  return expandedClusters
+    .reduce((acc, curr) => {
+      return curr.map((x, i) => ({
+        min: x.min + acc[i].min,
+        max: x.max + acc[i].max,
+        median: x.median + acc[i].median,
+        probability: x.probability + acc[i].probability,
+        title: x.title,
+      }));
+    })
+    .map((x, _i, arr) => {
+      const probability = x.probability / arr.reduce((acc, curr) => acc + curr.probability, 0);
+      return { ...x, probability };
+    })
+    .map((x, i, arr) => {
+      return { ...x, title: clusterTitle(i, arr.length) };
+    });
 };
