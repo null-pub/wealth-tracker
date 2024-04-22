@@ -1,0 +1,2 @@
+import{a as reactIsExports}from"./react-is-BurAzYM9.js";var reactIs=reactIsExports,FORWARD_REF_STATICS={$$typeof:!0,render:!0,defaultProps:!0,displayName:!0,propTypes:!0},MEMO_STATICS={$$typeof:!0,compare:!0,defaultProps:!0,displayName:!0,propTypes:!0,type:!0},TYPE_STATICS={};TYPE_STATICS[reactIs.ForwardRef]=FORWARD_REF_STATICS;TYPE_STATICS[reactIs.Memo]=MEMO_STATICS;
+//# sourceMappingURL=hoist-non-react-statics-BI0zVOZ1.js.map
