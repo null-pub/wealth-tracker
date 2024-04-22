@@ -37,30 +37,32 @@ export const SumClusters = (clusters: Cluster[][]) => {
   }
 
   const numClusters = clusters.reduce((acc, curr) => Math.max(acc, curr.length), 0);
-  const expandedClusters = clusters.map((cluster) => {
-    if (cluster.length === 1) {
-      return new Array(numClusters).fill(cluster[0]) as Cluster[];
-    }
-    if (cluster.length === 2 && numClusters === 3) {
-      const min = cluster[0];
-      const max = cluster[1];
-      return [
-        min,
-        {
-          min: (min.min + max.min) / 2,
-          max: (min.max + max.max) / 2,
-          median: (min.median + max.median) / 2,
-          probability: (min.probability + max.probability) / 2,
-          title: "Med",
-        },
-        max,
-      ].map((x, _i, arr) => {
-        const probability = x.probability / arr.reduce((acc, curr) => acc + curr.probability, 0);
-        return { ...x, probability };
-      }) as Cluster[];
-    }
-    return cluster;
-  });
+  const expandedClusters = clusters
+    .filter((x) => x.length > 0)
+    .map((cluster) => {
+      if (cluster.length === 1) {
+        return new Array(numClusters).fill(cluster[0]) as Cluster[];
+      }
+      if (cluster.length === 2 && numClusters === 3) {
+        const min = cluster[0];
+        const max = cluster[1];
+        return [
+          min,
+          {
+            min: (min.min + max.min) / 2,
+            max: (min.max + max.max) / 2,
+            median: (min.median + max.median) / 2,
+            probability: (min.probability + max.probability) / 2,
+            title: "Med",
+          },
+          max,
+        ].map((x, _i, arr) => {
+          const probability = x.probability / arr.reduce((acc, curr) => acc + curr.probability, 0);
+          return { ...x, probability };
+        }) as Cluster[];
+      }
+      return cluster;
+    });
 
   return expandedClusters
     .reduce((acc, curr) => {

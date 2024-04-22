@@ -36,10 +36,10 @@ export const FutureEvents = (props: { year: number; onChange: (year: number) => 
       isFuture(dates.meritBonus) && scaleClusters(clusters.meritBonus, bonusTakehomeFactor),
       isFuture(dates.companyBonus) && scaleClusters(clusters.companyBonus, bonusTakehomeFactor),
       isFuture(dates.retirementBonus) && clusters.retirementBonus,
-      [{ min: savings.remaining, max: savings.remaining, probability: 0, median: 1 }],
-      [{ min: retirement.remaining, max: retirement.remaining, probability: 0, median: 1 }],
-      [{ min: socialSecurity.min?.remaining ?? 0, max: socialSecurity.max?.remaining ?? 0, probability: 0, median: 1 }],
-      [{ min: medicare.min?.remaining, max: medicare.max?.remaining, probability: 0, median: 1 }],
+      [{ min: savings.remaining, max: savings.remaining, probability: 0, median: 0 }],
+      [{ min: retirement.remaining, max: retirement.remaining, probability: 0, median: 0 }],
+      [{ min: socialSecurity.min?.remaining ?? 0, max: socialSecurity.max?.remaining ?? 0, probability: 0, median: 0 }],
+      [{ min: medicare.min?.remaining ?? 0, max: medicare.max?.remaining ?? 0, probability: 0, median: 0 }],
     ].filter((x) => x !== false) as Cluster[][];
 
     return SumClusters(remaining);
