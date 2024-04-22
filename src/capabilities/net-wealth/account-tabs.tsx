@@ -2,9 +2,9 @@ import { Box, Tab, Tabs } from "@mui/material";
 import { useStore } from "@tanstack/react-store";
 import { useEffect, useState } from "react";
 import { store } from "shared/store";
-import { NewAccount } from "../new-account";
-import { AccountTab } from "../tab-types/account/account";
-import { MortgageTab } from "../tab-types/mortgage";
+import { NewAccount } from "./new-account";
+import { AccountTab } from "./tab-types/account/account";
+import { MortgageTab } from "./tab-types/mortgage";
 
 export const AccountTabs = () => {
   const accounts = useStore(store, (x) => x.wealth);
