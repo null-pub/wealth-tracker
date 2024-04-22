@@ -1,5 +1,14 @@
 import { AccountData } from "./store/current";
 
+export interface ScenarioPayment {
+  start: string;
+  end: string;
+  payedOn: string;
+  value: number;
+  cumulative: number;
+  type: "regular" | "bonus";
+}
+
 export interface Scenario {
   totalPay: number;
   basePay: number;
@@ -13,14 +22,7 @@ export interface Scenario {
   lastThreeMeritBonuses: number[];
   meritBonusPct: number;
   meritIncreasePct: number;
-  payments: {
-    start: string;
-    end: string;
-    payedOn: string;
-    value: number;
-    cumulative: number;
-    type: "regular" | "bonus";
-  }[];
+  payments: ScenarioPayment[];
   equityIncreasePct: number;
   retirementBonusPct: number;
   aprToApr: number;

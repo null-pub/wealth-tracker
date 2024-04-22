@@ -11,3 +11,4 @@ cache clusters
 
 net-wealth
     trim data points
+    deal with mortgage without loan

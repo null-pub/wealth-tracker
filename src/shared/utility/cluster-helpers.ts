@@ -16,7 +16,7 @@ export const findMostMostLikely = (cluster: Cluster[]) => {
     return;
   }
   const mostLikely = cluster.reduce((acc, curr) => {
-    return acc.probability > curr.probability ? acc : curr;
+    return curr.probability > acc.probability ? curr : acc;
   });
   return mostLikely;
 };
@@ -29,6 +29,15 @@ export const clusterTitle = (index: number, length: number) => {
   } else {
     return ["Low", "Med", "High"][index];
   }
+};
+
+export const getClusterCount = (length: number) => {
+  if (length < 3) {
+    return length;
+  } else if (length === 4) {
+    return 2;
+  }
+  return 3;
 };
 
 export const SumClusters = (clusters: Cluster[][]) => {

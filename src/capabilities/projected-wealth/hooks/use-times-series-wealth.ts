@@ -2,14 +2,12 @@ import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { store } from "shared/store";
+import { findMostMostLikely } from "shared/utility/cluster-helpers";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { findNearestIdxOnOrBefore, findNearestOnOrBefore } from "shared/utility/find-nearest-on-or-before";
 import { calcEquity, calcLoanBalance } from "shared/utility/mortgage-calc";
 import { useEarliestAccountEntry } from "../../../shared/hooks/use-earliest-account-entry";
-import { useFutureBonuses } from "./use-future-bonuses";
-import { useFutureRetirementContributions } from "./use-future-retirement-contributions";
-import { useFutureSavings } from "./use-future-savings";
-import { useFutureMedicareTax, useFutureSocialSecurity } from "./use-future-social-security";
+import { useFutureTotals } from "./use-future-totals";
 
 export interface TimeSeriesWealth {
   graphDate: Date;
@@ -19,27 +17,14 @@ export interface TimeSeriesWealth {
   yoyPct?: number;
 }
 
-const useFutureWealth = (year: number) => {
-  const bonuses = useFutureBonuses(year);
-  const savings = useFutureSavings(year);
-  const ssiTaxValue = useFutureSocialSecurity(year);
-  const medicareTaxValue = useFutureMedicareTax(year);
-  const retirementContribution = useFutureRetirementContributions(year);
-
-  return (
-    bonuses +
-    savings.remaining +
-    retirementContribution.remaining +
-    (ssiTaxValue.min?.remaining ?? 0) +
-    (medicareTaxValue?.min?.remaining ?? 0)
-  );
-};
-
 const useFuturesWealth = () => {
   const year = getLocalDateTime().year;
+  const totals = useFutureTotals(year);
+  const totalsPlusOne = useFutureTotals(year);
+
   return {
-    [year + 1]: useFutureWealth(year),
-    [year + 2]: useFutureWealth(year + 1) + useFutureWealth(year),
+    [year + 1]: findMostMostLikely(totals)?.median ?? 0,
+    [year + 2]: (findMostMostLikely(totals)?.median ?? 0) + (findMostMostLikely(totalsPlusOne)?.median ?? 0),
   };
 };
 

@@ -2,7 +2,6 @@ import { Box, Stack } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
-import { useMemo } from "react";
 import { Card } from "shared/components/card";
 import { Cash } from "shared/components/formatters/cash";
 import { ClusterValues } from "shared/components/formatters/cluster-value";
@@ -11,12 +10,13 @@ import { Value } from "shared/components/formatters/value";
 import { Cluster, useClusters } from "shared/hooks/use-clusters";
 import { useDates } from "shared/hooks/use-dates";
 import { store } from "shared/store";
-import { SumClusters, scaleClusters } from "shared/utility/cluster-helpers";
+import { scaleClusters } from "shared/utility/cluster-helpers";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { monthDay } from "shared/utility/format-date";
 import { useFutureRetirementContributions } from "../hooks/use-future-retirement-contributions";
 import { useFutureSavings } from "../hooks/use-future-savings";
 import { TresholdTax, useFutureMedicareTax, useFutureSocialSecurity } from "../hooks/use-future-social-security";
+import { useFutureTotals } from "../hooks/use-future-totals";
 
 const isFuture = (date: DateTime) => date.diffNow("milliseconds").milliseconds > 0;
 
@@ -30,34 +30,7 @@ export const FutureEvents = (props: { year: number; onChange: (year: number) => 
   const socialSecurity = useFutureSocialSecurity(year);
   const clusters = useClusters(year);
   const bonusTakehomeFactor = useStore(store, (x) => 1 - x.projectedWealth.bonusWitholdingsRate);
-
-  const total = useMemo(() => {
-    const remaining = [
-      isFuture(dates.meritBonus) && scaleClusters(clusters.meritBonus, bonusTakehomeFactor),
-      isFuture(dates.companyBonus) && scaleClusters(clusters.companyBonus, bonusTakehomeFactor),
-      isFuture(dates.retirementBonus) && clusters.retirementBonus,
-      [{ min: savings.remaining, max: savings.remaining, probability: 0, median: 0 }],
-      [{ min: retirement.remaining, max: retirement.remaining, probability: 0, median: 0 }],
-      [{ min: socialSecurity.min?.remaining ?? 0, max: socialSecurity.max?.remaining ?? 0, probability: 0, median: 0 }],
-      [{ min: medicare.min?.remaining ?? 0, max: medicare.max?.remaining ?? 0, probability: 0, median: 0 }],
-    ].filter((x) => x !== false) as Cluster[][];
-
-    return SumClusters(remaining);
-  }, [
-    bonusTakehomeFactor,
-    clusters.companyBonus,
-    clusters.meritBonus,
-    clusters.retirementBonus,
-    dates.companyBonus,
-    dates.meritBonus,
-    dates.retirementBonus,
-    medicare.max?.remaining,
-    medicare.min?.remaining,
-    retirement.remaining,
-    savings.remaining,
-    socialSecurity.max?.remaining,
-    socialSecurity.min?.remaining,
-  ]);
+  const total = useFutureTotals(year);
 
   return (
     <>

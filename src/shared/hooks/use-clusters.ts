@@ -1,7 +1,7 @@
 import { useStore } from "@tanstack/react-store";
 import { useMemo } from "react";
 import { scenarioStore } from "shared/store/scenario-store";
-import { clusterTitle } from "shared/utility/cluster-helpers";
+import { clusterTitle, getClusterCount } from "shared/utility/cluster-helpers";
 import { ckmeans, median } from "simple-statistics";
 
 export interface Cluster {
@@ -11,15 +11,6 @@ export interface Cluster {
   probability: number;
   title: string;
 }
-
-const getClusterCount = (length: number) => {
-  if (length < 3) {
-    return length;
-  } else if (length === 4) {
-    return 2;
-  }
-  return 3;
-};
 
 const clusters = (values?: number[]): Cluster[] => {
   if (!values || values.length === 0) {
