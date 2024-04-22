@@ -9,15 +9,15 @@ import { Cash } from "shared/components/formatters/cash";
 import { ClusterValues } from "shared/components/formatters/cluster-value";
 import { CountDown } from "shared/components/formatters/countdown";
 import { Value } from "shared/components/formatters/value";
+import { useClusters } from "shared/hooks/use-clusters";
 import { useDateRanges, useDates } from "shared/hooks/use-dates";
 import { IncomePerPeriod } from "shared/models/IncomePerPeriod";
 import { scenarioStore } from "shared/store/scenario-store";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { monthDay } from "shared/utility/format-date";
-import { Layout } from "./components/data-entry/data-entry";
-import { IncomePerPeriodTooltip } from "./components/income-per-period";
-import { useClusters } from "./hooks/use-gradient";
-import { useHasMeritPairs } from "./hooks/use-has-merit-pairs";
+import { Layout } from "./data-entry/data-entry";
+import { IncomePerPeriodTooltip } from "./income-per-period";
+import { useHasMeritPairs } from "./use-has-merit-pairs";
 
 export const ProjectedIncome = () => {
   const [selectedYear, setSelectedYear] = useState(getLocalDateTime().year);

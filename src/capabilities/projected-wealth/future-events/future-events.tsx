@@ -1,14 +1,6 @@
 import { Box, Stack } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useStore } from "@tanstack/react-store";
-import { Cluster, useClusters } from "capabilities/projected-income/hooks/use-gradient";
-import { useFutureRetirementContributions } from "capabilities/projected-wealth/hooks/use-future-retirement-contributions";
-import { useFutureSavings } from "capabilities/projected-wealth/hooks/use-future-savings";
-import {
-  TresholdTax,
-  useFutureMedicareTax,
-  useFutureSocialSecurity,
-} from "capabilities/projected-wealth/hooks/use-future-social-security";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { Card } from "shared/components/card";
@@ -16,11 +8,15 @@ import { Cash } from "shared/components/formatters/cash";
 import { ClusterValues } from "shared/components/formatters/cluster-value";
 import { CountDown } from "shared/components/formatters/countdown";
 import { Value } from "shared/components/formatters/value";
+import { Cluster, useClusters } from "shared/hooks/use-clusters";
 import { useDates } from "shared/hooks/use-dates";
 import { store } from "shared/store";
 import { SumClusters, scaleClusters } from "shared/utility/cluster-helpers";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { monthDay } from "shared/utility/format-date";
+import { useFutureRetirementContributions } from "../hooks/use-future-retirement-contributions";
+import { useFutureSavings } from "../hooks/use-future-savings";
+import { TresholdTax, useFutureMedicareTax, useFutureSocialSecurity } from "../hooks/use-future-social-security";
 
 const isFuture = (date: DateTime) => date.diffNow("milliseconds").milliseconds > 0;
 

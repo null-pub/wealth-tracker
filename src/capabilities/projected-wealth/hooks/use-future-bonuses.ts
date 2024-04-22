@@ -1,7 +1,7 @@
 import { useStore } from "@tanstack/react-store";
-import { useClusters } from "capabilities/projected-income/hooks/use-gradient";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
+import { useClusters } from "shared/hooks/use-clusters";
 import { useDates } from "shared/hooks/use-dates";
 import { store } from "shared/store";
 import { findMostMostLikely, scaleCluster } from "shared/utility/cluster-helpers";

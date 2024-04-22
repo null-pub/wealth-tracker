@@ -8,7 +8,7 @@ import { Cash } from "shared/components/formatters/cash";
 import { Percent } from "shared/components/formatters/percent";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { shortDate } from "shared/utility/format-date";
-import { TimeSeriesWealth } from "../../hooks/use-times-series-wealth";
+import { TimeSeriesWealth } from "../hooks/use-times-series-wealth";
 
 export const columnConfig: ColDef<TimeSeriesWealth>[] = [
   {

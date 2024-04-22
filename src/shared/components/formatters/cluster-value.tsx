@@ -1,10 +1,10 @@
 import { Box } from "@mui/material";
-import { Cluster } from "capabilities/projected-income/hooks/use-gradient";
 import { DateTime } from "luxon";
 import { CashRange } from "shared/components/formatters/cash-range";
 import { Percent } from "shared/components/formatters/percent";
 import { PercentRange } from "shared/components/formatters/percent-range";
 import { Value } from "shared/components/formatters/value";
+import { Cluster } from "shared/hooks/use-clusters";
 
 interface ClusterValueProps extends Cluster {
   compact?: boolean;

@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
-import { AccountTabs } from "./components/account-tabs";
-import { WealthChart } from "./components/wealth-chart";
+import { AccountTabs } from "./account-tabs";
+import { WealthChart } from "./wealth-chart";
 
 export const NetWealth = () => {
   return (

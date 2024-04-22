@@ -1,9 +1,9 @@
 import { Box, Stack } from "@mui/material";
 import { useState } from "react";
 import { getLocalDateTime } from "shared/utility/current-date";
-import { FutureEvents } from "./components/future-events";
-import { WealthChart } from "./components/wealth-chart";
-import { WealthTable } from "./components/wealth-table";
+import { FutureEvents } from "./future-events";
+import { WealthChart } from "./wealth-chart";
+import { WealthTable } from "./wealth-table";
 
 export const ProjectedWealth = () => {
   const localTime = getLocalDateTime();

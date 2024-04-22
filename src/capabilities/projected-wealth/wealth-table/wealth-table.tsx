@@ -1,7 +1,7 @@
 import { Box } from "@mui/system";
-import { useTimeSeriesWealth } from "capabilities/projected-wealth/hooks/use-times-series-wealth";
 import { AgGrid } from "shared/components/ag-grid";
 import { getLocalDateTime } from "shared/utility/current-date";
+import { useTimeSeriesWealth } from "../hooks/use-times-series-wealth";
 import { columnConfig } from "./colum-config";
 
 export const WealthTable = () => {

@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { formatCash, formatCashShort } from "shared/utility/format-cash";
 import { shortDate } from "shared/utility/format-date";
-import { useTimeSeriesWealth } from "../hooks/use-times-series-wealth";
+import { useTimeSeriesWealth } from "./hooks/use-times-series-wealth";
 
 export const WealthChart = (props: { titleYear: number }) => {
   const dataYear = getLocalDateTime().year + 1;

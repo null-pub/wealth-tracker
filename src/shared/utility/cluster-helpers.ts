@@ -1,4 +1,4 @@
-import { Cluster } from "capabilities/projected-income/hooks/use-gradient";
+import { Cluster } from "shared/hooks/use-clusters";
 
 export const scaleCluster = (cluster: Cluster | undefined, factor: number) => {
   if (!cluster) {
