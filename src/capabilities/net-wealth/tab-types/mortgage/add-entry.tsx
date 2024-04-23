@@ -31,6 +31,7 @@ export const AddEntry = (props: { accountName: string }) => {
         onChange={(date: DateTime | null) => {
           date && setDate(date);
         }}
+        disableFuture
       />
       <TextField
         label="amount"

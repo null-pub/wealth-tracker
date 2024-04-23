@@ -13,6 +13,7 @@ import { store } from "shared/store";
 import { scaleClusters } from "shared/utility/cluster-helpers";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { monthDay } from "shared/utility/format-date";
+import { useFutureMortgageEquity } from "./hooks/use-future-mortgage-equity";
 import { useFutureRetirementContributions } from "./hooks/use-future-retirement-contributions";
 import { useFutureSavings } from "./hooks/use-future-savings";
 import { TresholdTax, useFutureMedicareTax, useFutureSocialSecurity } from "./hooks/use-future-social-security";
@@ -31,6 +32,7 @@ export const FutureEvents = (props: { year: number; onChange: (year: number) => 
   const clusters = useClusters(year);
   const bonusTakehomeFactor = useStore(store, (x) => 1 - x.projectedWealth.bonusWitholdingsRate);
   const total = useFutureTotals(year);
+  const equity = useFutureMortgageEquity(year);
 
   return (
     <>
@@ -93,6 +95,11 @@ export const FutureEvents = (props: { year: number; onChange: (year: number) => 
               secondaryValue={<Cash tooltip="Per Paycheck" value={retirement.perPaycheck} />}
             >
               <Cash tooltip="Total Remaining" value={retirement.remaining} />
+            </Value>
+          )}
+          {!!equity && (
+            <Value title={"Home Equity"}>
+              <Cash tooltip="Total Remaining" value={equity} />
             </Value>
           )}
         </Card>

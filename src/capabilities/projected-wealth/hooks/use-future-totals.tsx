@@ -7,6 +7,7 @@ import { store } from "shared/store";
 import { scenarioStore } from "shared/store/scenario-store";
 import { clusterTitle, getClusterCount } from "shared/utility/cluster-helpers";
 import { ckmeans, median, sumSimple } from "simple-statistics";
+import { useFutureMortgageEquity } from "./use-future-mortgage-equity";
 import { useFutureRetirementContributions } from "./use-future-retirement-contributions";
 import { useFutureSavings } from "./use-future-savings";
 
@@ -25,6 +26,7 @@ export const useFutureTotals = (year: number) => {
   const scenarios = useStore(scenarioStore, (x) => x.scenarios[year]);
   const bonusTakehomeFactor = useStore(store, (x) => 1 - x.projectedWealth.bonusWitholdingsRate);
   const savings = useFutureSavings(year);
+  const homeEquity = useFutureMortgageEquity(year);
   const retirement = useFutureRetirementContributions(year);
   const config = useStore(store, (x) => x.projectedWealth);
 
@@ -44,7 +46,7 @@ export const useFutureTotals = (year: number) => {
       return [[savings.remaining + retirement.remaining]];
     }
     const clusters = ckmeans(totals, getClusterCount(totals?.length));
-    return clusters.map((x) => x.map((y) => y + savings.remaining + retirement.remaining));
+    return clusters.map((x) => x.map((y) => y + savings.remaining + retirement.remaining + homeEquity));
   }, [
     bonusTakehomeFactor,
     config.medicareSupplementalTaxRate,
@@ -54,6 +56,7 @@ export const useFutureTotals = (year: number) => {
     dates.companyBonus,
     dates.meritBonus,
     dates.retirementBonus,
+    homeEquity,
     retirement.remaining,
     savings.remaining,
     scenarios,

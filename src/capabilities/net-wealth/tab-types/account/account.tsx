@@ -57,6 +57,7 @@ export const AccountTab = (props: { accountName: string }) => {
         label="Date"
         defaultValue={date}
         onChange={(value) => value && setDate(value)}
+        disableFuture
       />
       <TextField
         label="amount"
