@@ -19,8 +19,8 @@ export interface TimeSeriesWealth {
 
 const useFuturesWealth = () => {
   const year = getLocalDateTime().year;
-  const totals = useFutureTotals(year);
-  const totalsPlusOne = useFutureTotals(year);
+  const totals = useFutureTotals(year, { excludeHomeEquity: true });
+  const totalsPlusOne = useFutureTotals(year + 1, { excludeHomeEquity: true });
 
   return {
     [year + 1]: findMostMostLikely(totals)?.median ?? 0,
@@ -29,7 +29,7 @@ const useFuturesWealth = () => {
 };
 
 export const useTimeSeriesWealth = (year: number) => {
-  const localDateTime = getLocalDateTime();
+  const localDateTime = getLocalDateTime().startOf("day");
   const earliest = useEarliestAccountEntry();
   const accounts = useStore(store, (x) => x.wealth);
   const futuresWealth = useFuturesWealth();
@@ -44,7 +44,7 @@ export const useTimeSeriesWealth = (year: number) => {
       .map((x, i) => DateTime.fromObject({ day: 1, month: 1, year: x + i }).startOf("day"));
 
     const idx = findNearestIdxOnOrBefore(localDateTime, dates, (x) => x);
-    if (!dates.some((x) => x.equals(localDateTime.startOf("day")))) {
+    if (!dates.some((x) => x.equals(localDateTime))) {
       dates.splice(idx + 1, 0, localDateTime);
     }
 

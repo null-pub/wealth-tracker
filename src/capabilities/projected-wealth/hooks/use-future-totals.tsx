@@ -22,7 +22,11 @@ const thresholdTaxRemaining = (taxRate: number, threshold: number, scenario: Sce
   return remaining;
 };
 
-export const useFutureTotals = (year: number) => {
+export const useFutureTotals = (
+  year: number,
+  options: { excludeHomeEquity: boolean } = { excludeHomeEquity: false }
+) => {
+  const { excludeHomeEquity } = options;
   const scenarios = useStore(scenarioStore, (x) => x.scenarios[year]);
   const bonusTakehomeFactor = useStore(store, (x) => 1 - x.projectedWealth.bonusWitholdingsRate);
   const savings = useFutureSavings(year);
@@ -32,21 +36,24 @@ export const useFutureTotals = (year: number) => {
 
   const dates = useDates(year);
   const rawClusters = useMemo(() => {
-    const totals = scenarios?.map((x) => {
-      const futureBonuses = [
-        isFuture(dates.meritBonus) && x.meritBonus * bonusTakehomeFactor,
-        isFuture(dates.companyBonus) && x.companyBonus * bonusTakehomeFactor,
-        isFuture(dates.retirementBonus) && x.retirementBonus,
-        thresholdTaxRemaining(config.socialSecurityTaxRate, config.socialSecurityLimit, x),
-        thresholdTaxRemaining(-1 * config.medicareSupplementalTaxRate, config.medicareSupplementalTaxThreshold, x),
-      ].filter((x) => x) as number[];
-      return sumSimple(futureBonuses);
-    });
+    const totals = scenarios
+      ?.map((x) => {
+        const futureBonuses = [
+          isFuture(dates.meritBonus) && x.meritBonus * bonusTakehomeFactor,
+          isFuture(dates.companyBonus) && x.companyBonus * bonusTakehomeFactor,
+          isFuture(dates.retirementBonus) && x.retirementBonus,
+          thresholdTaxRemaining(config.socialSecurityTaxRate, config.socialSecurityLimit, x),
+          thresholdTaxRemaining(-1 * config.medicareSupplementalTaxRate, config.medicareSupplementalTaxThreshold, x),
+        ].filter((x) => x) as number[];
+        return sumSimple(futureBonuses);
+      })
+      .map((y) => y + savings.remaining + retirement.remaining + (excludeHomeEquity ? 0 : homeEquity));
+
     if (!totals || totals.length === 0) {
       return [[savings.remaining + retirement.remaining]];
     }
     const clusters = ckmeans(totals, getClusterCount(totals?.length));
-    return clusters.map((x) => x.map((y) => y + savings.remaining + retirement.remaining + homeEquity));
+    return clusters;
   }, [
     bonusTakehomeFactor,
     config.medicareSupplementalTaxRate,
@@ -56,6 +63,7 @@ export const useFutureTotals = (year: number) => {
     dates.companyBonus,
     dates.meritBonus,
     dates.retirementBonus,
+    excludeHomeEquity,
     homeEquity,
     retirement.remaining,
     savings.remaining,
