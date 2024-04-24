@@ -1,7 +1,6 @@
 
 config
     allow soft deleting accounts
-    set default tab
     import migrations need help
 
 
@@ -11,4 +10,4 @@ cache clusters
 
 net-wealth
     trim data points
-    deal with mortgage without loan
+    
