@@ -10,4 +10,5 @@ cache clusters
 
 net-wealth
     trim data points
+    mortgage rate input needs to be in %
     
