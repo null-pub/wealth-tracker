@@ -13,16 +13,16 @@ const getRealDate = (year: number | undefined, data: AccountData[]) => {
   if (!year) {
     return undefined;
   }
-  const meritBonus = findSameYear(year, data);
-  if (!meritBonus) {
+
+  const entry = findSameYear(year, data);
+  if (!entry) {
     return undefined;
   }
 
-  return DateTime.fromISO(meritBonus.date);
+  return DateTime.fromISO(entry.date);
 };
 
 export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Scenario[] => {
-  const startTime = performance.now();
   const localDateTime = getLocalDateTime();
   const dates = {
     meritIncrease: DateTime.fromObject({ month: 4, day: 1, year }),
@@ -31,6 +31,7 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
     companyBonus:
       getRealDate(year, projectedIncome.timeSeries.companyBonus) ?? DateTime.fromObject({ month: 6, day: 15, year }),
   };
+
   const dateRanges = {
     base: {
       start: DateTime.fromObject({ month: 1, day: 1, year }),
@@ -49,6 +50,7 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
       end: DateTime.fromObject({ day: 30, month: 6, year }).endOf("day"),
     },
   };
+
   const timeSeries = projectedIncome.timeSeries;
   const meritSequence = getMeritSequence(year, projectedIncome);
 
@@ -73,7 +75,7 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
   const basePayAndMeritScenarios =
     meritSequence.length === 0
       ? emptyMeritSequence
-      : meritSequence.map((merits) => {
+      : meritSequence.map(({ weight, values: merits }) => {
           const next = pay.slice();
           const initial = next.length;
           for (let i = initial; i < merits.length + initial; i++) {
@@ -108,6 +110,7 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
           );
 
           return {
+            weight,
             pay: next,
             lastThreeMeritBonusFactor,
             lastThreeMeritBonuses,
@@ -196,7 +199,5 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
     };
   });
 
-  const endTime = performance.now();
-  console.log(`generating ${totals.length} scenarios took ${Math.round(endTime - startTime)} milliseconds`);
   return totals;
 };

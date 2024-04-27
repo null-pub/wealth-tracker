@@ -2,7 +2,7 @@ import { useStore } from "@tanstack/react-store";
 import { useMemo } from "react";
 import { scenarioStore } from "shared/store/scenario-store";
 import { clusterTitle, getClusterCount } from "shared/utility/cluster-helpers";
-import { ckmeans, median } from "simple-statistics";
+import { ckmeans, max, median, min } from "simple-statistics";
 
 export interface Cluster {
   min: number;
@@ -19,8 +19,8 @@ const clusters = (values?: number[]): Cluster[] => {
 
   const clusters = ckmeans(values, getClusterCount(values)).map((x, i, arr) => {
     return {
-      min: Math.min(...x),
-      max: Math.max(...x),
+      min: min(x),
+      max: max(x),
       median: median(x),
       probability: x.length / values.length,
       title: clusterTitle(i, arr.length),
@@ -47,13 +47,15 @@ export const useClusters = (year: number) => {
       };
     }
     return {
-      totalPay: clusters(scenarios?.map((x) => x.totalPay)),
-      meritBonus: clusters(scenarios?.map((x) => x.meritBonus)),
-      retirementBonus: clusters(scenarios?.map((x) => x.retirementBonus)),
-      companyBonus: clusters(scenarios?.map((x) => x.companyBonus)),
-      pay: clusters(scenarios?.map((x) => x.pay.at(-1)?.value ?? 0)),
-      meritIncrease: clusters(scenarios?.map((x) => x.meritIncreasePct + x.equityIncreasePct)),
-      taxablePay: clusters(scenarios?.map((x) => x.taxablePay)),
+      totalPay: clusters(scenarios?.flatMap((x) => new Array(x.weight).fill(x.totalPay))),
+      meritBonus: clusters(scenarios?.flatMap((x) => new Array(x.weight).fill(x.meritBonus))),
+      retirementBonus: clusters(scenarios?.flatMap((x) => new Array(x.weight).fill(x.retirementBonus))),
+      companyBonus: clusters(scenarios?.flatMap((x) => new Array(x.weight).fill(x.companyBonus))),
+      pay: clusters(scenarios?.flatMap((x) => new Array(x.weight).fill(x.pay.at(-1)?.value ?? 0))),
+      meritIncrease: clusters(
+        scenarios?.flatMap((x) => new Array(x.weight).fill(x.meritIncreasePct + x.equityIncreasePct))
+      ),
+      taxablePay: clusters(scenarios?.flatMap((x) => new Array(x.weight).fill(x.taxablePay))),
       scenarios,
     };
   }, [scenarios]);

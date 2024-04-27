@@ -29,4 +29,5 @@ export interface Scenario {
   taxablePay: number;
   currentPaymentIdx: number;
   remainingPayments: number;
+  weight: number;
 }

@@ -14,13 +14,12 @@ const maxYear = (() => {
       return Math.max(currentYear, i - 1);
     }
   }
-  return currentYear + 3;
+  return currentYear + 10;
 })();
 
 const worker = new Worker(new URL("worker.js", import.meta.url), { type: "module" });
 worker.onmessage = (event: MessageEvent<{ year: number; scenarios: Scenario[] }>) => {
   const isLoading = event.data.year !== maxYear;
-
   scenarioStore.setState((prev) => {
     return create(prev, (x) => {
       x.scenarios[event.data.year] = event.data.scenarios;
@@ -40,8 +39,7 @@ const loadAllScenarios = () => {
     worker.postMessage({ year: i, projectedIncome });
   }
   for (let i = currentYear; i <= maxYear; i++) {
-    const size = getScenarioSize(i, projectedIncome);
-    size < 2499 && worker.postMessage({ year: i, projectedIncome });
+    worker.postMessage({ year: i, projectedIncome });
   }
 };
 loadAllScenarios();

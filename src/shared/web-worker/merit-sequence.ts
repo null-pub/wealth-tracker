@@ -5,15 +5,7 @@ import { getPayments } from "shared/utility/get-payments";
 import { valueByDateRange } from "shared/utility/get-values-by-date-range";
 
 export const getScenarioSize = (year: number, projectedIncome: ProjectedIncome) => {
-  const timeSeries = projectedIncome.timeSeries;
-  const pay = timeSeries.paycheck.filter((x) => DateTime.fromISO(x.date).year > year - 3);
-  const mostRecentPay = pay.at(-1) ?? timeSeries.paycheck.at(-1);
-  if (!mostRecentPay) {
-    return 0;
-  }
-
-  const yearsToGenerate = Math.max(year - DateTime.fromISO(mostRecentPay.date).year, 1);
-  return Math.pow(timeSeries.meritIncreasePct.length, yearsToGenerate) * timeSeries.companyBonus.length;
+  return getMeritSequence(year, projectedIncome).length * projectedIncome.timeSeries.companyBonus.length;
 };
 
 const getMeritPairs = (year: number, projectedIncome: ProjectedIncome) => {
@@ -35,6 +27,8 @@ const getMeritPairs = (year: number, projectedIncome: ProjectedIncome) => {
 };
 
 export const getMeritSequence = (year: number, projectedIncome: ProjectedIncome) => {
+  const startTime = performance.now();
+
   const timeSeries = projectedIncome.timeSeries;
   const meritPairs = getMeritPairs(year, projectedIncome);
 
@@ -55,7 +49,17 @@ export const getMeritSequence = (year: number, projectedIncome: ProjectedIncome)
       });
     });
   }
-  return meritSequence;
+
+  const groups = Object.entries(Object.groupBy(meritSequence, (x) => JSON.stringify(x))).map(([, values]) => {
+    return {
+      weight: values!.length,
+      values: values!.at(0)!,
+    };
+  });
+
+  const endTime = performance.now();
+  console.log("getMeritSequence", `${Math.round(endTime - startTime)} milliseconds`);
+  return groups;
 };
 
 export const getEmptyMeritSequence = (year: number, projectedIncome: ProjectedIncome, pay: AccountData[]) => {
@@ -85,6 +89,7 @@ export const getEmptyMeritSequence = (year: number, projectedIncome: ProjectedIn
       payments,
       equityIncreasePct,
       retirementBonusPct: 0.15,
+      weight: 1,
     },
   ];
 };
