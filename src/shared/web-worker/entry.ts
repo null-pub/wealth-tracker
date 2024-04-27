@@ -41,7 +41,7 @@ const loadAllScenarios = () => {
   }
   for (let i = currentYear; i <= maxYear; i++) {
     const size = getScenarioSize(i, projectedIncome);
-    size < 2499 && size > 0 && worker.postMessage({ year: i, projectedIncome });
+    size < 2499 && worker.postMessage({ year: i, projectedIncome });
   }
 };
 loadAllScenarios();
