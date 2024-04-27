@@ -31,10 +31,12 @@ export const clusterTitle = (index: number, length: number) => {
   }
 };
 
-export const getClusterCount = (length: number) => {
-  if (length < 3) {
-    return length;
-  } else if (length === 4) {
+export const getClusterCount = (values: number[]) => {
+  const uniqeValues = new Set(values).size;
+
+  if (uniqeValues < 3) {
+    return uniqeValues;
+  } else if (uniqeValues === 4) {
     return 2;
   }
   return 3;

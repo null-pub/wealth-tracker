@@ -17,7 +17,7 @@ const clusters = (values?: number[]): Cluster[] => {
     return [];
   }
 
-  const clusters = ckmeans(values, getClusterCount(values.length)).map((x, i, arr) => {
+  const clusters = ckmeans(values, getClusterCount(values)).map((x, i, arr) => {
     return {
       min: Math.min(...x),
       max: Math.max(...x),
@@ -26,12 +26,7 @@ const clusters = (values?: number[]): Cluster[] => {
       title: clusterTitle(i, arr.length),
     };
   });
-  for (let i = 0; i < clusters.length; i++) {
-    if (i < clusters.length - 1 && clusters[i].min === clusters[i + 1].min && clusters[i].max === clusters[i + 1].max) {
-      clusters[i + 1].probability += clusters[i].probability;
-      clusters.splice(i, 1);
-    }
-  }
+
   return clusters;
 };
 

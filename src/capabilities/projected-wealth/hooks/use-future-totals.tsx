@@ -52,7 +52,7 @@ export const useFutureTotals = (
     if (!totals || totals.length === 0) {
       return [[savings.remaining + retirement.remaining]];
     }
-    const clusters = ckmeans(totals, getClusterCount(totals?.length));
+    const clusters = ckmeans(totals, getClusterCount(totals));
     return clusters;
   }, [
     bonusTakehomeFactor,
