@@ -6,7 +6,7 @@ import { DateTime } from "luxon";
 import { useMemo, useState } from "react";
 import { Card } from "shared/components/card";
 import { Cash } from "shared/components/formatters/cash";
-import { ClusterValues } from "shared/components/formatters/cluster-value";
+import { ClusterValue, ClusterValues } from "shared/components/formatters/cluster-value";
 import { CountDown } from "shared/components/formatters/countdown";
 import { Value } from "shared/components/formatters/value";
 import { useClusters } from "shared/hooks/use-clusters";
@@ -85,7 +85,7 @@ export const ProjectedIncome = () => {
   return (
     <Box display="flex" flexDirection="row" height="100%" width={"100%"}>
       <Box flex="0 1 auto">
-        <Stack gap={2} direction={"column"} overflow={"auto"} height="100%" paddingRight={1}>
+        <Stack gap={2} direction={"column"} overflow={"auto"} height="100%" paddingRight={1} minWidth={480}>
           {!hasMissingPairs && (
             <Alert severity="error">Every Merit Increase must have a paired Merit Bonus percent</Alert>
           )}
@@ -127,30 +127,31 @@ export const ProjectedIncome = () => {
               </Box>
             }
           >
-            <ClusterValues clusters={clusters.pay} eventDate={dates.meritIncrease} compact={false} />
+            {!basePay && <ClusterValues clusters={clusters.pay} eventDate={dates.meritIncrease} compact={false} />}
             {basePay && (
-              <Tooltip
-                placement="right"
-                componentsProps={{
-                  tooltip: {
-                    sx: {
-                      maxWidth: "none",
+              <>
+                <ClusterValue {...clusters.pay[0]} title={"Paycheck"} compact={false} />
+                <Tooltip
+                  placement="bottom"
+                  componentsProps={{
+                    tooltip: {
+                      sx: {
+                        maxWidth: "none",
+                      },
                     },
-                  },
-                }}
-                title={paychecks && <IncomePerPeriodTooltip incomePerPeriod={paychecks} />}
-              >
-                <div>
-                  <Value title={"Base Pay"}>
-                    <Cash disableTooltip value={basePay} />
-                  </Value>
-                </div>
-              </Tooltip>
-            )}
-            {aprToApr && (
-              <Value title={"APR to APR"}>
-                <Cash value={aprToApr} />
-              </Value>
+                  }}
+                  title={paychecks && <IncomePerPeriodTooltip incomePerPeriod={paychecks} />}
+                >
+                  <div>
+                    <Value title={"Base Pay"}>
+                      <Cash disableTooltip value={basePay} />
+                    </Value>
+                  </div>
+                </Tooltip>
+                <Value title={"APR to APR"}>
+                  <Cash value={aprToApr} />
+                </Value>
+              </>
             )}
           </Card>
           <Card

@@ -15,7 +15,7 @@ export const Value = (props: CellProps) => {
     <Box
       sx={{
         display: "flex",
-        minWidth: 106,
+        minWidth: 145,
         height: 64,
         padding: "0px 8px",
         flexDirection: "column",

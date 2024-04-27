@@ -85,15 +85,12 @@ export const FutureEvents = (props: { year: number; onChange: (year: number) => 
 
         <Card title={"Savings & Retirement"}>
           {!!savings.perMonth && (
-            <Value title={"Expected savings"} secondaryValue={<Cash tooltip="Per Month" value={savings.perMonth} />}>
+            <Value title={"savings"} secondaryValue={<Cash tooltip="Per Month" value={savings.perMonth} />}>
               <Cash tooltip="Total Remaining" value={savings.remaining} />
             </Value>
           )}
           {!!retirement.perPaycheck && (
-            <Value
-              title={"retirement contribution"}
-              secondaryValue={<Cash tooltip="Per Paycheck" value={retirement.perPaycheck} />}
-            >
+            <Value title={"retirement"} secondaryValue={<Cash tooltip="Per Paycheck" value={retirement.perPaycheck} />}>
               <Cash tooltip="Total Remaining" value={retirement.remaining} />
             </Value>
           )}

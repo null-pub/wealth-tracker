@@ -8,12 +8,14 @@ import { Cluster } from "shared/hooks/use-clusters";
 
 interface ClusterValueProps extends Cluster {
   compact?: boolean;
+  className?: string;
 }
 
-const ClusterValue = (props: ClusterValueProps) => {
-  const { min, max, probability, title, compact } = props;
+export const ClusterValue = (props: ClusterValueProps) => {
+  const { min, max, probability, title, compact, className } = props;
   return (
     <Value
+      className={className}
       title={
         <Box display={"flex"} gap={1}>
           <span>{title}</span>
