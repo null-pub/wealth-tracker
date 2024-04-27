@@ -17,29 +17,41 @@ const maxYear = (() => {
   return currentYear + 10;
 })();
 
-const worker = new Worker(new URL("worker.js", import.meta.url), { type: "module" });
-worker.onmessage = (event: MessageEvent<{ year: number; scenarios: Scenario[] }>) => {
-  const isLoading = event.data.year !== maxYear;
-  scenarioStore.setState((prev) => {
-    return create(prev, (x) => {
-      x.scenarios[event.data.year] = event.data.scenarios;
-      x.loading = isLoading;
-      x.maxYear = Math.max(event.data.year, x.maxYear);
-      x.minYear = Math.min(event.data.year, x.minYear);
-    });
-  });
-};
+const workers = [
+  new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "1" }),
+  new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "2" }),
+  new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "3" }),
+  new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "4" }),
+];
+
+workers.map(
+  (x) =>
+    (x.onmessage = (event: MessageEvent<{ year: number; scenarios: Scenario[] }>) => {
+      const isLoading = event.data.year !== maxYear;
+      scenarioStore.setState((prev) => {
+        return create(prev, (x) => {
+          x.scenarios[event.data.year] = event.data.scenarios;
+          x.loading = isLoading;
+          x.maxYear = Math.max(event.data.year, x.maxYear);
+          x.minYear = Math.min(event.data.year, x.minYear);
+        });
+      });
+    })
+);
 
 const loadAllScenarios = () => {
   const projectedIncome = store.state.projectedIncome;
   const first = projectedIncome.timeSeries.paycheck[1]?.date;
   const date = first ? DateTime.fromISO(first) : getLocalDateTime();
   const oldestYear = date.year;
+  let workerIdx = 0;
   for (let i = oldestYear; i < currentYear; i++) {
-    worker.postMessage({ year: i, projectedIncome });
+    const idx = workerIdx++ % workers.length;
+    workers[idx].postMessage({ year: i, projectedIncome });
   }
   for (let i = currentYear; i <= maxYear; i++) {
-    worker.postMessage({ year: i, projectedIncome });
+    const idx = workerIdx++ % workers.length;
+    workers[idx].postMessage({ year: i, projectedIncome });
   }
 };
 loadAllScenarios();

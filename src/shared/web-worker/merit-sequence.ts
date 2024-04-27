@@ -27,8 +27,6 @@ const getMeritPairs = (year: number, projectedIncome: ProjectedIncome) => {
 };
 
 export const getMeritSequence = (year: number, projectedIncome: ProjectedIncome) => {
-  const startTime = performance.now();
-
   const timeSeries = projectedIncome.timeSeries;
   const meritPairs = getMeritPairs(year, projectedIncome);
 
@@ -57,8 +55,6 @@ export const getMeritSequence = (year: number, projectedIncome: ProjectedIncome)
     };
   });
 
-  const endTime = performance.now();
-  console.log("getMeritSequence", `${Math.round(endTime - startTime)} milliseconds`);
   return groups;
 };
 
