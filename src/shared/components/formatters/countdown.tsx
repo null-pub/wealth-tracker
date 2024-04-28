@@ -52,7 +52,7 @@ export const CountDown = (props: DurationProps) => {
       return "orange";
     }
 
-    return "red";
+    return "rgb(244, 67, 54)";
   }, [dateTime]);
 
   return dateTime && dateTime > getLocalDateTime() ? (

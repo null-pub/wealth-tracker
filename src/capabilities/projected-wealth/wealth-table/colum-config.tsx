@@ -54,12 +54,12 @@ export const columnConfig: ColDef<TimeSeriesWealth>[] = [
               <Tooltip
                 title={`Benchmark for ${localDateTime.set({ day: 1, month: 1 }).plus({ years: 2 }).toFormat(shortDate)} `}
               >
-                <QueryStatsIcon htmlColor="red" />
+                <QueryStatsIcon htmlColor="rgb(244, 67, 54)" />
               </Tooltip>
             )}
           {x.value && x.value > localDateTime && (
             <Tooltip title="Future Event">
-              <UpdateIcon htmlColor={x.value.year - systemYear > 1 ? "red" : "orange"} />
+              <UpdateIcon htmlColor={x.value.year - systemYear > 1 ? "rgb(244, 67, 54)" : "orange"} />
             </Tooltip>
           )}
         </Stack>

@@ -18,7 +18,7 @@ const getColor = (probability?: number) => {
   if (probability >= 0.25) {
     return "orange";
   }
-  return "red";
+  return "rgb(244, 67, 54)";
 };
 
 export const Percent = ({ value, probability, fallback }: PercentProps) => {
