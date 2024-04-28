@@ -31,8 +31,8 @@ export const clusterTitle = (index: number, length: number) => {
   }
 };
 
-export const getClusterCount = (values: number[]) => {
-  const uniqeValues = new Set(values).size;
+export const getClusterCount = <T>(values: T[], selector: (x: T) => number) => {
+  const uniqeValues = new Set(values.map((x) => selector(x))).size;
 
   if (uniqeValues < 3) {
     return uniqeValues;

@@ -1,8 +1,10 @@
 import { useStore } from "@tanstack/react-store";
 import { useMemo } from "react";
+import { Scenario } from "shared/models/scenario";
 import { scenarioStore } from "shared/store/scenario-store";
+import { ckmeans } from "shared/utility/ckmeans";
 import { clusterTitle, getClusterCount } from "shared/utility/cluster-helpers";
-import { ckmeans, max, median, min } from "simple-statistics";
+import { max, median, min, sumSimple } from "simple-statistics";
 
 export interface Cluster {
   min: number;
@@ -12,22 +14,26 @@ export interface Cluster {
   title: string;
 }
 
-const clusters = (values?: number[]): Cluster[] => {
+const clusters = <T extends Scenario>(values: T[] | undefined, selector: (x: T) => number): Cluster[] => {
   if (!values || values.length === 0) {
     return [];
   }
 
-  const clusters = ckmeans(values, getClusterCount(values)).map((x, i, arr) => {
+  const totalWeight = sumSimple(values.map((x) => x.weight));
+  const clusterCount = getClusterCount(values, selector);
+  const clusters = ckmeans(values, clusterCount, selector);
+
+  const result = clusters.map((x, i, arr) => {
     return {
-      min: min(x),
-      max: max(x),
-      median: median(x),
-      probability: x.length / values.length,
+      min: min(x.map((x) => selector(x))),
+      max: max(x.map((x) => selector(x))),
+      median: median(x.map((x) => selector(x))),
+      probability: sumSimple(x.map((x) => x.weight)) / totalWeight,
       title: clusterTitle(i, arr.length),
     };
   });
 
-  return clusters;
+  return result;
 };
 
 export const useClusters = (year: number) => {
@@ -47,15 +53,13 @@ export const useClusters = (year: number) => {
       };
     }
     return {
-      totalPay: clusters(scenarios?.flatMap((x) => new Array(x.weight).fill(x.totalPay))),
-      meritBonus: clusters(scenarios?.flatMap((x) => new Array(x.weight).fill(x.meritBonus))),
-      retirementBonus: clusters(scenarios?.flatMap((x) => new Array(x.weight).fill(x.retirementBonus))),
-      companyBonus: clusters(scenarios?.flatMap((x) => new Array(x.weight).fill(x.companyBonus))),
-      pay: clusters(scenarios?.flatMap((x) => new Array(x.weight).fill(x.pay.at(-1)?.value ?? 0))),
-      meritIncrease: clusters(
-        scenarios?.flatMap((x) => new Array(x.weight).fill(x.meritIncreasePct + x.equityIncreasePct))
-      ),
-      taxablePay: clusters(scenarios?.flatMap((x) => new Array(x.weight).fill(x.taxablePay))),
+      totalPay: clusters(scenarios, (x) => x.totalPay),
+      meritBonus: clusters(scenarios, (x) => x.meritBonus),
+      retirementBonus: clusters(scenarios, (x) => x.retirementBonus),
+      companyBonus: clusters(scenarios, (x) => x.companyBonus),
+      pay: clusters(scenarios, (x) => x.pay.at(-1)?.value ?? 0),
+      meritIncrease: clusters(scenarios, (x) => x.meritIncreasePct + x.equityIncreasePct),
+      taxablePay: clusters(scenarios, (x) => x.taxablePay),
       scenarios,
     };
   }, [scenarios]);
@@ -70,7 +74,7 @@ export const useTotalPayClusters = () => {
     }
 
     return allScenarios.map(([year, scenarios]) => {
-      return [year, clusters(scenarios!.flatMap((x) => new Array(x.weight).fill(x.totalPay)))];
+      return [year, clusters(scenarios, (x) => x.totalPay)];
     }) as [string, Cluster[]][];
   }, [scenarios]);
 };
