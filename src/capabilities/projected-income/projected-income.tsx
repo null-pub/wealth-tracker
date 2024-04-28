@@ -196,9 +196,11 @@ export const ProjectedIncome = () => {
           >
             <ClusterValues clusters={clusters.retirementBonus} eventDate={dates.retirementBonus} />
           </Card>
-          <div css={{ width: "100%", height: 285 }}>
-            <IncomeChart />
-          </div>
+          {!scenarios.loading && (
+            <div css={{ width: "100%", height: 285 }}>
+              <IncomeChart />
+            </div>
+          )}
         </Stack>
       </Box>
       <Box flex="1 1 auto" overflow={"auto"} paddingBottom={2} paddingLeft={1}>

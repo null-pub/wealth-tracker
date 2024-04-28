@@ -26,8 +26,8 @@ export const IncomeChart = () => {
     return clusters
       .filter(([year]) => +year <= getLocalDateTime().year)
       .map(([year, x]) => ({
-        totalPay: x[0].median,
-        date: DateTime.fromObject({ year: +year }).endOf("year").toJSDate(),
+        totalPay: x[0]?.median ?? 0,
+        date: DateTime.fromObject({ year: +year, month: 1, day: 1 }).toJSDate(),
       }));
   }, [clusters]);
 
@@ -36,7 +36,7 @@ export const IncomeChart = () => {
       .filter(([year]) => +year >= getLocalDateTime().year)
       .map(([year, x]) => {
         const data = Object.fromEntries(
-          x.flatMap((x) => {
+          x?.flatMap((x) => {
             const title = x.title.toLocaleLowerCase();
             return [
               [title, x.median],
@@ -46,7 +46,7 @@ export const IncomeChart = () => {
         );
         return {
           ...data,
-          date: DateTime.fromObject({ year: +year }).endOf("year").toJSDate(),
+          date: DateTime.fromObject({ year: +year, month: 1, day: 1 }).toJSDate(),
         };
       });
   }, [clusters]);
@@ -148,6 +148,7 @@ export const IncomeChart = () => {
           label: {
             format: "%Y",
           },
+          nice: false,
         },
         {
           type: "number",
