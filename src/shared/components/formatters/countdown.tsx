@@ -49,7 +49,7 @@ export const CountDown = (props: DurationProps) => {
     if (days < 30) {
       return "green";
     } else if (days <= 60) {
-      return "yellow";
+      return "orange";
     }
 
     return "red";

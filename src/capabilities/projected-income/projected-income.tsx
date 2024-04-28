@@ -16,6 +16,7 @@ import { scenarioStore } from "shared/store/scenario-store";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { monthDay } from "shared/utility/format-date";
 import { Layout } from "./data-entry/data-entry";
+import { IncomeChart } from "./income-chart";
 import { IncomePerPeriodTooltip } from "./income-per-period";
 import { useHasMeritPairs } from "./use-has-merit-pairs";
 
@@ -84,7 +85,7 @@ export const ProjectedIncome = () => {
 
   return (
     <Box display="flex" flexDirection="row" height="100%" width={"100%"}>
-      <Box flex="0 1 auto">
+      <Box flex="0 1 auto" maxWidth={500} height="100%">
         <Stack gap={2} direction={"column"} overflow={"auto"} height="100%" paddingRight={1} minWidth={480}>
           {!hasMissingPairs && (
             <Alert severity="error">Every Merit Increase must have a paired Merit Bonus percent</Alert>
@@ -195,6 +196,9 @@ export const ProjectedIncome = () => {
           >
             <ClusterValues clusters={clusters.retirementBonus} eventDate={dates.retirementBonus} />
           </Card>
+          <div css={{ width: "100%", height: 285 }}>
+            <IncomeChart />
+          </div>
         </Stack>
       </Box>
       <Box flex="1 1 auto" overflow={"auto"} paddingBottom={2} paddingLeft={1}>

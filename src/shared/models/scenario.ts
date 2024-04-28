@@ -10,6 +10,7 @@ export interface ScenarioPayment {
 }
 
 export interface Scenario {
+  year: number;
   totalPay: number;
   basePay: number;
   meritBonus: number;

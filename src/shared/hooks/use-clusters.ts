@@ -60,3 +60,17 @@ export const useClusters = (year: number) => {
     };
   }, [scenarios]);
 };
+
+export const useTotalPayClusters = () => {
+  const scenarios = useStore(scenarioStore, (x) => x.scenarios);
+  return useMemo(() => {
+    const allScenarios = Object.entries(scenarios);
+    if (allScenarios.length === 0) {
+      return [];
+    }
+
+    return allScenarios.map(([year, scenarios]) => {
+      return [year, clusters(scenarios!.flatMap((x) => new Array(x.weight).fill(x.totalPay)))];
+    }) as [string, Cluster[]][];
+  }, [scenarios]);
+};

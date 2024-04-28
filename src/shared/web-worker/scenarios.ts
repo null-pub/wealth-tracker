@@ -186,6 +186,7 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
       });
 
     return {
+      year,
       totalPay,
       basePay,
       meritBonus,

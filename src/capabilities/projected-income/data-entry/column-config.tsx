@@ -30,7 +30,7 @@ export const createAccountColumnConfig = (
           {x.valueFormatted}&nbsp;
           {x.value && x.value > DateTime.local() && (
             <Tooltip title="Future Event">
-              <UpdateIcon htmlColor="yellow" />
+              <UpdateIcon htmlColor="orange" />
             </Tooltip>
           )}
         </Stack>

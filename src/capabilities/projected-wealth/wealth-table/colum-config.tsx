@@ -26,7 +26,7 @@ export const columnConfig: ColDef<TimeSeriesWealth>[] = [
           {x.valueFormatted}&nbsp;
           {x.value && x.value.equals(localDateTime) && (
             <Tooltip title="Today">
-              <TodayIcon htmlColor="yellow" />
+              <TodayIcon htmlColor="orange" />
             </Tooltip>
           )}
           {x.value &&
@@ -40,7 +40,7 @@ export const columnConfig: ColDef<TimeSeriesWealth>[] = [
               <Tooltip
                 title={`Benchmark for ${localDateTime.toFormat(shortDate)} & ${localDateTime.set({ day: 1, month: 1 }).plus({ years: 1 }).toFormat(shortDate)} `}
               >
-                <QueryStatsIcon htmlColor="yellow" />
+                <QueryStatsIcon htmlColor="orange" />
               </Tooltip>
             )}
           {x.value &&
@@ -59,7 +59,7 @@ export const columnConfig: ColDef<TimeSeriesWealth>[] = [
             )}
           {x.value && x.value > localDateTime && (
             <Tooltip title="Future Event">
-              <UpdateIcon htmlColor={x.value.year - systemYear > 1 ? "red" : "yellow"} />
+              <UpdateIcon htmlColor={x.value.year - systemYear > 1 ? "red" : "orange"} />
             </Tooltip>
           )}
         </Stack>

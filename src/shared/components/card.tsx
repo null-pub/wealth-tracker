@@ -12,7 +12,8 @@ export const Card = (props: { title: ReactNode; children?: ReactNode }) => {
         minWidth: 0,
         backgroundColor: "#121212",
         boxShadow: "2px 3px 9px 1px #12121252",
-        overflow: "hidden",
+
+        minHeight: "max-content",
       }}
     >
       <Typography sx={{ paddingBottom: 1, paddingLeft: 2, paddingTop: 1, display: "flex" }} variant="h5">
