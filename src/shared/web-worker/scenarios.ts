@@ -208,6 +208,5 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
     };
   });
 
-  console.log(totals);
   return totals;
 };
