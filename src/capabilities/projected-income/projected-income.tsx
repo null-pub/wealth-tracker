@@ -86,7 +86,7 @@ export const ProjectedIncome = () => {
   return (
     <Box display="flex" flexDirection="row" height="100%" width={"100%"}>
       <Box flex="0 1 auto" maxWidth={500} height="100%">
-        <Stack gap={2} direction={"column"} overflow={"auto"} height="100%" paddingRight={1} minWidth={480}>
+        <Stack gap={2} direction={"column"} overflow={"auto"} height="100%" paddingRight={1} minWidth={500}>
           {!hasMissingPairs && (
             <Alert severity="error">Every Merit Increase must have a paired Merit Bonus percent</Alert>
           )}

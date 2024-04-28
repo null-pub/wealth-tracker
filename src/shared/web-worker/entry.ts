@@ -19,9 +19,9 @@ const maxYear = (() => {
 
 const workers = [
   new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "1" }),
-  //new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "2" }),
-  // new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "3" }),
-  //new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "4" }),
+  new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "2" }),
+  new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "3" }),
+  new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "4" }),
 ];
 
 workers.map(
@@ -44,12 +44,16 @@ const loadAllScenarios = () => {
   const first = projectedIncome.timeSeries.paycheck[1]?.date;
   const date = first ? DateTime.fromISO(first) : getLocalDateTime();
   const oldestYear = date.year;
-  let workerIdx = 0;
+
+  workers[0].postMessage({ year: currentYear, projectedIncome });
+
+  let workerIdx = 1;
   for (let i = oldestYear; i < currentYear; i++) {
     const idx = workerIdx++ % workers.length;
     workers[idx].postMessage({ year: i, projectedIncome });
   }
-  for (let i = currentYear; i <= maxYear; i++) {
+
+  for (let i = currentYear + 1; i <= maxYear; i++) {
     const idx = workerIdx++ % workers.length;
     workers[idx].postMessage({ year: i, projectedIncome });
   }

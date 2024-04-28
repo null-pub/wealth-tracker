@@ -107,6 +107,10 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
             });
           }
 
+          nextPay.forEach((x) => {
+            x.value = Math.round(x.value);
+          });
+
           const projectedMerit = merits.map((x) => x.meritBonusPct);
           const lastThreeMeritBonuses = actualMeritBonusPcts.concat(projectedMerit).slice(-3);
           const lastThreeMeritBonusFactor = sumSimple(lastThreeMeritBonuses);
