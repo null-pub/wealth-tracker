@@ -77,6 +77,7 @@ export const getEmptyMeritSequence = (year: number, projectedIncome: ProjectedIn
 
   return [
     {
+      year,
       pay: pay.slice(),
       lastThreeMeritBonusFactor,
       lastThreeMeritBonuses,

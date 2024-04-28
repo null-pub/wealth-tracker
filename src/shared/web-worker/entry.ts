@@ -19,9 +19,9 @@ const maxYear = (() => {
 
 const workers = [
   new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "1" }),
-  new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "2" }),
-  new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "3" }),
-  new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "4" }),
+  //new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "2" }),
+  // new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "3" }),
+  //new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "4" }),
 ];
 
 workers.map(
