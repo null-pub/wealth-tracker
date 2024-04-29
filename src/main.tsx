@@ -8,6 +8,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { ErrorBoundary } from "react-error-boundary";
 import "shared/web-worker/entry";
+import "./index.css";
 
 const darkTheme = createTheme({
   palette: {
