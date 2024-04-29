@@ -143,7 +143,7 @@ export const ScenarioExplorer = () => {
                       itemId="equityIncreasePct"
                       label={
                         <Stack direction={"row"} spacing={1}>
-                          <span>Merit Increase: </span>
+                          <span>Equity Increase: </span>
                           <Percent value={scenario.equityIncreasePct} />
                         </Stack>
                       }
