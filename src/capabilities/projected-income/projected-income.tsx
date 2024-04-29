@@ -49,13 +49,14 @@ export const ProjectedIncome = () => {
     }
 
     const payPeriods =
-      clusters.scenarios?.[0].payments.filter((x) => {
-        const payedOn = DateTime.fromISO(x.payedOn);
-        return payedOn >= dateRanges.base.start && payedOn <= dateRanges.base.end;
-      }) ?? [];
+      clusters.scenarios?.[0].payments
+        .filter((x) => x.type === PaymentTypes.regular)
+        .filter((x) => {
+          const payedOn = DateTime.fromISO(x.payedOn);
+          return payedOn >= dateRanges.base.start && payedOn <= dateRanges.base.end;
+        }) ?? [];
 
     return payPeriods
-      .filter((x) => x.type !== PaymentTypes.bonus)
       .reduceRight(
         (acc, curr) => {
           if (acc[0]?.[0]?.value === curr.value) {
