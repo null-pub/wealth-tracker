@@ -1,10 +1,11 @@
 import { DateTime } from "luxon";
+import { PaymentPeriod, PaymentTypes } from "shared/models/payment-periods";
 import { Scenario } from "shared/models/scenario";
 import { AccountData, ProjectedIncome } from "shared/models/store/current";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { findNearestIdxOnOrBefore } from "shared/utility/find-nearest-on-or-before";
 import { findSameYear } from "shared/utility/find-same-year";
-import { PaymentPeriod, getPayments } from "shared/utility/get-payments";
+import { getPayments } from "shared/utility/get-payments";
 import { valueByDateRange } from "shared/utility/get-values-by-date-range";
 import { groupBySingle } from "shared/utility/group-by-single";
 import { incomeByRange } from "shared/utility/income-by-range";
@@ -33,6 +34,8 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
       getRealDate(year, projectedIncome.timeSeries.meritBonus) ?? DateTime.fromObject({ month: 4, day: 15, year }),
     companyBonus:
       getRealDate(year, projectedIncome.timeSeries.companyBonus) ?? DateTime.fromObject({ month: 6, day: 15, year }),
+    retirement:
+      getRealDate(year, projectedIncome.timeSeries.retirementBonus) ?? DateTime.fromObject({ month: 7, day: 15, year }),
   };
 
   const dateRanges = {
@@ -138,24 +141,23 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
 
   const postBasePay = basePayAndMeritScenarios.map((x) => {
     const aprToApr = (x.pay.at(-1)?.value ?? 0) * 26;
-    const basePay = Math.round(incomeByRange(["regular"], dateRanges.base, x.payments));
+    const basePay = Math.round(incomeByRange([PaymentTypes.regular], dateRanges.base, x.payments));
     const meritBonus =
-      paid.meritBonus ?? Math.round(incomeByRange(["regular"], dateRanges.meritBonus, x.payments) * x.meritBonusPct);
-    const currentPaymentIdx = findNearestIdxOnOrBefore(localDateTime, x.payments, (x) => DateTime.fromISO(x.payedOn));
-    const remainingPayments = x.payments.length - 1 - currentPaymentIdx;
+      paid.meritBonus ??
+      Math.round(incomeByRange([PaymentTypes.regular], dateRanges.meritBonus, x.payments) * x.meritBonusPct);
 
     const payBeforeMerit = findNearestIdxOnOrBefore(dates.meritBonus, x.payments, (x) => DateTime.fromISO(x.payedOn));
 
     x.payments.splice(payBeforeMerit + 1, 0, {
       value: meritBonus,
-      start: dates.meritBonus.toISO()!,
-      end: dates.meritBonus.toISO()!,
+      start: dateRanges.meritBonus.start.toISO()!,
+      end: dateRanges.meritBonus.end.toISO()!,
       payedOn: dates.meritBonus.toISO()!,
       cumulative: 0,
-      type: "bonus",
+      type: PaymentTypes.bonus,
     });
 
-    return { ...x, aprToApr, basePay, meritBonus, currentPaymentIdx, remainingPayments };
+    return { ...x, aprToApr, basePay, meritBonus };
   });
 
   const withCompanyBonus = companyBonusPcts.flatMap((companyBonusFactor) => {
@@ -163,7 +165,7 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
       const companyBonusPct = x.lastThreeMeritBonusFactor * companyBonusFactor;
       const companyBonus =
         paid.companyBonus ??
-        Math.round(incomeByRange(["regular"], dateRanges.companyBonus, x.payments) * companyBonusPct);
+        Math.round(incomeByRange([PaymentTypes.regular], dateRanges.companyBonus, x.payments) * companyBonusPct);
 
       const payBeforeCompanyBonus = findNearestIdxOnOrBefore(dates.companyBonus, x.payments, (x) =>
         DateTime.fromISO(x.payedOn)
@@ -172,11 +174,11 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
       const payments = x.payments.slice();
       payments.splice(payBeforeCompanyBonus + 1, 0, {
         value: companyBonus,
-        start: dates.companyBonus.toISO()!,
-        end: dates.companyBonus.toISO()!,
+        start: dateRanges.companyBonus.start.toISO()!,
+        end: dateRanges.companyBonus.end.toISO()!,
         payedOn: dates.companyBonus.toISO()!,
         cumulative: 0,
-        type: "bonus",
+        type: PaymentTypes.bonus,
       });
 
       const cumulative: PaymentPeriod[] = payments.filter((x) => DateTime.fromISO(x.payedOn).year < year);
@@ -200,11 +202,31 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
   const totals = withCompanyBonus.map((x) => {
     const retirementBonus =
       paid.retirementBonus ??
-      Math.round(incomeByRange(["regular", "bonus"], dateRanges.retirementBonus, x.payments) * 0.15);
+      Math.round(
+        incomeByRange([PaymentTypes.regular, PaymentTypes.bonus], dateRanges.retirementBonus, x.payments) * 0.15
+      );
     const totalPay = Math.round(sumSimple([x.basePay, x.meritBonus, x.companyBonus, retirementBonus]));
     const taxablePay = Math.round(sumSimple([x.basePay, x.meritBonus, x.companyBonus]));
 
+    const payBeforeRetirementBonus = findNearestIdxOnOrBefore(dates.retirement, x.payments, (x) =>
+      DateTime.fromISO(x.payedOn)
+    );
+    x.payments.splice(payBeforeRetirementBonus + 1, 0, {
+      value: retirementBonus,
+      start: dateRanges.retirementBonus.start.toISO()!,
+      end: dateRanges.retirementBonus.end.toISO()!,
+      payedOn: dates.retirement.toISO()!,
+      cumulative: 0,
+      type: PaymentTypes.nonTaxableBonus,
+    });
+
+    const currentPaymentIdx = findNearestIdxOnOrBefore(localDateTime, x.payments, (x) => DateTime.fromISO(x.payedOn));
+    const remainingRegularPayments =
+      x.payments.filter((x) => x.type === PaymentTypes.regular).length - currentPaymentIdx;
+
     return {
+      currentPaymentIdx,
+      remainingRegularPayments,
       totalPay,
       retirementBonus,
       taxablePay,
@@ -212,5 +234,8 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
     };
   });
 
-  return totals;
+  return totals.sort((a, b) => {
+    const weight = b.weight - a.weight;
+    return weight === 0 ? b.totalPay - a.totalPay : weight;
+  });
 };

@@ -9,7 +9,7 @@ export const useFutureRetirementContributions = (year: number) => {
 
   return useMemo(() => {
     return {
-      remaining: Math.min(scenarios?.at(0)?.remainingPayments ?? 0, 26) * retirementContribution,
+      remaining: Math.min(scenarios?.at(0)?.remainingRegularPayments ?? 0, 26) * retirementContribution,
       perPaycheck: retirementContribution,
     };
   }, [retirementContribution, scenarios]);

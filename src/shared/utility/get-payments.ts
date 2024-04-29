@@ -1,17 +1,9 @@
 import { differenceInBusinessDays } from "date-fns/differenceInBusinessDays";
 import { DateTime } from "luxon";
+import { PaymentPeriod } from "shared/models/payment-periods";
 import { aPayday } from "./a-payday";
 import { DateRangesOverlap } from "./date-ranges-overlap";
 import { getPayPeriods } from "./get-pay-periods";
-
-export interface PaymentPeriod {
-  start: string;
-  end: string;
-  payedOn: string;
-  value: number;
-  cumulative: number;
-  type: "regular" | "bonus";
-}
 
 interface ProjectedPay {
   start: DateTime<true> | DateTime<false>;

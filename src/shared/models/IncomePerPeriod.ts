@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import { PaymentType } from "./payment-periods";
 
 export type IncomePerPeriod = {
   perPayday: number;
@@ -6,5 +7,5 @@ export type IncomePerPeriod = {
   start: DateTime;
   end: DateTime;
   value: number;
-  type: "regular" | "bonus";
+  type: PaymentType;
 };

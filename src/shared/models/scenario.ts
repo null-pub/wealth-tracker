@@ -1,3 +1,4 @@
+import { PaymentType } from "./payment-periods";
 import { AccountData } from "./store/current";
 
 export interface ScenarioPayment {
@@ -6,7 +7,7 @@ export interface ScenarioPayment {
   payedOn: string;
   value: number;
   cumulative: number;
-  type: "regular" | "bonus";
+  type: PaymentType;
 }
 
 export interface Scenario {
@@ -29,6 +30,6 @@ export interface Scenario {
   aprToApr: number;
   taxablePay: number;
   currentPaymentIdx: number;
-  remainingPayments: number;
+  remainingRegularPayments: number;
   weight: number;
 }

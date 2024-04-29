@@ -12,6 +12,7 @@ import { Value } from "shared/components/formatters/value";
 import { useClusters } from "shared/hooks/use-clusters";
 import { useDateRanges, useDates } from "shared/hooks/use-dates";
 import { IncomePerPeriod } from "shared/models/IncomePerPeriod";
+import { PaymentTypes } from "shared/models/payment-periods";
 import { scenarioStore } from "shared/store/scenario-store";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { monthDay } from "shared/utility/format-date";
@@ -54,7 +55,7 @@ export const ProjectedIncome = () => {
       }) ?? [];
 
     return payPeriods
-      .filter((x) => x.type !== "bonus")
+      .filter((x) => x.type !== PaymentTypes.bonus)
       .reduceRight(
         (acc, curr) => {
           if (acc[0]?.[0]?.value === curr.value) {
