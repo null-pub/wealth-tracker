@@ -14,7 +14,7 @@ const maxYear = (() => {
       return Math.max(currentYear, i - 1);
     }
   }
-  return currentYear + 10;
+  return currentYear + 3;
 })();
 
 const workers = [
