@@ -85,7 +85,14 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
   const companyBonusFactor = findSameYear(year, timeSeries.companyBonusPct);
   const companyBonusPcts = companyBonusFactor
     ? [companyBonusFactor.value]
-    : timeSeries.companyBonusPct.map((x) => x.value);
+    : timeSeries.companyBonusPct.slice(-10).map((x) => x.value);
+
+  const companyBonusPctWeights = Object.entries(Object.groupBy(companyBonusPcts, (x) => x)).map(([, values]) => {
+    return {
+      weight: values!.length,
+      value: values!.at(0)!,
+    };
+  });
 
   const basePayAndMeritScenarios =
     meritSequence.length === 0
@@ -159,15 +166,6 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
 
     return { ...x, aprToApr, basePay, meritBonus };
   });
-
-  const companyBonusPctWeights = Object.entries(Object.groupBy(companyBonusPcts.slice(-10), (x) => x)).map(
-    ([, values]) => {
-      return {
-        weight: values!.length,
-        value: values!.at(0)!,
-      };
-    }
-  );
 
   const withCompanyBonus = companyBonusPctWeights.flatMap((companyBonusFactor) => {
     return postBasePay.map((x) => {

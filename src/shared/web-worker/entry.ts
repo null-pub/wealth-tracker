@@ -4,18 +4,9 @@ import { Scenario } from "shared/models/scenario";
 import { store } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { scenarioStore } from "../store/scenario-store";
-import { getScenarioSize } from "./merit-sequence";
 
 const currentYear = getLocalDateTime().year;
-const maxYear = (() => {
-  const projectedIncome = store.state.projectedIncome;
-  for (let i = currentYear; i <= currentYear + 10; i++) {
-    if (getScenarioSize(i, projectedIncome) > 2499) {
-      return Math.max(currentYear, i - 1);
-    }
-  }
-  return currentYear + 10;
-})();
+const maxYear = currentYear + 3;
 
 const workers = [
   new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "1" }),
