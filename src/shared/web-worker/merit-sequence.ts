@@ -4,6 +4,23 @@ import { findSameYear } from "shared/utility/find-same-year";
 import { getPayments } from "shared/utility/get-payments";
 import { valueByDateRange } from "shared/utility/get-values-by-date-range";
 
+export const getScenarioSize = (year: number, projectedIncome: ProjectedIncome) => {
+  const meritSequence = getMeritSequence(year, projectedIncome);
+  const companyBonusFactor = findSameYear(year, projectedIncome.timeSeries.companyBonusPct);
+  const companyBonusPcts = companyBonusFactor
+    ? [companyBonusFactor.value]
+    : projectedIncome.timeSeries.companyBonusPct.slice(-10).map((x) => x.value);
+
+  const companyBonusPctWeights = Object.entries(Object.groupBy(companyBonusPcts, (x) => x)).map(([, values]) => {
+    return {
+      weight: values!.length,
+      value: values!.at(0)!,
+    };
+  });
+
+  return meritSequence.length * companyBonusPctWeights.length;
+};
+
 const getMeritPairs = (year: number, projectedIncome: ProjectedIncome) => {
   const timeSeries = projectedIncome.timeSeries;
   const meritBonusPct = findSameYear(year, timeSeries.meritBonusPct);

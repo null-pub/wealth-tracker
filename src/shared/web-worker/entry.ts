@@ -4,9 +4,19 @@ import { Scenario } from "shared/models/scenario";
 import { store } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { scenarioStore } from "../store/scenario-store";
+import { getScenarioSize } from "./merit-sequence";
 
 const currentYear = getLocalDateTime().year;
-const maxYear = currentYear + 3;
+const maxYear = (() => {
+  const projectedIncome = store.state.projectedIncome;
+  for (let i = currentYear; i <= currentYear + 5; i++) {
+    const size = getScenarioSize(i, projectedIncome);
+    if (size > 2499 || size === 0) {
+      return Math.max(currentYear, i - 1);
+    }
+  }
+  return currentYear + 5;
+})();
 
 const workers = [
   new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "1" }),
@@ -18,13 +28,21 @@ const workers = [
 workers.map(
   (x) =>
     (x.onmessage = (event: MessageEvent<{ year: number; scenarios: Scenario[] }>) => {
-      const isLoading = event.data.year !== maxYear;
       scenarioStore.setState((prev) => {
         return create(prev, (x) => {
           x.scenarios[event.data.year] = event.data.scenarios;
-          x.loading = isLoading;
-          x.maxYear = Math.max(event.data.year, x.maxYear);
-          x.minYear = Math.min(event.data.year, x.minYear);
+
+          const range = Object.keys(x.scenarios)
+            .map((x) => +x)
+            .filter((x, i, arr) => {
+              return i === 0 ? true : x - arr[i - 1] === 1;
+            });
+          const min = range[0];
+          const max = range.at(-1);
+
+          x.loading = max !== maxYear;
+          x.maxYear = max!;
+          x.minYear = min;
         });
       });
     })
