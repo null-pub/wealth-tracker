@@ -5,7 +5,12 @@ import { getPayments } from "shared/utility/get-payments";
 import { valueByDateRange } from "shared/utility/get-values-by-date-range";
 
 export const getScenarioSize = (year: number, projectedIncome: ProjectedIncome) => {
-  return getMeritSequence(year, projectedIncome).length * projectedIncome.timeSeries.companyBonus.length;
+  const meritSequence = getMeritSequence(year, projectedIncome);
+  if (meritSequence.length === 0 || projectedIncome.timeSeries.companyBonusPct.length === 0) {
+    return 9999;
+  }
+
+  return meritSequence.length * projectedIncome.timeSeries.companyBonus.length;
 };
 
 const getMeritPairs = (year: number, projectedIncome: ProjectedIncome) => {
