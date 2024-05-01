@@ -160,9 +160,18 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
     return { ...x, aprToApr, basePay, meritBonus };
   });
 
-  const withCompanyBonus = companyBonusPcts.flatMap((companyBonusFactor) => {
+  const companyBonusPctWeights = Object.entries(Object.groupBy(companyBonusPcts.slice(-10), (x) => x)).map(
+    ([, values]) => {
+      return {
+        weight: values!.length,
+        value: values!.at(0)!,
+      };
+    }
+  );
+
+  const withCompanyBonus = companyBonusPctWeights.flatMap((companyBonusFactor) => {
     return postBasePay.map((x) => {
-      const companyBonusPct = x.lastThreeMeritBonusFactor * companyBonusFactor;
+      const companyBonusPct = x.lastThreeMeritBonusFactor * companyBonusFactor.value;
       const companyBonus =
         paid.companyBonus ??
         Math.round(incomeByRange([PaymentTypes.regular], dateRanges.companyBonus, x.payments) * companyBonusPct);
@@ -191,7 +200,8 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
 
       return {
         ...x,
-        companyBonusFactor,
+        weight: x.weight * companyBonusFactor.weight,
+        companyBonusFactor: companyBonusFactor.value,
         companyBonusPct,
         companyBonus,
         payments: cumulative,
