@@ -180,8 +180,7 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
         DateTime.fromISO(x.payedOn)
       );
 
-      const payments = x.payments.slice();
-      payments.splice(payBeforeCompanyBonus + 1, 0, {
+      const payments = x.payments.toSpliced(payBeforeCompanyBonus + 1, 0, {
         value: companyBonus,
         start: dateRanges.companyBonus.start.toISO()!,
         end: dateRanges.companyBonus.end.toISO()!,
