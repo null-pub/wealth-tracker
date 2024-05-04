@@ -9,7 +9,7 @@ import { getLocalDateTime } from "shared/utility/current-date";
 
 export const AddEntry = (props: { accountName: string }) => {
   const { accountName } = props;
-  const [date, setDate] = useState<DateTime>();
+  const [date, setDate] = useState<DateTime>(getLocalDateTime());
   const [amount, setAmount] = useState<number | null>(null);
 
   const onAddEntry = () => {
@@ -27,7 +27,7 @@ export const AddEntry = (props: { accountName: string }) => {
   return (
     <Stack spacing={2}>
       <DatePicker
-        defaultValue={getLocalDateTime()}
+        value={date}
         onChange={(date: DateTime | null) => {
           date && setDate(date);
         }}
