@@ -4,9 +4,7 @@ config
     import migrations need help
 
 
-cache clusters
-    only regen scenarios when income changes / not on load
-    redo scenario size calcs
+
 
 
 net-wealth

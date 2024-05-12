@@ -4,7 +4,7 @@ import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { useTotalPayClusters } from "shared/hooks/use-clusters";
 import { getLocalDateTime } from "shared/utility/current-date";
-import { formatCash } from "shared/utility/format-cash";
+import { formatCashShort } from "shared/utility/format-cash";
 import { formatPercent } from "shared/utility/format-percent";
 
 const getColor = (probability?: number) => {
@@ -62,7 +62,7 @@ export const IncomeChart = () => {
 
         tooltip: {
           renderer: ({ datum, yKey, xKey }) => ({
-            content: `${DateTime.fromJSDate(datum[xKey]).year} ${formatCash(datum[yKey])}`,
+            content: `${DateTime.fromJSDate(datum[xKey]).year} ${formatCashShort(datum[yKey])}`,
           }),
         },
       },
@@ -84,7 +84,7 @@ export const IncomeChart = () => {
         },
         tooltip: {
           renderer: ({ datum, yKey, xKey }) => ({
-            content: `${DateTime.fromJSDate(datum[xKey]).year} ${formatCash(datum[yKey])} ${formatPercent(datum.lowProbability)}`,
+            content: `${DateTime.fromJSDate(datum[xKey]).year} ${formatCashShort(datum[yKey])} ${formatPercent(datum.lowProbability)}`,
           }),
         },
       },
@@ -105,7 +105,7 @@ export const IncomeChart = () => {
         yName: "Medium",
         tooltip: {
           renderer: ({ datum, yKey, xKey }) => ({
-            content: `${DateTime.fromJSDate(datum[xKey]).year} ${formatCash(datum[yKey])} ${formatPercent(datum.medProbability)}`,
+            content: `${DateTime.fromJSDate(datum[xKey]).year} ${formatCashShort(datum[yKey])} ${formatPercent(datum.medProbability)}`,
           }),
         },
       },
@@ -127,7 +127,7 @@ export const IncomeChart = () => {
         yName: "High",
         tooltip: {
           renderer: ({ datum, yKey, xKey }) => ({
-            content: `${DateTime.fromJSDate(datum[xKey]).year} ${formatCash(datum[yKey])} ${formatPercent(datum.highProbability)}`,
+            content: `${DateTime.fromJSDate(datum[xKey]).year} ${formatCashShort(datum[yKey])} ${formatPercent(datum.highProbability)}`,
           }),
         },
       },
