@@ -1,3 +1,4 @@
+import InsertChartIcon from "@mui/icons-material/InsertChart";
 import { Alert, CircularProgress, Tooltip } from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -97,6 +98,22 @@ export const ProjectedIncome = () => {
               <Box display="flex" alignItems={"center"} gap={2} width={"100%"}>
                 <span>Income</span>
                 <CountDown dateTime={dates.companyBonus} variant="date" dateFormat={monthDay} />
+                <Tooltip
+                  slotProps={{
+                    tooltip: {
+                      sx: {
+                        maxWidth: "unset",
+                      },
+                    },
+                  }}
+                  title={
+                    <div css={{ width: 600, height: 300 }}>
+                      <IncomeChart />
+                    </div>
+                  }
+                >
+                  <InsertChartIcon />
+                </Tooltip>
                 <Box sx={{ display: "flex", marginLeft: "auto", alignItems: "center", flexWrap: "wrap" }}>
                   {scenarios.loading && <CircularProgress style={{ width: 20, height: 20 }} />}
                 </Box>
@@ -198,11 +215,6 @@ export const ProjectedIncome = () => {
           >
             <ClusterValues clusters={clusters.retirementBonus} eventDate={dates.retirementBonus} />
           </Card>
-          {!scenarios.loading && (
-            <div css={{ width: "100%", height: 285 }}>
-              <IncomeChart />
-            </div>
-          )}
         </Stack>
       </Box>
       <Box flex="1 1 auto" overflow={"auto"} paddingBottom={2} paddingLeft={1}>
