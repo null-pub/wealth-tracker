@@ -107,9 +107,9 @@ export const ProjectedIncome = () => {
                     },
                   }}
                   title={
-                    <div css={{ width: 600, height: 300 }}>
+                    <Box height={300} width={600} padding={1}>
                       <IncomeChart />
-                    </div>
+                    </Box>
                   }
                 >
                   <InsertChartIcon />
