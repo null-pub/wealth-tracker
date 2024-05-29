@@ -7,6 +7,7 @@ import { AgGrid } from "shared/components/ag-grid";
 import { TimeSeries } from "shared/models/store/current";
 import { addProjectedIncome, store } from "shared/store";
 import { shortDate } from "shared/utility/format-date";
+import { SparkChart } from "../spark-chart";
 import { createAccountColumnConfig } from "./column-config";
 
 const disabledStyle = {
@@ -102,8 +103,8 @@ export const Layout = (props: LayoutProps) => {
   return (
     <Paper sx={{ padding: 2, height: "100%", width: 450, flexShrink: 0 }}>
       <Box display="flex" flexDirection="column" height="100%">
-        <Box flex="0 1 auto" marginBottom={2}>
-          <Typography sx={{ marginBottom: 2 }} variant="h5">
+        <Box flex="0 1 auto" marginBottom={4} display={"flex"} alignItems={"center"} justifyContent={"space-between"}>
+          <Typography variant="h5">
             {title}{" "}
             {variant === "cash" && (
               <Tooltip
@@ -124,6 +125,7 @@ export const Layout = (props: LayoutProps) => {
               </Tooltip>
             )}
           </Typography>
+          <SparkChart accountName={accountName} variant={variant} />
         </Box>
         <Box flex="1 1 auto">
           <DataEntry variant={variant} timeSeries={accountName} defaultDate={defaultDate} dateVariant={dateVariant} />
