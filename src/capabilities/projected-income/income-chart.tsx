@@ -4,7 +4,7 @@ import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { useTotalPayClusters } from "shared/hooks/use-clusters";
 import { getLocalDateTime } from "shared/utility/current-date";
-import { formatCashShort } from "shared/utility/format-cash";
+import { formatCash, formatCashShort } from "shared/utility/format-cash";
 import { formatPercent } from "shared/utility/format-percent";
 
 const getColor = (probability?: number) => {
@@ -156,6 +156,11 @@ export const IncomeChart = () => {
           nice: false,
           tick: {
             maxSpacing: 40,
+          },
+          label: {
+            formatter: (params) => {
+              return formatCash(params.value);
+            },
           },
         },
       ],
