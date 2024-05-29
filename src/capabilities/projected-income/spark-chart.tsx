@@ -123,7 +123,7 @@ export const SparkChart = (props: { accountName: TimeSeries; variant: "cash" | "
         },
       }}
       title={
-        <Box sx={{ width: 600, height: 300, padding: 0.5 }}>
+        <Box sx={{ width: 600, height: 300 }}>
           <AgChartsReact options={options} />
         </Box>
       }
