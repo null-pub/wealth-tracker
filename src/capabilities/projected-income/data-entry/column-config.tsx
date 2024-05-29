@@ -19,7 +19,8 @@ export const createAccountColumnConfig = (
   dateVariant: "date" | "year"
 ): ColDef<AccountData>[] => [
   {
-    headerName: "Date",
+    headerName: dateVariant === "date" ? "Date" : "Year",
+    colId: "date",
     sort: "desc",
     valueFormatter: (x) => x.value?.toFormat(dateVariant === "date" ? shortDate : "yyyy"),
     valueGetter: (x) => x.data && DateTime.fromISO(x.data.date),
@@ -36,12 +37,16 @@ export const createAccountColumnConfig = (
         </Stack>
       );
     },
-    cellEditor: "agDateCellEditor",
+    cellEditor: dateVariant === "date" ? "agDateCellEditor" : "agNumberCellEditor",
     editable: true,
     valueSetter: (x) => {
-      const date = DateTime.fromJSDate(x.newValue);
+      const date =
+        dateVariant === "date"
+          ? DateTime.fromJSDate(x.newValue)
+          : DateTime.fromISO(x.data.date).set({ year: x.newValue });
+
       if (date.isValid) {
-        updateProjectedIncomeDate(accountName, x.data, DateTime.fromJSDate(x.newValue));
+        updateProjectedIncomeDate(accountName, x.data, date);
       }
       return date.isValid;
     },

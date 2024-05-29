@@ -9,6 +9,10 @@ import { addProjectedIncome, store } from "shared/store";
 import { shortDate } from "shared/utility/format-date";
 import { createAccountColumnConfig } from "./column-config";
 
+const disabledStyle = {
+  color: "grey",
+};
+
 const DataEntry = (props: {
   timeSeries: TimeSeries;
   defaultDate: DateTime;
@@ -43,7 +47,7 @@ const DataEntry = (props: {
           format={dateVariant === "year" ? "yyyy" : shortDate}
           views={dateVariant === "year" ? ["year"] : undefined}
           sx={{ color: "white" }}
-          label="Date"
+          label={dateVariant === "date" ? "Date" : "Year"}
           value={date}
           onChange={(value) => {
             console.log(value);
@@ -51,7 +55,7 @@ const DataEntry = (props: {
           }}
         />
         <TextField
-          label="amount"
+          label="Amount"
           value={amount ?? ""}
           placeholder="0"
           type="number"
@@ -76,6 +80,9 @@ const DataEntry = (props: {
             type: "fitGridWidth",
           }}
           stopEditingWhenCellsLoseFocus
+          getRowStyle={(x) => {
+            return x.rowIndex > 9 ? disabledStyle : undefined;
+          }}
         />
       </Box>
     </Box>

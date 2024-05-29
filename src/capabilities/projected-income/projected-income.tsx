@@ -208,6 +208,7 @@ export const ProjectedIncome = () => {
       <Box flex="1 1 auto" overflow={"auto"} paddingBottom={2} paddingLeft={1}>
         <Box display={"flex"} height={"100%"} width={"100%"} gap={2}>
           <Layout
+            dateVariant="year"
             accountName="paycheck"
             variant="cash"
             defaultDate={DateTime.fromObject({
