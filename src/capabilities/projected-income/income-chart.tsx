@@ -153,9 +153,9 @@ export const IncomeChart = () => {
         {
           type: "number",
           position: "left",
-          nice: false,
+          nice: true,
           tick: {
-            maxSpacing: 40,
+            maxSpacing: 45,
           },
           label: {
             formatter: (params) => {
