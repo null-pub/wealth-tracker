@@ -7,7 +7,7 @@ import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { TimeSeries } from "shared/models/store/current";
 import { store } from "shared/store";
-import { ckmeans } from "shared/utility/ckmeans";
+import { ckmeans, collapseClusters } from "shared/utility/ckmeans";
 import { formatCash } from "shared/utility/format-cash";
 import { formatPercent } from "shared/utility/format-percent";
 import { sortByDate } from "shared/utility/sort-by-date";
@@ -53,7 +53,8 @@ export const SparkChart = (props: { accountName: TimeSeries; variant: "cash" | "
 
   const options = useMemo((): AgChartOptions => {
     const data = account.map((x) => ({ ...x, date: DateTime.fromISO(x.date).toJSDate() }));
-    const ck = ckmeans(data, 3, (x) => x.value)
+    const selector = (x: { date: Date; value: number }) => x.value;
+    const ck = collapseClusters(ckmeans(data, 3, selector), selector)
       .map((x) => {
         return x.map((y, i, subArr) => ({
           ...y,
