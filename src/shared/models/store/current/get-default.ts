@@ -47,6 +47,10 @@ export const getDefaultStore = (): Store => ({
           date: "2023-06-15T00:00:00.000-07:00",
           value: 0.168,
         },
+        {
+          date: "2024-06-15T00:00:00.000-07:00",
+          value: 0.2075,
+        },
       ],
       meritBonus: [],
       companyBonus: [],
