@@ -51,9 +51,13 @@ export const SparkChart = (props: { accountName: TimeSeries; variant: "cash" | "
   const { accountName, variant } = props;
   const account = useStore(store, (x) => x.projectedIncome.timeSeries[accountName]);
 
-  const options = useMemo((): AgChartOptions => {
+  const ckData = useMemo(() => {
+    if (account.length < 3) {
+      return [];
+    }
     const data = account.map((x) => ({ ...x, date: DateTime.fromISO(x.date).toJSDate() }));
     const selector = (x: { date: Date; value: number }) => x.value;
+
     const ck = collapseClusters(ckmeans(data, 3, selector), selector)
       .map((x) => {
         return x.map((y, i, subArr) => ({
@@ -64,9 +68,12 @@ export const SparkChart = (props: { accountName: TimeSeries; variant: "cash" | "
       })
       .flat()
       .sort(sortByDate((x) => DateTime.fromJSDate(x.date), "asc"));
+    return ck;
+  }, [account]);
 
+  const options = useMemo((): AgChartOptions => {
     return {
-      data: ck,
+      data: ckData,
       theme: "ag-default-dark",
       series: [
         {
@@ -112,7 +119,7 @@ export const SparkChart = (props: { accountName: TimeSeries; variant: "cash" | "
         },
       ],
     };
-  }, [account, variant]);
+  }, [ckData, variant]);
 
   return (
     <Tooltip
