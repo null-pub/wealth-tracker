@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import { MAX_NUM_ENTRIES } from "shared/constants";
 import { PaymentPeriod, PaymentTypes } from "shared/models/payment-periods";
 import { Scenario } from "shared/models/scenario";
 import { AccountData, ProjectedIncome } from "shared/models/store/current";
@@ -85,7 +86,7 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
   const companyBonusFactor = findSameYear(year, timeSeries.companyBonusPct);
   const companyBonusPcts = companyBonusFactor
     ? [companyBonusFactor.value]
-    : timeSeries.companyBonusPct.slice(-10).map((x) => x.value);
+    : timeSeries.companyBonusPct.slice(-1 * MAX_NUM_ENTRIES).map((x) => x.value);
 
   const companyBonusPctWeights = Object.entries(Object.groupBy(companyBonusPcts, (x) => x)).map(([, values]) => {
     return {

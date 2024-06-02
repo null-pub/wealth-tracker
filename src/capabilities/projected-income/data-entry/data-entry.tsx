@@ -4,6 +4,7 @@ import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useMemo, useState } from "react";
 import { AgGrid } from "shared/components/ag-grid";
+import { MAX_NUM_ENTRIES } from "shared/constants";
 import { TimeSeries } from "shared/models/store/current";
 import { addProjectedIncome, store } from "shared/store";
 import { shortDate } from "shared/utility/format-date";
@@ -82,7 +83,7 @@ const DataEntry = (props: {
           }}
           stopEditingWhenCellsLoseFocus
           getRowStyle={(x) => {
-            return x.rowIndex > 9 ? disabledStyle : undefined;
+            return x.rowIndex >= MAX_NUM_ENTRIES ? disabledStyle : undefined;
           }}
         />
       </Box>

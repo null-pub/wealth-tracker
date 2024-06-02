@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import { MAX_NUM_ENTRIES } from "shared/constants";
 import { AccountData, ProjectedIncome } from "shared/models/store/current";
 import { findSameYear } from "shared/utility/find-same-year";
 import { getPayments } from "shared/utility/get-payments";
@@ -9,7 +10,7 @@ export const getScenarioSize = (year: number, projectedIncome: ProjectedIncome) 
   const companyBonusFactor = findSameYear(year, projectedIncome.timeSeries.companyBonusPct);
   const companyBonusPcts = companyBonusFactor
     ? [companyBonusFactor.value]
-    : projectedIncome.timeSeries.companyBonusPct.slice(-10).map((x) => x.value);
+    : projectedIncome.timeSeries.companyBonusPct.slice(-1 * MAX_NUM_ENTRIES).map((x) => x.value);
 
   const companyBonusPctWeights = Object.entries(Object.groupBy(companyBonusPcts, (x) => x)).map(([, values]) => {
     return {
@@ -18,7 +19,7 @@ export const getScenarioSize = (year: number, projectedIncome: ProjectedIncome) 
     };
   });
 
-  return meritSequence.length * companyBonusPctWeights.length;
+  return meritSequence.slice(-1 * MAX_NUM_ENTRIES).length * companyBonusPctWeights.length;
 };
 
 const getMeritPairs = (year: number, projectedIncome: ProjectedIncome) => {
@@ -37,7 +38,7 @@ const getMeritPairs = (year: number, projectedIncome: ProjectedIncome) => {
   return allMeritPairs
     .filter((x) => (meritBonusPct ? x.meritBonusPct === meritBonusPct.value : true))
     .filter((x) => (meritIncreasePct ? x.meritIncreasePct === meritIncreasePct?.value : true))
-    .slice(-10);
+    .slice(-1 * MAX_NUM_ENTRIES);
 };
 
 export const getMeritSequence = (year: number, projectedIncome: ProjectedIncome) => {
