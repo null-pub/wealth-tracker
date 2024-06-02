@@ -28,7 +28,7 @@ export const useFutureTotals = (
 ) => {
   const { excludeHomeEquity } = options;
   const scenarios = useStore(scenarioStore, (x) => x.scenarios[year]);
-  const bonusTakehomeFactor = useStore(store, (x) => 1 - x.projectedWealth.bonusWithholdingsRate);
+  const bonusTakeHomeFactor = useStore(store, (x) => 1 - x.projectedWealth.bonusWithholdingsRate);
   const savings = useFutureSavings(year);
   const homeEquity = useFutureMortgageEquity(year);
   const retirement = useFutureRetirementContributions(year);
@@ -39,8 +39,8 @@ export const useFutureTotals = (
     const totals = scenarios
       ?.map((x) => {
         const futureBonuses = [
-          isFuture(dates.meritBonus) && x.meritBonus * bonusTakehomeFactor,
-          isFuture(dates.companyBonus) && x.companyBonus * bonusTakehomeFactor,
+          isFuture(dates.meritBonus) && x.meritBonus * bonusTakeHomeFactor,
+          isFuture(dates.companyBonus) && x.companyBonus * bonusTakeHomeFactor,
           isFuture(dates.retirementBonus) && x.retirementBonus,
           thresholdTaxRemaining(config.socialSecurityTaxRate, config.socialSecurityLimit, x),
           thresholdTaxRemaining(-1 * config.medicareSupplementalTaxRate, config.medicareSupplementalTaxThreshold, x),
@@ -58,7 +58,7 @@ export const useFutureTotals = (
     );
     return clusters;
   }, [
-    bonusTakehomeFactor,
+    bonusTakeHomeFactor,
     config.medicareSupplementalTaxRate,
     config.medicareSupplementalTaxThreshold,
     config.socialSecurityLimit,
