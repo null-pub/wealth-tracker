@@ -28,7 +28,7 @@ export const useFutureTotals = (
 ) => {
   const { excludeHomeEquity } = options;
   const scenarios = useStore(scenarioStore, (x) => x.scenarios[year]);
-  const bonusTakehomeFactor = useStore(store, (x) => 1 - x.projectedWealth.bonusWitholdingsRate);
+  const bonusTakehomeFactor = useStore(store, (x) => 1 - x.projectedWealth.bonusWithholdingsRate);
   const savings = useFutureSavings(year);
   const homeEquity = useFutureMortgageEquity(year);
   const retirement = useFutureRetirementContributions(year);

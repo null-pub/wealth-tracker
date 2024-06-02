@@ -67,6 +67,6 @@ export const getDefaultStore = (): Store => ({
     medicareSupplementalTaxRate: 0.009,
     savingsPerMonth: 0,
     retirementContributionPaycheck: 0,
-    bonusWitholdingsRate: 0,
+    bonusWithholdingsRate: 0,
   },
 });

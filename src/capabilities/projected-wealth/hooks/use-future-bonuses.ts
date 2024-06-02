@@ -17,11 +17,11 @@ export const useFutureBonuses = (year: number) => {
       [
         [
           dates.meritBonus,
-          scaleCluster(findMostMostLikely(clusters.meritBonus), 1 - config.bonusWitholdingsRate)?.median ?? 0,
+          scaleCluster(findMostMostLikely(clusters.meritBonus), 1 - config.bonusWithholdingsRate)?.median ?? 0,
         ],
         [
           dates.companyBonus,
-          scaleCluster(findMostMostLikely(clusters.companyBonus), 1 - config.bonusWitholdingsRate)?.median ?? 0,
+          scaleCluster(findMostMostLikely(clusters.companyBonus), 1 - config.bonusWithholdingsRate)?.median ?? 0,
         ],
         [dates.retirementBonus, findMostMostLikely(clusters.retirementBonus)?.median ?? 0],
       ] as [DateTime, number][]
@@ -35,7 +35,7 @@ export const useFutureBonuses = (year: number) => {
     clusters.meritBonus,
     clusters.companyBonus,
     clusters.retirementBonus,
-    config.bonusWitholdingsRate,
+    config.bonusWithholdingsRate,
     local,
   ]);
 

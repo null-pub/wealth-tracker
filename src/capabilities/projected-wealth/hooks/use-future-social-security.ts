@@ -11,12 +11,12 @@ interface ThresholdTaxData {
   perPaycheck: number;
 }
 
-export const useFutureSocialSecurity = (year: number): TresholdTax => {
+export const useFutureSocialSecurity = (year: number): ThresholdTax => {
   const config = useStore(store, (x) => x.projectedWealth);
   return useThresholdTax(year, config.socialSecurityLimit, config.socialSecurityTaxRate);
 };
 
-export const useFutureMedicareTax = (year: number): TresholdTax => {
+export const useFutureMedicareTax = (year: number): ThresholdTax => {
   const config = useStore(store, (x) => x.projectedWealth);
   const taxes = useThresholdTax(year, config.medicareSupplementalTaxThreshold, -1 * config.medicareSupplementalTaxRate);
   return useMemo(() => {
@@ -27,9 +27,9 @@ export const useFutureMedicareTax = (year: number): TresholdTax => {
   }, [taxes]);
 };
 
-export type TresholdTax = Partial<Record<"min" | "max", ThresholdTaxData>>;
+export type ThresholdTax = Partial<Record<"min" | "max", ThresholdTaxData>>;
 
-const useThresholdTax = (year: number, threshold: number, taxRate: number): TresholdTax => {
+const useThresholdTax = (year: number, threshold: number, taxRate: number): ThresholdTax => {
   const scenarios = useStore(scenarioStore, (x) => x.scenarios[year]);
 
   const data = useMemo(

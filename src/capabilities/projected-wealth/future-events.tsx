@@ -16,7 +16,7 @@ import { monthDay } from "shared/utility/format-date";
 import { useFutureMortgageEquity } from "./hooks/use-future-mortgage-equity";
 import { useFutureRetirementContributions } from "./hooks/use-future-retirement-contributions";
 import { useFutureSavings } from "./hooks/use-future-savings";
-import { TresholdTax, useFutureMedicareTax, useFutureSocialSecurity } from "./hooks/use-future-social-security";
+import { ThresholdTax, useFutureMedicareTax, useFutureSocialSecurity } from "./hooks/use-future-social-security";
 import { useFutureTotals } from "./hooks/use-future-totals";
 
 const isFuture = (date: DateTime) => date.diffNow("milliseconds").milliseconds > 0;
@@ -30,7 +30,7 @@ export const FutureEvents = (props: { year: number; onChange: (year: number) => 
   const medicare = useFutureMedicareTax(year);
   const socialSecurity = useFutureSocialSecurity(year);
   const clusters = useClusters(year);
-  const bonusTakehomeFactor = useStore(store, (x) => 1 - x.projectedWealth.bonusWitholdingsRate);
+  const bonusTakeHomeFactor = useStore(store, (x) => 1 - x.projectedWealth.bonusWithholdingsRate);
   const total = useFutureTotals(year);
   const equity = useFutureMortgageEquity(year);
 
@@ -67,21 +67,21 @@ export const FutureEvents = (props: { year: number; onChange: (year: number) => 
           <ClusterCard
             title="Merit Bonus"
             date={dates.meritBonus}
-            cluster={scaleClusters(clusters.meritBonus, bonusTakehomeFactor)}
+            cluster={scaleClusters(clusters.meritBonus, bonusTakeHomeFactor)}
           />
         )}
         {isFuture(dates.companyBonus) && (
           <ClusterCard
             title="Company Bonus"
             date={dates.companyBonus}
-            cluster={scaleClusters(clusters.companyBonus, bonusTakehomeFactor)}
+            cluster={scaleClusters(clusters.companyBonus, bonusTakeHomeFactor)}
           />
         )}
         {isFuture(dates.retirementBonus) && (
           <ClusterCard title="Retirement Bonus" date={dates.retirementBonus} cluster={clusters.retirementBonus} />
         )}
         {!!socialSecurity.min && <ThresholdTaxCard thresholdTax={socialSecurity} title={"Social Security Limit"} />}
-        {!!medicare.min && <ThresholdTaxCard thresholdTax={medicare} title={"Medicare Supplmental Tax"} />}
+        {!!medicare.min && <ThresholdTaxCard thresholdTax={medicare} title={"Medicare Supplemental Tax"} />}
 
         <Card title={"Savings & Retirement"}>
           {!!savings.perMonth && (
@@ -105,7 +105,7 @@ export const FutureEvents = (props: { year: number; onChange: (year: number) => 
   );
 };
 
-const ThresholdTaxCard = (props: { thresholdTax: TresholdTax; title: string }) => {
+const ThresholdTaxCard = (props: { thresholdTax: ThresholdTax; title: string }) => {
   const { thresholdTax, title } = props;
   return (
     <Card
