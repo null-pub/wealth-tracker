@@ -54,7 +54,7 @@ export const IncomeChart = () => {
       });
   }, [clusters]);
 
-  const isDisabled = future.length + history.length > 0;
+  const isDisabled = future.length + history.length === 0;
 
   const series = useMemo(() => {
     return [
