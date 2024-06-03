@@ -1,7 +1,10 @@
-import { Store, storeValidator } from "shared/models/store/current";
 import { storeValidator as storeV0Validator } from "shared/models/store/version-0";
 import { Store as StoreV1, storeValidator as storeV1Validator } from "shared/models/store/version-1";
 import { Store as StoreV2, storeValidator as storeV2Validator } from "shared/models/store/version-2";
+import { Store as StoreV3, storeValidator as storeV3Validator } from "shared/models/store/version-3";
+import { Store as StoreV4 } from "shared/models/store/version-4";
+
+import { storeValidator } from "shared/models/store/current";
 
 export const migration = (data: unknown) => {
   if (data === null || data === undefined) {
@@ -23,7 +26,14 @@ export const migration = (data: unknown) => {
     }
     if (data.version === 2) {
       storeV2Validator.parse(data);
-      (data as Store).version = 3;
+      (data as StoreV3).version = 3;
+    }
+    if (data.version === 3) {
+      storeV3Validator.parse(data);
+      (data as StoreV4).version = 4;
+      (data as StoreV4).projectedWealth.bonusWithholdingsRate = (data as StoreV3).projectedWealth.bonusWitholdingsRate;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (data as any).projectedWealth.bonusWitholdingsRate;
     }
   }
 
