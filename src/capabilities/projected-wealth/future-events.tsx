@@ -70,36 +70,41 @@ export const FutureEvents = (props: { year: number; onChange: (year: number) => 
             cluster={scaleClusters(clusters.meritBonus, bonusTakeHomeFactor)}
           />
         )}
-        {isFuture(dates.companyBonus) && (
+        {isFuture(dates.companyBonus) && clusters.companyBonus.length > 0 && (
           <ClusterCard
             title="Company Bonus"
             date={dates.companyBonus}
             cluster={scaleClusters(clusters.companyBonus, bonusTakeHomeFactor)}
           />
         )}
-        {isFuture(dates.retirementBonus) && (
+        {isFuture(dates.retirementBonus) && clusters.retirementBonus.length > 0 && (
           <ClusterCard title="Retirement Bonus" date={dates.retirementBonus} cluster={clusters.retirementBonus} />
         )}
         {!!socialSecurity.min && <ThresholdTaxCard thresholdTax={socialSecurity} title={"Social Security Limit"} />}
         {!!medicare.min && <ThresholdTaxCard thresholdTax={medicare} title={"Medicare Supplemental Tax"} />}
 
-        <Card title={"Savings & Retirement"}>
-          {!!savings.perMonth && (
-            <Value title={"savings"} secondaryValue={<Cash tooltip="Per Month" value={savings.perMonth} />}>
-              <Cash tooltip="Total Remaining" value={savings.remaining} />
-            </Value>
-          )}
-          {!!retirement.perPaycheck && (
-            <Value title={"retirement"} secondaryValue={<Cash tooltip="Per Paycheck" value={retirement.perPaycheck} />}>
-              <Cash tooltip="Total Remaining" value={retirement.remaining} />
-            </Value>
-          )}
-          {!!equity && (
-            <Value title={"Home Equity"}>
-              <Cash tooltip="Total Remaining" value={equity} />
-            </Value>
-          )}
-        </Card>
+        {(!!savings.perMonth || !!retirement.perPaycheck || !!equity) && (
+          <Card title={"Savings & Retirement"}>
+            {!!savings.perMonth && (
+              <Value title={"savings"} secondaryValue={<Cash tooltip="Per Month" value={savings.perMonth} />}>
+                <Cash tooltip="Total Remaining" value={savings.remaining} />
+              </Value>
+            )}
+            {!!retirement.perPaycheck && (
+              <Value
+                title={"retirement"}
+                secondaryValue={<Cash tooltip="Per Paycheck" value={retirement.perPaycheck} />}
+              >
+                <Cash tooltip="Total Remaining" value={retirement.remaining} />
+              </Value>
+            )}
+            {!!equity && (
+              <Value title={"Home Equity"}>
+                <Cash tooltip="Total Remaining" value={equity} />
+              </Value>
+            )}
+          </Card>
+        )}
       </Stack>
     </>
   );
