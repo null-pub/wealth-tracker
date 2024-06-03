@@ -63,7 +63,7 @@ export const FutureEvents = (props: { year: number; onChange: (year: number) => 
         >
           <ClusterValues clusters={total} eventDate={dates.companyBonus} />
         </Card>
-        {isFuture(dates.meritBonus) && (
+        {isFuture(dates.meritBonus) && clusters.meritBonus.length > 0 && (
           <ClusterCard
             title="Merit Bonus"
             date={dates.meritBonus}
