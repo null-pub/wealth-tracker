@@ -52,13 +52,10 @@ export const SparkChart = (props: { accountName: TimeSeries; variant: "cash" | "
   const account = useStore(store, (x) => x.projectedIncome.timeSeries[accountName]);
 
   const ckData = useMemo(() => {
-    if (account.length < 3) {
-      return [];
-    }
     const data = account.map((x) => ({ ...x, date: DateTime.fromISO(x.date).toJSDate() }));
     const selector = (x: { date: Date; value: number }) => x.value;
-
-    const ck = collapseClusters(ckmeans(data, 3, selector), selector)
+    const maxClusters = Math.min(data.length, 3);
+    const ck = collapseClusters(ckmeans(data, maxClusters, selector), selector)
       .map((x) => {
         return x.map((y, i, subArr) => ({
           ...y,
@@ -121,8 +118,13 @@ export const SparkChart = (props: { accountName: TimeSeries; variant: "cash" | "
     };
   }, [ckData, variant]);
 
+  const isDisabled = account.length === 0;
+
   return (
     <Tooltip
+      disableHoverListener={isDisabled}
+      disableFocusListener={isDisabled}
+      disableTouchListener={isDisabled}
       slotProps={{
         tooltip: {
           sx: {
@@ -136,7 +138,7 @@ export const SparkChart = (props: { accountName: TimeSeries; variant: "cash" | "
         </Box>
       }
     >
-      <InsertChartIcon />
+      <InsertChartIcon color={isDisabled ? "disabled" : undefined} />
     </Tooltip>
   );
 };

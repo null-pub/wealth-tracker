@@ -199,6 +199,9 @@ function fillMatrices<T>(data: T[], matrix: number[][], backtrackMatrix: number[
  * //= [[-1, -1, -1, -1], [2, 2, 2], [4, 5, 6]]);
  */
 export function ckmeans<T>(data: T[], nClusters: number, selector: (x: T) => number) {
+  if (nClusters === 0) {
+    return [];
+  }
   if (nClusters > data.length) {
     throw new Error("cannot generate more classes than there are data values");
   }

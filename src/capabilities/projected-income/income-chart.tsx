@@ -1,3 +1,6 @@
+import InsertChartIcon from "@mui/icons-material/InsertChart";
+import { Tooltip } from "@mui/material";
+import { Box } from "@mui/system";
 import { AgCartesianChartOptions, AgLineSeriesOptions } from "ag-charts-community";
 import { AgChartsReact } from "ag-charts-react";
 import { DateTime } from "luxon";
@@ -50,6 +53,8 @@ export const IncomeChart = () => {
         };
       });
   }, [clusters]);
+
+  const isDisabled = future.length + history.length > 0;
 
   const series = useMemo(() => {
     return [
@@ -168,5 +173,25 @@ export const IncomeChart = () => {
     }),
     [series]
   );
-  return <AgChartsReact options={options} />;
+  return (
+    <Tooltip
+      disableHoverListener={isDisabled}
+      disableFocusListener={isDisabled}
+      disableTouchListener={isDisabled}
+      slotProps={{
+        tooltip: {
+          sx: {
+            maxWidth: "unset",
+          },
+        },
+      }}
+      title={
+        <Box height={300} width={600}>
+          <AgChartsReact options={options} />;
+        </Box>
+      }
+    >
+      <InsertChartIcon color={isDisabled ? "disabled" : undefined} />
+    </Tooltip>
+  );
 };
