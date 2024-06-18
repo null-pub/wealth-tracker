@@ -16,7 +16,7 @@ export const WealthChart = () => {
   const data = useGraphData();
   const initialFromDate = useEarliestAccountEntry().startOf("year");
   const intialToDate = getLocalDateTime().endOf("year");
-  const [fromDate, setFromDate] = useState<DateTime>(initialFromDate);
+  const [fromDate, setFromDate] = useState<DateTime>(getLocalDateTime().startOf("year"));
   const [toDate, setToDate] = useState<DateTime>(intialToDate);
 
   const filteredData = useMemo(() => {
