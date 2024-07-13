@@ -23,15 +23,16 @@ export const useDates = (year?: number) => {
   const timeSeries = useStore(store, (x) => x.projectedIncome.timeSeries);
   const meritBonusDate = useRealDate(year, timeSeries.meritBonus);
   const companyBonusDate = useRealDate(year, timeSeries.companyBonus);
+  const retirementBonusDate = useRealDate(year, timeSeries.retirementBonus);
 
   return useMemo(() => {
     return {
       meritIncrease: DateTime.fromObject({ month: 4, day: 1, year }),
       meritBonus: meritBonusDate ?? DateTime.fromObject({ month: 4, day: 15, year }),
       companyBonus: companyBonusDate ?? DateTime.fromObject({ month: 6, day: 15, year }),
-      retirementBonus: DateTime.fromObject({ month: 7, day: 15, year }),
+      retirementBonus: retirementBonusDate ?? DateTime.fromObject({ month: 7, day: 15, year }),
     };
-  }, [companyBonusDate, meritBonusDate, year]);
+  }, [companyBonusDate, meritBonusDate, retirementBonusDate, year]);
 };
 
 export const useDateRanges = (year: number) => {
