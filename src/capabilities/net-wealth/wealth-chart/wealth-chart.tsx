@@ -35,7 +35,6 @@ export const WealthChart = () => {
           xKey: "date",
           yKey: x,
           yName: `${x}${data.hidden ? " (hidden)" : ""}`,
-          showInLegend: !data.hidden,
           tooltip: {
             renderer: ({ datum, yKey, xKey }) => ({
               content: `${DateTime.fromJSDate(datum[xKey]).toISODate()} ${formatCashShort(datum[yKey])}`,
