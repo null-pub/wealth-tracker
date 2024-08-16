@@ -18,7 +18,7 @@ import { DateTime } from "luxon";
 import { useRef, useState } from "react";
 import { ConfirmDialog } from "shared/components/confirm-dialog";
 import { Loan } from "shared/models/store/version-1";
-import { removeAccount, setLoan, store, updateAccountName } from "shared/store";
+import { hideAccount, removeAccount, setLoan, store, updateAccountName } from "shared/store";
 import { ZodIssue, z } from "zod";
 
 const convertPct = (value: number) => {
@@ -149,11 +149,23 @@ export const AccountSettings = (props: AccountSettingsProps) => {
         </DialogContent>
         <DialogActions>
           <ConfirmDialog
-            onConfirm={() => removeAccount(accountName)}
+            onConfirm={() => {
+              removeAccount(accountName);
+              setIsOpen(false);
+            }}
             title={`Confirm Deleting ${accountName} Mortgage`}
           >
+            <Button color="error">Delete Account</Button>
+          </ConfirmDialog>
+          <ConfirmDialog
+            onConfirm={() => {
+              hideAccount(accountName);
+              setIsOpen(false);
+            }}
+            title={`Confirm Hiding ${accountName} Account`}
+          >
             <Button sx={{ marginRight: 10 }} color="error">
-              Delete Account
+              Hide Account
             </Button>
           </ConfirmDialog>
           <Button disabled={!nextAccountName} onClick={handleClose}>
