@@ -1,5 +1,6 @@
 export * from "./add-account-entry";
 export * from "./add-projected-income";
+export * from "./hide-account";
 export * from "./remove-account";
 export * from "./remove-account-entry";
 export * from "./remove-projected-income";

@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { ConfirmDialog } from "shared/components/confirm-dialog";
-import { removeAccount, updateAccountName } from "shared/store";
+import { hideAccount, removeAccount, updateAccountName } from "shared/store";
 
 interface AccountSettingsProps {
   accountName: string;
@@ -48,9 +48,24 @@ export const AccountSettings = (props: AccountSettingsProps) => {
           </Stack>
         </DialogContent>
         <DialogActions>
-          <ConfirmDialog onConfirm={() => removeAccount(accountName)} title={`Confirm Deleting ${accountName} Account`}>
+          <ConfirmDialog
+            onConfirm={() => {
+              removeAccount(accountName);
+              setIsOpen(false);
+            }}
+            title={`Confirm Deleting ${accountName} Account`}
+          >
+            <Button color="error">Delete Account</Button>
+          </ConfirmDialog>
+          <ConfirmDialog
+            onConfirm={() => {
+              hideAccount(accountName);
+              setIsOpen(false);
+            }}
+            title={`Confirm Hiding ${accountName} Account`}
+          >
             <Button sx={{ marginRight: 10 }} color="error">
-              Delete Account
+              Hide Account
             </Button>
           </ConfirmDialog>
           <Button

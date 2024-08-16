@@ -27,9 +27,11 @@ export const AccountTabs = () => {
             setAccount(value as string);
           }}
         >
-          {Object.keys(accounts).map((account) => {
-            return <Tab key={account} value={account} label={account} />;
-          })}
+          {Object.entries(accounts)
+            .filter(([, data]) => !data.hidden)
+            .map(([account]) => {
+              return <Tab key={account} value={account} label={account} />;
+            })}
           <Tab component={NewAccount} />
         </Tabs>
       </Box>

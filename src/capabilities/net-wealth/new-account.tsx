@@ -66,6 +66,7 @@ export const NewAccount = forwardRef<HTMLButtonElement, { children?: ReactNode }
                   next.wealth[nameRef.current.value] = {
                     type: accountType,
                     data: [],
+                    hidden: false,
                   };
 
                   setOpen(false);

@@ -28,13 +28,14 @@ export const WealthChart = () => {
 
   const series = useMemo(() => {
     return [
-      ...Object.keys(wealth).map((x) => {
+      ...Object.entries(wealth).map(([x, data]) => {
         return {
           stacked: true,
           type: "area",
           xKey: "date",
           yKey: x,
-          yName: x,
+          yName: `${x}${data.hidden ? " (hidden)" : ""}`,
+          showInLegend: !data.hidden,
           tooltip: {
             renderer: ({ datum, yKey, xKey }) => ({
               content: `${DateTime.fromJSDate(datum[xKey]).toISODate()} ${formatCashShort(datum[yKey])}`,
