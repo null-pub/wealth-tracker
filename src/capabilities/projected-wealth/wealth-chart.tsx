@@ -51,7 +51,7 @@ export const WealthChart = (props: { titleYear: number }) => {
               };
             } else if (params.datum.date.hasSame(DateTime.local(), "day")) {
               return {
-                fill: "green",
+                fill: "lightgrey",
               };
             }
           },
@@ -82,7 +82,7 @@ export const WealthChart = (props: { titleYear: number }) => {
               };
             } else if (params.datum.date.hasSame(DateTime.local(), "day")) {
               return {
-                fill: "green",
+                fill: "lightgrey",
               };
             }
           },
