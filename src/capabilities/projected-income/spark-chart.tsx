@@ -1,8 +1,8 @@
 import InsertChartIcon from "@mui/icons-material/InsertChart";
-import { Box, Tooltip } from "@mui/material";
+import { Tooltip } from "@mui/material";
 import { useStore } from "@tanstack/react-store";
-import { AgChartOptions } from "ag-charts-community";
-import { AgChartsReact } from "ag-charts-react";
+import { AgCartesianChartOptions } from "ag-charts-community";
+import { AgCharts } from "ag-charts-react";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { TimeSeries } from "shared/models/store/current";
@@ -68,7 +68,7 @@ export const SparkChart = (props: { accountName: TimeSeries; variant: "cash" | "
     return ck;
   }, [account]);
 
-  const options = useMemo((): AgChartOptions => {
+  const options = useMemo((): AgCartesianChartOptions => {
     return {
       data: ckData,
       theme: "ag-default-dark",
@@ -81,7 +81,7 @@ export const SparkChart = (props: { accountName: TimeSeries; variant: "cash" | "
           marker:
             variant === "percent"
               ? {
-                  formatter: (params: ChartElement) => {
+                  itemStyler: (params: ChartElement) => {
                     return {
                       fill: params.datum.color,
                       size: 10,
@@ -97,7 +97,7 @@ export const SparkChart = (props: { accountName: TimeSeries; variant: "cash" | "
           position: "left",
 
           nice: true,
-          tick: {
+          interval: {
             maxSpacing: 45,
           },
           label: {
@@ -132,11 +132,7 @@ export const SparkChart = (props: { accountName: TimeSeries; variant: "cash" | "
           },
         },
       }}
-      title={
-        <Box sx={{ width: 600, height: 300 }}>
-          <AgChartsReact options={options} />
-        </Box>
-      }
+      title={<AgCharts options={options} css={{ width: 600, height: 300 }} />}
     >
       <InsertChartIcon color={isDisabled ? "disabled" : undefined} />
     </Tooltip>

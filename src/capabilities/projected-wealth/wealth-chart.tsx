@@ -1,5 +1,5 @@
 import { AgCartesianChartOptions, AgLineSeriesOptions } from "ag-charts-community";
-import { AgChartsReact } from "ag-charts-react";
+import { AgCharts } from "ag-charts-react";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { getLocalDateTime } from "shared/utility/current-date";
@@ -71,7 +71,7 @@ export const WealthChart = (props: { titleYear: number }) => {
         },
         marker: {
           fill: "grey",
-          formatter: (params: MarkerParams<TimeSeriesWealth>) => {
+          itemStyler: (params: MarkerParams<TimeSeriesWealth>) => {
             if (params.datum.date.year === DateTime.local().plus({ years: 1 }).year) {
               return {
                 fill: "orange",
@@ -118,5 +118,5 @@ export const WealthChart = (props: { titleYear: number }) => {
     }),
     [data, series, offsetIdx]
   );
-  return <AgChartsReact options={options} />;
+  return <AgCharts options={options} css={{ height: "100%", width: "100%" }} />;
 };

@@ -2,7 +2,7 @@ import { Box } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useStore } from "@tanstack/react-store";
 import { AgAreaSeriesOptions, AgCartesianChartOptions, AgLineSeriesOptions, time } from "ag-charts-community";
-import { AgChartsReact } from "ag-charts-react";
+import { AgCharts } from "ag-charts-react";
 import { DateTime } from "luxon";
 import { useMemo, useState } from "react";
 import { useEarliestAccountEntry } from "shared/hooks/use-earliest-account-entry";
@@ -71,8 +71,8 @@ export const WealthChart = () => {
             format: "%Y",
           },
           nice: false,
-          tick: {
-            interval: time.year.every(1, { snapTo: "start" }),
+          interval: {
+            step: time.year.every(1, { snapTo: "start" }),
           },
         },
         {
@@ -86,7 +86,7 @@ export const WealthChart = () => {
   );
   return (
     <Box position={"relative"} height="100%" width="100%">
-      <AgChartsReact options={options} />
+      <AgCharts options={options} css={{ height: "100%", width: "100%" }} />
       <Box position={"absolute"} top={16} right={16} zIndex={100} width={250} display={"flex"} gap={2}>
         <DatePicker
           sx={{ backgroundColor: "#121212" }}

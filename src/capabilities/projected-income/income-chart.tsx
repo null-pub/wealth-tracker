@@ -2,7 +2,7 @@ import InsertChartIcon from "@mui/icons-material/InsertChart";
 import { Tooltip } from "@mui/material";
 import { Box } from "@mui/system";
 import { AgCartesianChartOptions, AgLineSeriesOptions } from "ag-charts-community";
-import { AgChartsReact } from "ag-charts-react";
+import { AgCharts } from "ag-charts-react";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { useTotalPayClusters } from "shared/hooks/use-clusters";
@@ -79,7 +79,7 @@ export const IncomeChart = () => {
         yName: "Low",
         stroke: "grey",
         marker: {
-          formatter: (params) => {
+          itemStyler: (params) => {
             const color = getColor(params.datum.lowProbability);
             return {
               fill: color,
@@ -95,7 +95,7 @@ export const IncomeChart = () => {
       },
       {
         marker: {
-          formatter: (params) => {
+          itemStyler: (params) => {
             const color = getColor(params.datum.medProbability);
             return {
               fill: color,
@@ -117,7 +117,7 @@ export const IncomeChart = () => {
       {
         stroke: "grey",
         marker: {
-          formatter: (params) => {
+          itemStyler: (params) => {
             const color = getColor(params.datum.highProbability);
             return {
               fill: color,
@@ -159,7 +159,7 @@ export const IncomeChart = () => {
           type: "number",
           position: "left",
           nice: true,
-          tick: {
+          interval: {
             maxSpacing: 45,
           },
           label: {
@@ -187,7 +187,7 @@ export const IncomeChart = () => {
       }}
       title={
         <Box height={300} width={600}>
-          <AgChartsReact options={options} />;
+          <AgCharts options={options} css={{ height: "100%", width: "100%" }} />;
         </Box>
       }
     >

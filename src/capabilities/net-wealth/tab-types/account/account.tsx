@@ -1,5 +1,4 @@
 import { Alert, Box, Button, InputAdornment, Paper, Stack, TextField, Typography } from "@mui/material";
-import Grid from "@mui/system/Unstable_Grid";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
@@ -44,11 +43,9 @@ export const AccountTab = (props: { accountName: string }) => {
         </Box>
       </Stack>
       {missingYears.length > 0 && (
-        <Grid xs={12}>
-          <Paper elevation={3}>
-            <Alert severity="warning">Ensure an entry for Jan 1st for {missingYears.join(", ")}</Alert>
-          </Paper>
-        </Grid>
+        <Paper elevation={3}>
+          <Alert severity="warning">Ensure an entry for Jan 1st for {missingYears.join(", ")}</Alert>
+        </Paper>
       )}
 
       <DatePicker
