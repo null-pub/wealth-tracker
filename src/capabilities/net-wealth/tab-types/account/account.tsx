@@ -61,8 +61,10 @@ export const AccountTab = (props: { accountName: string }) => {
         value={amount ?? ""}
         type="number"
         onChange={(event) => (event.target.value === "" ? setAmount(null) : setAmount(+event.target.value))}
-        InputProps={{
-          startAdornment: <InputAdornment position="start">$</InputAdornment>,
+        slotProps={{
+          input: {
+            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+          },
         }}
         placeholder="0"
       />

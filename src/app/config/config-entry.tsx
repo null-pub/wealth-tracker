@@ -41,8 +41,10 @@ export const ConfigEntry = (props: ConfigEntryProps) => {
     <TextField
       error={error}
       variant="outlined"
-      InputProps={{
-        startAdornment: <InputAdornment position="start">{isPercent ? "%" : "$"}</InputAdornment>,
+      slotProps={{
+        input: {
+          startAdornment: <InputAdornment position="start">{isPercent ? "%" : "$"}</InputAdornment>,
+        },
       }}
       defaultValue={defaultValue.toFixed(isPercent ? 2 : 0)}
       type="numeric"

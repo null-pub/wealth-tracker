@@ -15,6 +15,7 @@
     "jsx": "react-jsx",
     "baseUrl": "src",
     "jsxImportSource": "@emotion/react",
+    "noErrorTruncation": true,
 
     /* Linting */
     "strict": true,

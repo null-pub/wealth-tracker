@@ -62,10 +62,12 @@ const DataEntry = (props: {
           placeholder="0"
           type="number"
           onChange={(event) => (event.target.value === "" ? setAmount(null) : setAmount(+event.target.value))}
-          InputProps={{
-            startAdornment: variant !== "number" && (
-              <InputAdornment position="start">{variant === "cash" ? "$" : "%"}</InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: variant !== "number" && (
+                <InputAdornment position="start">{variant === "cash" ? "$" : "%"}</InputAdornment>
+              ),
+            },
           }}
         />
         <Button disabled={amount === null || !date || hasSameDate} onClick={onAddEntry}>
