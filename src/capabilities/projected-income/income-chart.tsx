@@ -1,6 +1,5 @@
 import InsertChartIcon from "@mui/icons-material/InsertChart";
 import { Tooltip } from "@mui/material";
-import { Box } from "@mui/system";
 import { AgCartesianChartOptions, AgLineSeriesOptions } from "ag-charts-community";
 import { AgCharts } from "ag-charts-react";
 import { DateTime } from "luxon";
@@ -185,11 +184,7 @@ export const IncomeChart = () => {
           },
         },
       }}
-      title={
-        <Box height={300} width={600}>
-          <AgCharts options={options} css={{ height: "100%", width: "100%" }} />;
-        </Box>
-      }
+      title={<AgCharts options={options} css={{ height: 375, width: 750 }} />}
     >
       <InsertChartIcon color={isDisabled ? "disabled" : undefined} />
     </Tooltip>

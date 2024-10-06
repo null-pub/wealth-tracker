@@ -107,12 +107,12 @@ export const AccountSettings = (props: AccountSettingsProps) => {
             />
             <TextField
               error={!!error.ratePct}
-              defaultValue={loan?.ratePct}
+              defaultValue={(loan?.ratePct ?? 0) * 100}
               onChange={(event) => {
                 ref.current.ratePct = convertPct(+event.target.value);
               }}
               variant="outlined"
-              label="Rate"
+              label="Rate (%)"
               type="number"
             />
             <TextField

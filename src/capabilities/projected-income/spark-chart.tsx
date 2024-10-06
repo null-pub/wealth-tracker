@@ -132,7 +132,7 @@ export const SparkChart = (props: { accountName: TimeSeries; variant: "cash" | "
           },
         },
       }}
-      title={<AgCharts options={options} css={{ width: 600, height: 300 }} />}
+      title={<AgCharts options={options} css={{ width: 750, height: 375 }} />}
     >
       <InsertChartIcon color={isDisabled ? "disabled" : undefined} />
     </Tooltip>

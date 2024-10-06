@@ -53,7 +53,6 @@ export const MortgageTab = (props: { accountName: string }) => {
       </Stack>
       <AddEntry accountName={accountName} />
       <AgGrid
-        reactiveCustomComponents
         rowData={account?.data ?? []}
         columnDefs={accountColumnConfig}
         id={account + "-history"}

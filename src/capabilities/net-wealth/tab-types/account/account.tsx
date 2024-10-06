@@ -73,7 +73,6 @@ export const AccountTab = (props: { accountName: string }) => {
       </Button>
 
       <AgGrid
-        reactiveCustomComponents
         rowData={account.data}
         columnDefs={accountColumnConfig}
         id={account + "-history"}
