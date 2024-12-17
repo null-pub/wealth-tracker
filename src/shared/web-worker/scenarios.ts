@@ -228,9 +228,9 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
       type: PaymentTypes.nonTaxableBonus,
     });
 
-    const currentPaymentIdx = findNearestIdxOnOrBefore(localDateTime, x.payments, (x) => DateTime.fromISO(x.payedOn));
-    const remainingRegularPayments =
-      x.payments.filter((x) => x.type === PaymentTypes.regular).length - currentPaymentIdx;
+    const regularPayments =  x.payments.filter((x) => x.type === PaymentTypes.regular);
+    const currentPaymentIdx = findNearestIdxOnOrBefore(localDateTime, regularPayments, (x) => DateTime.fromISO(x.payedOn));
+    const remainingRegularPayments = regularPayments.length - currentPaymentIdx;
 
     return {
       currentPaymentIdx,
