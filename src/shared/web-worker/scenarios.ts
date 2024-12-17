@@ -99,53 +99,53 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
     meritSequence.length === 0
       ? getEmptyMeritSequence(year, projectedIncome, pay)
       : meritSequence.map(({ weight, values: merits }) => {
-          const nextPay = pay.slice();
-          const initial = nextPay.length;
-          for (let i = initial; i < merits.length + initial; i++) {
-            const prior = nextPay[i - 1] ?? mostRecentPay;
-            const date = DateTime.fromISO(prior.date ?? mostRecentPay.date)
-              .plus({ years: 1 })
-              .set({ month: dates.meritIncrease.month, day: dates.meritIncrease.day });
+        const nextPay = pay.slice();
+        const initial = nextPay.length;
+        for (let i = initial; i < merits.length + initial; i++) {
+          const prior = nextPay[i - 1] ?? mostRecentPay;
+          const date = DateTime.fromISO(prior.date ?? mostRecentPay.date)
+            .plus({ years: 1 })
+            .set({ month: dates.meritIncrease.month, day: dates.meritIncrease.day });
 
-            if (date.year > year) {
-              break;
-            }
-
-            const equity = equityLookup[date.year]?.value ?? 0;
-            nextPay.push({
-              date: date.toISO()!,
-              value: prior.value * (1 + merits[i - initial].meritIncreasePct + equity),
-            });
+          if (date.year > year) {
+            break;
           }
 
-          nextPay.forEach((x) => {
-            x.value = Math.round(x.value);
+          const equity = equityLookup[date.year]?.value ?? 0;
+          nextPay.push({
+            date: date.toISO()!,
+            value: prior.value * (1 + merits[i - initial].meritIncreasePct + equity),
           });
+        }
 
-          const projectedMerit = merits.map((x) => x.meritBonusPct);
-          const lastThreeMeritBonuses = actualMeritBonusPcts.concat(projectedMerit).slice(-3);
-          const lastThreeMeritBonusFactor = sumSimple(lastThreeMeritBonuses);
-
-          const lastMerit = merits.at(-1)!;
-          const payments = getPayments(
-            DateTime.fromObject({ day: 1, month: 1, year: year - 1 }),
-            DateTime.fromObject({ day: 31, month: 12, year: year }).endOf("day"),
-            valueByDateRange(nextPay)
-          );
-
-          return {
-            year,
-            weight,
-            pay: nextPay,
-            lastThreeMeritBonusFactor,
-            lastThreeMeritBonuses,
-            meritBonusPct: lastMerit.meritBonusPct,
-            meritIncreasePct: lastMerit.meritIncreasePct,
-            payments,
-            equityIncreasePct,
-            retirementBonusPct: 0.15,
-          };
+        nextPay.forEach((x) => {
+          x.value = Math.round(x.value);
         });
+
+        const projectedMerit = merits.map((x) => x.meritBonusPct);
+        const lastThreeMeritBonuses = actualMeritBonusPcts.concat(projectedMerit).slice(-3);
+        const lastThreeMeritBonusFactor = sumSimple(lastThreeMeritBonuses);
+
+        const lastMerit = merits.at(-1)!;
+        const payments = getPayments(
+          DateTime.fromObject({ day: 1, month: 1, year: year - 1 }),
+          DateTime.fromObject({ day: 31, month: 12, year: year }).endOf("day"),
+          valueByDateRange(nextPay)
+        );
+
+        return {
+          year,
+          weight,
+          pay: nextPay,
+          lastThreeMeritBonusFactor,
+          lastThreeMeritBonuses,
+          meritBonusPct: lastMerit.meritBonusPct,
+          meritIncreasePct: lastMerit.meritIncreasePct,
+          payments,
+          equityIncreasePct,
+          retirementBonusPct: 0.15,
+        };
+      });
 
   const postBasePay = basePayAndMeritScenarios.map((x) => {
     const aprToApr = (x.pay.at(-1)?.value ?? 0) * 26;
@@ -228,9 +228,9 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
       type: PaymentTypes.nonTaxableBonus,
     });
 
-    const regularPayments =  x.payments.filter((x) => x.type === PaymentTypes.regular);
+    const regularPayments = x.payments.filter((x) => x.type === PaymentTypes.regular);
     const currentPaymentIdx = findNearestIdxOnOrBefore(localDateTime, regularPayments, (x) => DateTime.fromISO(x.payedOn));
-    const remainingRegularPayments = regularPayments.length - currentPaymentIdx;
+    const remainingRegularPayments = regularPayments.length - 1 - currentPaymentIdx;
 
     return {
       currentPaymentIdx,
