@@ -40,7 +40,7 @@ const useThresholdTax = (year: number, threshold: number, taxRate: number): Thre
             const total = taxRate * Math.max(0, (x.payments.at(-1)?.cumulative ?? 0) - threshold);
             const firstOccurrence = x.payments.find((x) => x.cumulative > threshold)?.payedOn;
             const remaining = x.payments
-              .slice(x.currentPaymentIdx)
+              .slice(x.currentPaymentIdx+1)
               .filter((x) => x.cumulative >= threshold)
               .reduce((acc, curr) => {
                 return acc + Math.min(curr.value, curr.cumulative - threshold) * taxRate;
