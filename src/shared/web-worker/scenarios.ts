@@ -229,8 +229,9 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
     });
 
     const regularPayments = x.payments.filter((x) => x.type === PaymentTypes.regular);
-    const currentPaymentIdx = findNearestIdxOnOrBefore(localDateTime, regularPayments, (x) => DateTime.fromISO(x.payedOn));
-    const remainingRegularPayments = regularPayments.length - 1 - currentPaymentIdx;
+    const currentRegularPaymentIdx = findNearestIdxOnOrBefore(localDateTime, regularPayments, (x) => DateTime.fromISO(x.payedOn));
+    const remainingRegularPayments = regularPayments.length - 1 - currentRegularPaymentIdx;
+    const currentPaymentIdx = findNearestIdxOnOrBefore(localDateTime, x.payments, (x) => DateTime.fromISO(x.payedOn));
 
     return {
       currentPaymentIdx,
