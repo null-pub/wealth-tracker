@@ -3,6 +3,7 @@ import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { store } from "shared/store";
 import { scenarioStore } from "shared/store/scenario-store";
+import { isFuture } from "shared/utility/is-future";
 
 interface ThresholdTaxData {
   total: number;
@@ -40,8 +41,8 @@ const useThresholdTax = (year: number, threshold: number, taxRate: number): Thre
             const total = taxRate * Math.max(0, (x.payments.at(-1)?.cumulative ?? 0) - threshold);
             const firstOccurrence = x.payments.find((x) => x.cumulative > threshold)?.payedOn;
             const remaining = x.payments
-              .slice(x.currentPaymentIdx+1)
-              .filter((x) => x.cumulative >= threshold)
+              .slice(x.currentPaymentIdx)
+              .filter((x) => x.cumulative >= threshold &&  isFuture(DateTime.fromISO(x.payedOn)))
               .reduce((acc, curr) => {
                 return acc + Math.min(curr.value, curr.cumulative - threshold) * taxRate;
               }, 0);

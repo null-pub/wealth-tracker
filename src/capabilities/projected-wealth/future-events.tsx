@@ -18,8 +18,8 @@ import { useFutureRetirementContributions } from "./hooks/use-future-retirement-
 import { useFutureSavings } from "./hooks/use-future-savings";
 import { ThresholdTax, useFutureMedicareTax, useFutureSocialSecurity } from "./hooks/use-future-social-security";
 import { useFutureTotals } from "./hooks/use-future-totals";
+import { isFuture } from "shared/utility/is-future";
 
-const isFuture = (date: DateTime) => date.diffNow("milliseconds").milliseconds > 0;
 
 export const FutureEvents = (props: { year: number; onChange: (year: number) => void }) => {
   const { year, onChange } = props;

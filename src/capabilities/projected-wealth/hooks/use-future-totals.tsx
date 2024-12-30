@@ -10,8 +10,8 @@ import { ckmeans, median, sumSimple } from "simple-statistics";
 import { useFutureMortgageEquity } from "./use-future-mortgage-equity";
 import { useFutureRetirementContributions } from "./use-future-retirement-contributions";
 import { useFutureSavings } from "./use-future-savings";
+import { isFuture } from "shared/utility/is-future";
 
-const isFuture = (date: DateTime) => date.diffNow("milliseconds").milliseconds > 0;
 const thresholdTaxRemaining = (taxRate: number, threshold: number, scenario: Scenario) => {
   const remaining = scenario.payments
     .slice(scenario.currentPaymentIdx)
