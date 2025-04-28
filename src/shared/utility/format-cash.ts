@@ -11,6 +11,5 @@ export const formatCash = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
   maximumFractionDigits: 0,
-  minimumSignificantDigits:3,
-  maximumSignificantDigits: 3
+   
 }).format;
