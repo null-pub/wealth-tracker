@@ -13,13 +13,12 @@ import { store } from "shared/store";
 import { scaleClusters } from "shared/utility/cluster-helpers";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { monthDay } from "shared/utility/format-date";
+import { isFuture } from "shared/utility/is-future";
 import { useFutureMortgageEquity } from "./hooks/use-future-mortgage-equity";
 import { useFutureRetirementContributions } from "./hooks/use-future-retirement-contributions";
 import { useFutureSavings } from "./hooks/use-future-savings";
 import { ThresholdTax, useFutureMedicareTax, useFutureSocialSecurity } from "./hooks/use-future-social-security";
 import { useFutureTotals } from "./hooks/use-future-totals";
-import { isFuture } from "shared/utility/is-future";
-
 
 export const FutureEvents = (props: { year: number; onChange: (year: number) => void }) => {
   const { year, onChange } = props;

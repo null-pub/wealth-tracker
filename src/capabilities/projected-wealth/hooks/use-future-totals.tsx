@@ -6,11 +6,11 @@ import { Scenario } from "shared/models/scenario";
 import { store } from "shared/store";
 import { scenarioStore } from "shared/store/scenario-store";
 import { clusterTitle, getClusterCount } from "shared/utility/cluster-helpers";
+import { isFuture } from "shared/utility/is-future";
 import { ckmeans, median, sumSimple } from "simple-statistics";
 import { useFutureMortgageEquity } from "./use-future-mortgage-equity";
 import { useFutureRetirementContributions } from "./use-future-retirement-contributions";
 import { useFutureSavings } from "./use-future-savings";
-import { isFuture } from "shared/utility/is-future";
 
 const thresholdTaxRemaining = (taxRate: number, threshold: number, scenario: Scenario) => {
   const remaining = scenario.payments
