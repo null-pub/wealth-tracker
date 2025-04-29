@@ -20,12 +20,12 @@ export const useGraphData = () => {
 
         if (value) {
           acc[accountName] = value;
-          acc["total"] = (acc["total"] as number) + value;
+          acc.total = acc.total + value;
         } else {
           acc[accountName] = null;
         }
 
-        acc["date"] = date.toJSDate();
+        acc.date = date.toJSDate();
         return acc;
       },
       { total: 0 } as GraphData
