@@ -3,14 +3,16 @@ import tsParser from "@typescript-eslint/parser";
 import prettier from "eslint-config-prettier/flat";
 import eslintPluginPrettier from "eslint-plugin-prettier/recommended";
 import react from "eslint-plugin-react";
-import * as reactHooks from "eslint-plugin-react-refresh";
+import ReactHooks from "eslint-plugin-react-hooks";
+import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint, { config } from "typescript-eslint";
 
 export default config(
   eslint.configs.recommended,
   tseslint.configs.recommended,
-  reactHooks.configs.recommended,
+  reactRefresh.configs.recommended,
   react.configs.flat.recommended,
+  ReactHooks.configs.recommended,
   prettier,
   eslintPluginPrettier,
   {
@@ -33,6 +35,7 @@ export default config(
       },
     },
     rules: {
+      "react-hooks/react-compiler": "error",
       curly: "error",
       "react/react-in-jsx-scope": "off",
       "@typescript-eslint/no-unused-expressions": ["error", { allowShortCircuit: true }],

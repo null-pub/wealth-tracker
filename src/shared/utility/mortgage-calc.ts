@@ -11,11 +11,6 @@ export const calcLoanBalance = (date: DateTime, loan: Loan) => {
   return balance;
 };
 
-export const calcEquity = (
-  ownershipPct: number,
-  houseValue: number | undefined,
-  loanBalance: number,
-  principal: number
-) => {
+export const calcEquity = (ownershipPct: number, houseValue: number | undefined, loanBalance: number, principal: number) => {
   return houseValue ? houseValue * ownershipPct - loanBalance : principal - loanBalance;
 };

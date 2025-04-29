@@ -51,9 +51,7 @@ export const columnConfig: ColDef<TimeSeriesWealth>[] = [
                 year: systemYear + 1,
               })
             ) && (
-              <Tooltip
-                title={`Benchmark for ${localDateTime.set({ day: 1, month: 1 }).plus({ years: 2 }).toFormat(shortDate)} `}
-              >
+              <Tooltip title={`Benchmark for ${localDateTime.set({ day: 1, month: 1 }).plus({ years: 2 }).toFormat(shortDate)} `}>
                 <QueryStatsIcon htmlColor="rgb(244, 67, 54)" />
               </Tooltip>
             )}

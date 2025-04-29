@@ -31,14 +31,7 @@ export const Value = (props: CellProps) => {
           {children ? children : "?"}
         </Box>
         {!!(secondaryValue ?? tertiaryValue) && (
-          <Box
-            alignSelf={"flex-end"}
-            fontSize={12}
-            fontWeight={500}
-            lineHeight={"16px"}
-            textTransform={"uppercase"}
-            color={"#888"}
-          >
+          <Box alignSelf={"flex-end"} fontSize={12} fontWeight={500} lineHeight={"16px"} textTransform={"uppercase"} color={"#888"}>
             {secondaryValue ?? tertiaryValue}
           </Box>
         )}

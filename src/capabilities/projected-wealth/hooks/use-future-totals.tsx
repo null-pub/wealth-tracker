@@ -1,6 +1,5 @@
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
-import { useMemo } from "react";
 import { useDates } from "shared/hooks/use-dates";
 import { Scenario } from "shared/models/scenario";
 import { store } from "shared/store";
@@ -22,10 +21,7 @@ const thresholdTaxRemaining = (taxRate: number, threshold: number, scenario: Sce
   return remaining;
 };
 
-export const useFutureTotals = (
-  year: number,
-  options: { excludeHomeEquity: boolean } = { excludeHomeEquity: false }
-) => {
+export const useFutureTotals = (year: number, options: { excludeHomeEquity: boolean } = { excludeHomeEquity: false }) => {
   const { excludeHomeEquity } = options;
   const scenarios = useStore(scenarioStore, (x) => x.scenarios[year]);
   const bonusTakeHomeFactor = useStore(store, (x) => 1 - x.projectedWealth.bonusWithholdingsRate);
@@ -35,7 +31,8 @@ export const useFutureTotals = (
   const config = useStore(store, (x) => x.projectedWealth);
 
   const dates = useDates(year);
-  const rawClusters = useMemo(() => {
+
+  const rawClusters = (() => {
     const totals = scenarios
       ?.map((x) => {
         const futureBonuses = [
@@ -57,32 +54,16 @@ export const useFutureTotals = (
       getClusterCount(totals, (x) => x)
     );
     return clusters;
-  }, [
-    bonusTakeHomeFactor,
-    config.medicareSupplementalTaxRate,
-    config.medicareSupplementalTaxThreshold,
-    config.socialSecurityLimit,
-    config.socialSecurityTaxRate,
-    dates.companyBonus,
-    dates.meritBonus,
-    dates.retirementBonus,
-    excludeHomeEquity,
-    homeEquity,
-    retirement.remaining,
-    savings.remaining,
-    scenarios,
-  ]);
+  })();
 
-  return useMemo(() => {
-    const numValues = rawClusters.flat().length;
-    return rawClusters.map((x, i, arr) => {
-      return {
-        min: Math.min(...x),
-        max: Math.max(...x),
-        median: median(x),
-        probability: x.length / numValues,
-        title: clusterTitle(i, arr.length),
-      };
-    });
-  }, [rawClusters]);
+  const numValues = rawClusters.flat().length;
+  return rawClusters.map((x, i, arr) => {
+    return {
+      min: Math.min(...x),
+      max: Math.max(...x),
+      median: median(x),
+      probability: x.length / numValues,
+      title: clusterTitle(i, arr.length),
+    };
+  });
 };

@@ -63,14 +63,7 @@ export const ScenarioExplorer = () => {
 
             <Paper elevation={5} sx={{ padding: 2 }}>
               <SimpleTreeView
-                defaultExpandedItems={[
-                  "_TotalPay",
-                  "totalMerit",
-                  "pay",
-                  "meritBonus",
-                  "companyBonus",
-                  "lastThreeMeritBonusFactor",
-                ]}
+                defaultExpandedItems={["_TotalPay", "totalMerit", "pay", "meritBonus", "companyBonus", "lastThreeMeritBonusFactor"]}
               >
                 <TreeItem itemId="scenario" label={<span>Scenario</span>}>
                   <TreeItem itemId="weight" label={<span>Weight: {scenario.weight}</span>} />
@@ -173,9 +166,7 @@ export const ScenarioExplorer = () => {
                     label={
                       <Stack direction={"row"} spacing={2}>
                         <Box>Current Payment: </Box>
-                        <Box>
-                          {DateTime.fromISO(scenario.payments[scenario.currentPaymentIdx].payedOn).toFormat(shortDate)}
-                        </Box>
+                        <Box>{DateTime.fromISO(scenario.payments[scenario.currentPaymentIdx].payedOn).toFormat(shortDate)}</Box>
                         <Box width={70} textAlign={"right"}>
                           {formatCash(scenario.payments[scenario.currentPaymentIdx].value)}
                         </Box>
@@ -194,8 +185,7 @@ export const ScenarioExplorer = () => {
                         label={
                           <Stack
                             sx={{
-                              backgroundColor:
-                                scenario.currentPaymentIdx == arr.length - 1 - i ? "rgba(0,255,0,.15)" : undefined,
+                              backgroundColor: scenario.currentPaymentIdx == arr.length - 1 - i ? "rgba(0,255,0,.15)" : undefined,
                             }}
                             direction={"row"}
                             spacing={2}
@@ -277,11 +267,7 @@ export const ScenarioExplorer = () => {
                     }
                   >
                     {scenario.lastThreeMeritBonuses.toReversed().map((x, i) => (
-                      <TreeItem
-                        key={`${i}${x}`}
-                        itemId={`lastThreeMeritBonuses${i}`}
-                        label={`${year - i} ${formatPercent(x)}`}
-                      />
+                      <TreeItem key={`${i}${x}`} itemId={`lastThreeMeritBonuses${i}`} label={`${year - i} ${formatPercent(x)}`} />
                     ))}
                   </TreeItem>
                 </TreeItem>

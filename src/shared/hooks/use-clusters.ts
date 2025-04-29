@@ -1,5 +1,4 @@
 import { useStore } from "@tanstack/react-store";
-import { useMemo } from "react";
 import { Scenario } from "shared/models/scenario";
 import { scenarioStore } from "shared/store/scenario-store";
 import { ckmeans } from "shared/utility/ckmeans";
@@ -39,42 +38,37 @@ const clusters = <T extends Scenario>(values: T[] | undefined, selector: (x: T) 
 export const useClusters = (year: number) => {
   const scenarios = useStore(scenarioStore, (x) => x.scenarios[year]);
 
-  return useMemo(() => {
-    if (scenarios?.length === 0) {
-      return {
-        totalPay: [],
-        meritBonus: [],
-        retirementBonus: [],
-        companyBonus: [],
-        pay: [],
-        meritIncrease: [],
-        scenarios,
-        taxablePay: [],
-      };
-    }
+  if (scenarios?.length === 0) {
     return {
-      totalPay: clusters(scenarios, (x) => x.totalPay),
-      meritBonus: clusters(scenarios, (x) => x.meritBonus),
-      retirementBonus: clusters(scenarios, (x) => x.retirementBonus),
-      companyBonus: clusters(scenarios, (x) => x.companyBonus),
-      pay: clusters(scenarios, (x) => x.pay.at(-1)?.value ?? 0),
-      meritIncrease: clusters(scenarios, (x) => x.meritIncreasePct + x.equityIncreasePct),
-      taxablePay: clusters(scenarios, (x) => x.taxablePay),
+      totalPay: [],
+      meritBonus: [],
+      retirementBonus: [],
+      companyBonus: [],
+      pay: [],
+      meritIncrease: [],
       scenarios,
+      taxablePay: [],
     };
-  }, [scenarios]);
+  }
+
+  return {
+    totalPay: clusters(scenarios, (x) => x.totalPay),
+    meritBonus: clusters(scenarios, (x) => x.meritBonus),
+    retirementBonus: clusters(scenarios, (x) => x.retirementBonus),
+    companyBonus: clusters(scenarios, (x) => x.companyBonus),
+    pay: clusters(scenarios, (x) => x.pay.at(-1)?.value ?? 0),
+    meritIncrease: clusters(scenarios, (x) => x.meritIncreasePct + x.equityIncreasePct),
+    taxablePay: clusters(scenarios, (x) => x.taxablePay),
+    scenarios,
+  };
 };
 
 export const useTotalPayClusters = () => {
   const scenarios = useStore(scenarioStore, (x) => x.scenarios);
-  return useMemo(() => {
-    const allScenarios = Object.entries(scenarios);
-    if (allScenarios.length === 0) {
-      return [];
-    }
+  const allScenarios = Object.entries(scenarios);
+  if (allScenarios.length === 0) {
+    return [];
+  }
 
-    return allScenarios.map(([year, scenarios]) => {
-      return [year, clusters(scenarios, (x) => x.totalPay)];
-    }) as [string, Cluster[]][];
-  }, [scenarios]);
+  return allScenarios.map(([year, scenarios]) => [year, clusters(scenarios, (x) => x.totalPay)]) as [string, Cluster[]][];
 };

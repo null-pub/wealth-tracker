@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import { useStore } from "@tanstack/react-store";
-import { useMemo } from "react";
+import { DateTime } from "luxon";
 import { AgGrid } from "shared/components/ag-grid";
 import { Mortgage } from "shared/models/store/current";
 import { store } from "shared/store";
@@ -12,36 +12,30 @@ import { AddEntry } from "./add-entry";
 import { createAccountColumnConfig, mortgageColumnConfig } from "./column-config";
 import { AccountSettings } from "./settings";
 
+function createLoanValueGetter(account: Mortgage) {
+  return (date: DateTime) => {
+    const loanBalance = calcLoanBalance(date, account.loan!);
+    return {
+      date,
+      balance: loanBalance,
+      equity: calcEquity(
+        account.loan!.ownershipPct,
+        findNearestOnOrBefore(date, account.data)?.value,
+        loanBalance,
+        account.loan!.principal
+      ),
+    };
+  };
+}
+
 export const MortgageTab = (props: { accountName: string }) => {
   const { accountName } = props;
-
   const account = useStore(store, (state) => state.wealth[accountName]) as Mortgage;
-
   const allAccounts = useStore(store, (x) => x.wealth);
-
-  const accountColumnConfig = useMemo(() => {
-    return createAccountColumnConfig(accountName);
-  }, [accountName]);
-
-  const mortgageData = useMemo(() => {
-    if (!account?.loan) {
-      return [];
-    }
-
-    return getGraphDates(Object.values(allAccounts)).map((date) => {
-      const loanBalance = calcLoanBalance(date, account.loan!);
-      return {
-        date,
-        balance: loanBalance,
-        equity: calcEquity(
-          account.loan!.ownershipPct,
-          findNearestOnOrBefore(date, account.data)?.value,
-          loanBalance,
-          account.loan!.principal
-        ),
-      };
-    });
-  }, [account, allAccounts]);
+  const accountColumnConfig = createAccountColumnConfig(accountName);
+  const accounts = Object.values(allAccounts);
+  const dates = getGraphDates(accounts);
+  const mortgageData = account.loan ? dates.map(createLoanValueGetter(account)) : [];
 
   return (
     <Stack height="100%" spacing={2}>

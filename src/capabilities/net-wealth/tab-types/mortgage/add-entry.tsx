@@ -3,7 +3,7 @@ import { Stack } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { addAccountEntry, store } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
 
@@ -11,6 +11,8 @@ export const AddEntry = (props: { accountName: string }) => {
   const { accountName } = props;
   const [date, setDate] = useState<DateTime>(getLocalDateTime());
   const [amount, setAmount] = useState<number | null>(null);
+  const account = useStore(store, (state) => state.wealth[accountName]);
+  const hasSameDate = !!account?.data?.find((x) => date?.hasSame(DateTime.fromISO(x.date), "day"));
 
   const onAddEntry = () => {
     if (date != undefined && amount != null) {
@@ -18,11 +20,6 @@ export const AddEntry = (props: { accountName: string }) => {
       setAmount(null);
     }
   };
-
-  const account = useStore(store, (state) => state.wealth[accountName]);
-  const hasSameDate = useMemo(() => {
-    return !!account?.data?.find((x) => date?.hasSame(DateTime.fromISO(x.date), "day"));
-  }, [account?.data, date]);
 
   return (
     <Stack spacing={2}>

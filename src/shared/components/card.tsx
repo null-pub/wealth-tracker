@@ -23,14 +23,7 @@ export const Card = (props: { title: ReactNode; children?: ReactNode }) => {
       {children && (
         <>
           <Divider />
-          <Stack
-            padding={1}
-            direction={"row"}
-            spacing={0.5}
-            width={"100%"}
-            minHeight={80}
-            justifyContent={"space-between"}
-          >
+          <Stack padding={1} direction={"row"} spacing={0.5} width={"100%"} minHeight={80} justifyContent={"space-between"}>
             {children}
           </Stack>
         </>

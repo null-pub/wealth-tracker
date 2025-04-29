@@ -4,7 +4,7 @@ import { useStore } from "@tanstack/react-store";
 import { AgAreaSeriesOptions, AgCartesianChartOptions, AgLineSeriesOptions, time } from "ag-charts-community";
 import { AgCharts } from "ag-charts-react";
 import { DateTime } from "luxon";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useEarliestAccountEntry } from "shared/hooks/use-earliest-account-entry";
 import { store } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
@@ -19,71 +19,65 @@ export const WealthChart = () => {
   const [fromDate, setFromDate] = useState<DateTime>(getLocalDateTime().plus({ year: -1 }));
   const [toDate, setToDate] = useState<DateTime>(intialToDate);
 
-  const filteredData = useMemo(() => {
-    return data.filter((x) => {
-      const year = (x["date"] as Date).getFullYear();
-      return year >= fromDate.year && year <= toDate.year;
-    });
-  }, [data, fromDate.year, toDate.year]);
+  const filteredData = data.filter((x) => {
+    const year = (x["date"] as Date).getFullYear();
+    return year >= fromDate.year && year <= toDate.year;
+  });
 
-  const series = useMemo(() => {
-    return [
-      ...Object.entries(wealth).map(([x, data]) => {
-        return {
-          stacked: true,
-          type: "area",
-          xKey: "date",
-          yKey: x,
-          yName: `${x}${data.hidden ? " (hidden)" : ""}`,
-          tooltip: {
-            renderer: ({ datum, yKey, xKey }) => ({
-              content: `${DateTime.fromJSDate(datum[xKey]).toISODate()} ${formatCashShort(datum[yKey])}`,
-            }),
-          },
-        } as AgAreaSeriesOptions;
-      }),
-      {
-        type: "line",
+  const series = [
+    ...Object.entries(wealth).map(([x, data]) => {
+      return {
+        stacked: true,
+        type: "area",
         xKey: "date",
-        yKey: "total",
-        yName: "Total",
+        yKey: x,
+        yName: `${x}${data.hidden ? " (hidden)" : ""}`,
         tooltip: {
           renderer: ({ datum, yKey, xKey }) => ({
             content: `${DateTime.fromJSDate(datum[xKey]).toISODate()} ${formatCashShort(datum[yKey])}`,
           }),
         },
-      } as AgLineSeriesOptions,
-    ];
-  }, [wealth]);
-
-  const options: AgCartesianChartOptions = useMemo(
-    () => ({
-      theme: "ag-default-dark",
-      title: {
-        text: `Total Wealth ${formatCashShort((data[data.length - 1]?.total ?? 0) as number)}`,
-      },
-      data: filteredData,
-      axes: [
-        {
-          type: "time",
-          position: "bottom",
-          label: {
-            format: "%Y",
-          },
-          nice: false,
-          interval: {
-            step: time.year.every(1, { snapTo: "start" }),
-          },
-        },
-        {
-          type: "number",
-          position: "left",
-        },
-      ],
-      series,
+      } as AgAreaSeriesOptions;
     }),
-    [data, filteredData, series]
-  );
+    {
+      type: "line",
+      xKey: "date",
+      yKey: "total",
+      yName: "Total",
+      tooltip: {
+        renderer: ({ datum, yKey, xKey }) => ({
+          content: `${DateTime.fromJSDate(datum[xKey]).toISODate()} ${formatCashShort(datum[yKey])}`,
+        }),
+      },
+    } as AgLineSeriesOptions,
+  ];
+
+  const options: AgCartesianChartOptions = {
+    theme: "ag-default-dark",
+    title: {
+      text: `Total Wealth ${formatCashShort((data[data.length - 1]?.total ?? 0) as number)}`,
+    },
+    data: filteredData,
+    axes: [
+      {
+        type: "time",
+        position: "bottom",
+        label: {
+          format: "%Y",
+        },
+        nice: false,
+        interval: {
+          step: time.year.every(1, { snapTo: "start" }),
+        },
+      },
+      {
+        type: "number",
+        position: "left",
+      },
+    ],
+    series,
+  };
+
   return (
     <Box position={"relative"} height="100%" width="100%">
       <AgCharts options={options} css={{ height: "100%", width: "100%" }} />

@@ -13,7 +13,7 @@ export default defineConfig({
     react({
       jsxImportSource: "@emotion/react",
       babel: {
-        plugins: ["@emotion/babel-plugin"],
+        plugins: ["@emotion/babel-plugin", ["babel-plugin-react-compiler", { target: "19" }]],
       },
     }),
     tsconfigPaths(),

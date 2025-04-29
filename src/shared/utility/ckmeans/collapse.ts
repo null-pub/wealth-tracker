@@ -1,5 +1,4 @@
-const areSetsEqual = <T>(a: Set<T>, b: Set<T>) =>
-  [...a].every((value) => b.has(value)) && [...b].every((value) => a.has(value));
+const areSetsEqual = <T>(a: Set<T>, b: Set<T>) => [...a].every((value) => b.has(value)) && [...b].every((value) => a.has(value));
 
 export const collapseClusters = <T>(data: T[][], selector: (data: T) => number) => {
   const sets = data.map((x) => new Set(x.map((y) => selector(y))));

@@ -40,10 +40,7 @@ export const createAccountColumnConfig = (
     cellEditor: dateVariant === "date" ? "agDateCellEditor" : "agNumberCellEditor",
     editable: true,
     valueSetter: (x) => {
-      const date =
-        dateVariant === "date"
-          ? DateTime.fromJSDate(x.newValue)
-          : DateTime.fromISO(x.data.date).set({ year: x.newValue });
+      const date = dateVariant === "date" ? DateTime.fromJSDate(x.newValue) : DateTime.fromISO(x.data.date).set({ year: x.newValue });
 
       if (date.isValid) {
         updateProjectedIncomeDate(accountName, x.data, date);

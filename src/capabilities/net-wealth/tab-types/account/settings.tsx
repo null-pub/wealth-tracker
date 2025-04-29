@@ -1,16 +1,6 @@
 import Close from "@mui/icons-material/Close";
 import SettingsIcon from "@mui/icons-material/Settings";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Stack, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { ConfirmDialog } from "shared/components/confirm-dialog";
 import { hideAccount, removeAccount, updateAccountName } from "shared/store";

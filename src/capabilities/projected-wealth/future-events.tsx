@@ -63,11 +63,7 @@ export const FutureEvents = (props: { year: number; onChange: (year: number) => 
           <ClusterValues clusters={total} eventDate={dates.companyBonus} />
         </Card>
         {isFuture(dates.meritBonus) && clusters.meritBonus.length > 0 && (
-          <ClusterCard
-            title="Merit Bonus"
-            date={dates.meritBonus}
-            cluster={scaleClusters(clusters.meritBonus, bonusTakeHomeFactor)}
-          />
+          <ClusterCard title="Merit Bonus" date={dates.meritBonus} cluster={scaleClusters(clusters.meritBonus, bonusTakeHomeFactor)} />
         )}
         {isFuture(dates.companyBonus) && clusters.companyBonus.length > 0 && (
           <ClusterCard
@@ -90,10 +86,7 @@ export const FutureEvents = (props: { year: number; onChange: (year: number) => 
               </Value>
             )}
             {!!retirement.perPaycheck && (
-              <Value
-                title={"retirement"}
-                secondaryValue={<Cash tooltip="Per Paycheck" value={retirement.perPaycheck} />}
-              >
+              <Value title={"retirement"} secondaryValue={<Cash tooltip="Per Paycheck" value={retirement.perPaycheck} />}>
                 <Cash tooltip="Total Remaining" value={retirement.remaining} />
               </Value>
             )}
@@ -118,14 +111,12 @@ const ThresholdTaxCard = (props: { thresholdTax: ThresholdTax; title: string }) 
           <span>{title}</span>
 
           <CountDown dateFormat={monthDay} variant="date" dateTime={thresholdTax.max?.firstOccurrence} />
-          {thresholdTax.min &&
-            thresholdTax.max &&
-            !thresholdTax.min.firstOccurrence.equals(thresholdTax.max.firstOccurrence) && (
-              <>
-                <span>or</span>
-                <CountDown dateFormat={monthDay} variant="date" dateTime={thresholdTax.min.firstOccurrence} />
-              </>
-            )}
+          {thresholdTax.min && thresholdTax.max && !thresholdTax.min.firstOccurrence.equals(thresholdTax.max.firstOccurrence) && (
+            <>
+              <span>or</span>
+              <CountDown dateFormat={monthDay} variant="date" dateTime={thresholdTax.min.firstOccurrence} />
+            </>
+          )}
         </Box>
       }
     >

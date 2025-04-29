@@ -3,7 +3,7 @@ import { Box, Stack } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Card } from "shared/components/card";
 import { Cash } from "shared/components/formatters/cash";
 import { ClusterValue, ClusterValues } from "shared/components/formatters/cluster-value";
@@ -29,59 +29,44 @@ export const ProjectedIncome = () => {
   const dates = useDates(selectedYear);
   const dateRanges = useDateRanges(selectedYear);
 
-  const basePay = useMemo(() => {
-    if (clusters.pay.length !== 1) {
-      return;
-    }
-    return clusters.scenarios?.[0].basePay;
-  }, [clusters.pay.length, clusters.scenarios]);
+  const basePay = clusters.pay.length === 1 ? clusters.scenarios?.at(0)?.basePay : undefined;
+  const aprToApr = clusters.pay.length === 1 ? clusters.scenarios?.at(0)?.aprToApr : undefined;
+  const payPeriods =
+    clusters.scenarios?.[0].payments
+      .filter((x) => x.type === PaymentTypes.regular)
+      .filter((x) => {
+        const payedOn = DateTime.fromISO(x.payedOn);
+        return payedOn >= dateRanges.base.start && payedOn <= dateRanges.base.end;
+      }) ?? [];
 
-  const aprToApr = useMemo(() => {
-    if (clusters.pay.length !== 1) {
-      return;
-    }
-    return clusters.scenarios?.[0].aprToApr;
-  }, [clusters.pay.length, clusters.scenarios]);
+  const paychecks =
+    clusters.pay.length === 1
+      ? payPeriods
+          .reduceRight(
+            (acc, curr) => {
+              if (acc[0]?.[0]?.value === curr.value) {
+                acc[0].unshift(curr);
+              } else {
+                acc.unshift([curr]);
+              }
 
-  const paychecks = useMemo(() => {
-    if (clusters.pay.length !== 1) {
-      return;
-    }
+              return acc;
+            },
+            [] as (typeof payPeriods)[]
+          )
+          .reduce((acc, curr) => {
+            acc.push({
+              start: DateTime.fromISO(curr[0].payedOn),
+              end: DateTime.fromISO(curr[curr.length - 1].payedOn),
+              value: curr.reduce((acc, curr) => acc + curr.value, 0),
+              perPayday: curr[0].value,
+              count: curr.length,
+              type: curr[0].type,
+            });
 
-    const payPeriods =
-      clusters.scenarios?.[0].payments
-        .filter((x) => x.type === PaymentTypes.regular)
-        .filter((x) => {
-          const payedOn = DateTime.fromISO(x.payedOn);
-          return payedOn >= dateRanges.base.start && payedOn <= dateRanges.base.end;
-        }) ?? [];
-
-    return payPeriods
-      .reduceRight(
-        (acc, curr) => {
-          if (acc[0]?.[0]?.value === curr.value) {
-            acc[0].unshift(curr);
-          } else {
-            acc.unshift([curr]);
-          }
-
-          return acc;
-        },
-        [] as (typeof payPeriods)[]
-      )
-      .reduce((acc, curr) => {
-        acc.push({
-          start: DateTime.fromISO(curr[0].payedOn),
-          end: DateTime.fromISO(curr[curr.length - 1].payedOn),
-          value: curr.reduce((acc, curr) => acc + curr.value, 0),
-          perPayday: curr[0].value,
-          count: curr.length,
-          type: curr[0].type,
-        });
-
-        return acc;
-      }, [] as IncomePerPeriod[]);
-  }, [clusters.pay.length, clusters.scenarios, dateRanges.base.end, dateRanges.base.start]);
+            return acc;
+          }, [] as IncomePerPeriod[])
+      : undefined;
 
   const scenarios = useStore(scenarioStore);
 
@@ -89,9 +74,7 @@ export const ProjectedIncome = () => {
     <Box display="flex" flexDirection="row" height="100%" width={"100%"}>
       <Box flex="0 1 auto" maxWidth={500} height="100%">
         <Stack gap={2} direction={"column"} overflow={"auto"} height="100%" paddingRight={1} minWidth={500}>
-          {!hasMissingPairs && (
-            <Alert severity="error">Every Merit Increase must have a paired Merit Bonus percent</Alert>
-          )}
+          {!hasMissingPairs && <Alert severity="error">Every Merit Increase must have a paired Merit Bonus percent</Alert>}
           <Card
             title={
               <Box display="flex" alignItems={"center"} gap={2} width={"100%"}>
@@ -221,20 +204,8 @@ export const ProjectedIncome = () => {
             defaultDate={dates.meritIncrease}
             dateVariant="year"
           />
-          <Layout
-            title="Equity Increase"
-            accountName="equityPct"
-            variant="percent"
-            defaultDate={dates.meritIncrease}
-            dateVariant="year"
-          />
-          <Layout
-            title="Merit Bonus"
-            accountName="meritBonusPct"
-            variant="percent"
-            defaultDate={dates.meritBonus}
-            dateVariant="year"
-          />
+          <Layout title="Equity Increase" accountName="equityPct" variant="percent" defaultDate={dates.meritIncrease} dateVariant="year" />
+          <Layout title="Merit Bonus" accountName="meritBonusPct" variant="percent" defaultDate={dates.meritBonus} dateVariant="year" />
           <Layout title="Merit Bonus" accountName="meritBonus" variant="cash" defaultDate={dates.meritBonus} />
           <Layout
             title="Company Bonus Factor"
@@ -244,12 +215,7 @@ export const ProjectedIncome = () => {
             dateVariant="year"
           />
           <Layout title="Company Bonus" accountName="companyBonus" defaultDate={dates.companyBonus} variant="cash" />
-          <Layout
-            title="Retirement Bonus"
-            accountName="retirementBonus"
-            defaultDate={dates.retirementBonus}
-            variant="cash"
-          />
+          <Layout title="Retirement Bonus" accountName="retirementBonus" defaultDate={dates.retirementBonus} variant="cash" />
         </Box>
       </Box>
     </Box>

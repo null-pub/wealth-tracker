@@ -1,5 +1,4 @@
 import { Box } from "@mui/system";
-import { useMemo } from "react";
 import { formatCash, formatCashShort } from "shared/utility/format-cash";
 import { Cash } from "./cash";
 
@@ -27,11 +26,9 @@ interface CashProps {
     | undefined;
 }
 export const CashRange = ({ min, max, fallback, disableTooltip, compact = true }: CashProps) => {
-  const showRange = useMemo(() => {
-    const minFormatted = compact ? formatCashShort(min ?? 0) : formatCash(min ?? 0);
-    const maxFormatted = compact ? formatCashShort(max ?? 0) : formatCash(max ?? 0);
-    return minFormatted !== maxFormatted;
-  }, [compact, max, min]);
+  const minFormatted = compact ? formatCashShort(min ?? 0) : formatCash(min ?? 0);
+  const maxFormatted = compact ? formatCashShort(max ?? 0) : formatCash(max ?? 0);
+  const showRange = minFormatted !== maxFormatted;
 
   return (
     <Box>

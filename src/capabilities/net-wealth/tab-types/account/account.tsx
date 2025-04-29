@@ -2,7 +2,7 @@ import { Alert, Box, Button, InputAdornment, Paper, Stack, TextField, Typography
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { AgGrid } from "shared/components/ag-grid";
 import { Account } from "shared/models/store/current";
 import { addAccountEntry, store } from "shared/store";
@@ -17,11 +17,9 @@ export const AccountTab = (props: { accountName: string }) => {
   const account = useStore(store, (state) => state.wealth[accountName]) as Account;
   const [date, setDate] = useState(getLocalDateTime());
   const [amount, setAmount] = useState<number | null>(null);
-
   const missingYears = useMissingYears(account);
-  const hasSameDate = useMemo(() => {
-    return !!account?.data?.find((x) => date.hasSame(DateTime.fromISO(x.date), "day"));
-  }, [account?.data, date]);
+  const hasSameDate = !!account?.data?.find((x) => date.hasSame(DateTime.fromISO(x.date), "day"));
+  const accountColumnConfig = createAccountColumnConfig(accountName);
 
   const onAddEntry = () => {
     if (amount != null) {
@@ -29,10 +27,6 @@ export const AccountTab = (props: { accountName: string }) => {
       setAmount(null);
     }
   };
-
-  const accountColumnConfig = useMemo(() => {
-    return createAccountColumnConfig(accountName);
-  }, [accountName]);
 
   return (
     <Stack height="100%" spacing={2}>

@@ -1,6 +1,6 @@
 import { Box, Tooltip } from "@mui/material";
 import { DateTime } from "luxon";
-import { ReactNode, useMemo } from "react";
+import { ReactNode } from "react";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { shortDate } from "shared/utility/format-date";
 import { toHuman } from "shared/utility/to-human";
@@ -14,7 +14,7 @@ interface DurationProps {
 export const CountDown = (props: DurationProps) => {
   const { dateTime, children, variant = "countdown", dateFormat = shortDate } = props;
 
-  const countDownStr = useMemo(() => {
+  const countDownStr = (() => {
     if (!dateTime) {
       return "??";
     }
@@ -25,9 +25,9 @@ export const CountDown = (props: DurationProps) => {
     }
 
     return dateTime?.toFormat(dateFormat);
-  }, [dateFormat, dateTime, variant]);
+  })();
 
-  const tooltipStr = useMemo(() => {
+  const tooltipStr = (() => {
     if (!dateTime) {
       return "??";
     }
@@ -38,9 +38,9 @@ export const CountDown = (props: DurationProps) => {
     const diff = dateTime?.diff(getLocalDateTime(), ["years", "months", "days", "hours"]);
 
     return toHuman(diff, "days");
-  }, [dateFormat, dateTime, variant]);
+  })();
 
-  const countDownColor = useMemo(() => {
+  const countDownColor = (() => {
     if (!dateTime) {
       return "white";
     }
@@ -53,7 +53,7 @@ export const CountDown = (props: DurationProps) => {
     }
 
     return "rgb(244, 67, 54)";
-  }, [dateTime]);
+  })();
 
   return dateTime && dateTime > getLocalDateTime() ? (
     <Tooltip title={tooltipStr}>

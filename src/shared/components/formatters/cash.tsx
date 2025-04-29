@@ -1,5 +1,4 @@
 import { Tooltip } from "@mui/material";
-import { useMemo } from "react";
 import { formatCash, formatCashShort } from "shared/utility/format-cash";
 
 interface CashProps {
@@ -23,13 +22,16 @@ interface CashProps {
     | "top-start"
     | undefined;
 }
+
+const format = (value: number | undefined, compact: boolean, fallback: number | undefined) => {
+  if (value === undefined) {
+    return fallback;
+  }
+  return compact ? formatCashShort(value) : formatCash(value);
+};
+
 export const Cash = ({ value, fallback, disableTooltip, compact = true, tooltip, placement }: CashProps) => {
-  const formatted = useMemo(() => {
-    if (value === undefined) {
-      return fallback;
-    }
-    return compact ? formatCashShort(value) : formatCash(value);
-  }, [compact, fallback, value]);
+  const formatted = format(value, compact, fallback);
 
   return (
     <Tooltip

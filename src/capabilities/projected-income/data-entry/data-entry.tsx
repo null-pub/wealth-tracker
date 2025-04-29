@@ -2,7 +2,7 @@ import { Box, Button, InputAdornment, Paper, Stack, TextField, Tooltip, Typograp
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { AgGrid } from "shared/components/ag-grid";
 import { MAX_NUM_ENTRIES } from "shared/constants";
 import { TimeSeries } from "shared/models/store/current";
@@ -27,9 +27,7 @@ const DataEntry = (props: {
   const [date, setDate] = useState(defaultDate);
   const [amount, setAmount] = useState<number | null>(null);
 
-  const hasSameDate = useMemo(() => {
-    return !!account?.find((x) => date.hasSame(DateTime.fromISO(x.date), "day"));
-  }, [account, date]);
+  const hasSameDate = !!account?.find((x) => date.hasSame(DateTime.fromISO(x.date), "day"));
 
   const onAddEntry = () => {
     if (amount != null) {
@@ -38,9 +36,7 @@ const DataEntry = (props: {
     }
   };
 
-  const accountColumnConfig = useMemo(() => {
-    return createAccountColumnConfig(timeSeries, variant, dateVariant);
-  }, [timeSeries, variant, dateVariant]);
+  const accountColumnConfig = createAccountColumnConfig(timeSeries, variant, dateVariant);
 
   return (
     <Box display={"flex"} flexDirection={"column"} height="100%">
@@ -64,9 +60,7 @@ const DataEntry = (props: {
           onChange={(event) => (event.target.value === "" ? setAmount(null) : setAmount(+event.target.value))}
           slotProps={{
             input: {
-              startAdornment: variant !== "number" && (
-                <InputAdornment position="start">{variant === "cash" ? "$" : "%"}</InputAdornment>
-              ),
+              startAdornment: variant !== "number" && <InputAdornment position="start">{variant === "cash" ? "$" : "%"}</InputAdornment>,
             },
           }}
         />

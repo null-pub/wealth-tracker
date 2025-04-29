@@ -1,6 +1,5 @@
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
-import { useMemo } from "react";
 import { store } from "shared/store";
 import { findMostMostLikely } from "shared/utility/cluster-helpers";
 import { getLocalDateTime } from "shared/utility/current-date";
@@ -34,59 +33,47 @@ export const useTimeSeriesWealth = (year: number) => {
   const accounts = useStore(store, (x) => x.wealth);
   const futuresWealth = useFuturesWealth();
 
-  const data = useMemo(() => {
-    if (!earliest.isValid) {
-      return [];
-    }
+  if (!earliest.isValid) {
+    return [] as TimeSeriesWealth[];
+  }
 
-    const dates = new Array(year + 2 - earliest.year)
-      .fill(earliest.year)
-      .map((x, i) => DateTime.fromObject({ day: 1, month: 1, year: x + i }).startOf("day"));
+  const dates = new Array(year + 2 - earliest.year)
+    .fill(earliest.year)
+    .map((x, i) => DateTime.fromObject({ day: 1, month: 1, year: x + i }).startOf("day"));
 
-    const idx = findNearestIdxOnOrBefore(localDateTime, dates, (x) => x);
-    if (!dates.some((x) => x.equals(localDateTime))) {
-      dates.splice(idx + 1, 0, localDateTime);
-    }
+  const idx = findNearestIdxOnOrBefore(localDateTime, dates, (x) => x);
+  if (!dates.some((x) => x.equals(localDateTime))) {
+    dates.splice(idx + 1, 0, localDateTime);
+  }
 
-    const futureBenchmarkIdx = idx;
+  const futureBenchmarkIdx = idx;
 
-    return dates
-      .map((date) => {
-        const accountsWealth = Object.values(accounts).map((x) => {
-          if (x.type === "mortgage" && x.loan) {
-            const houseValue = findNearestOnOrBefore(date, x.data);
-            const balance = calcLoanBalance(date, x.loan);
-            return calcEquity(x.loan.ownershipPct, houseValue?.value, balance, x.loan.principal);
-          } else if (x.type === "account") {
-            const entry = findNearestOnOrBefore(date, x.data);
-            return entry?.value ?? 0;
-          }
-          return 0;
-        });
-
-        const accountWealth = accountsWealth.reduce((acc, curr) => acc + curr, 0);
-        const futureWealth = futuresWealth[date.year] ?? 0;
-
-        return {
-          date,
-          graphDate: date.toJSDate(),
-          wealth: accountWealth + futureWealth,
-        };
-      })
-      .map((x, idx, arr) => {
-        if (x.date <= localDateTime || x.date.year === localDateTime.year + 2) {
-          const benchmarkWealth = arr[idx - 1]?.wealth;
-          if (!benchmarkWealth) {
-            return x;
-          }
-          return {
-            ...x,
-            yoyCash: x.wealth - benchmarkWealth,
-            yoyPct: x.wealth / benchmarkWealth - 1,
-          };
+  return dates
+    .map((date) => {
+      const accountsWealth = Object.values(accounts).map((x) => {
+        if (x.type === "mortgage" && x.loan) {
+          const houseValue = findNearestOnOrBefore(date, x.data);
+          const balance = calcLoanBalance(date, x.loan);
+          return calcEquity(x.loan.ownershipPct, houseValue?.value, balance, x.loan.principal);
+        } else if (x.type === "account") {
+          const entry = findNearestOnOrBefore(date, x.data);
+          return entry?.value ?? 0;
         }
+        return 0;
+      });
 
-        const benchmarkWealth = arr[futureBenchmarkIdx]?.wealth;
+      const accountWealth = accountsWealth.reduce((acc, curr) => acc + curr, 0);
+      const futureWealth = futuresWealth[date.year] ?? 0;
+
+      return {
+        date,
+        graphDate: date.toJSDate(),
+        wealth: accountWealth + futureWealth,
+      };
+    })
+    .map((x, idx, arr) => {
+      if (x.date <= localDateTime || x.date.year === localDateTime.year + 2) {
+        const benchmarkWealth = arr[idx - 1]?.wealth;
         if (!benchmarkWealth) {
           return x;
         }
@@ -95,7 +82,16 @@ export const useTimeSeriesWealth = (year: number) => {
           yoyCash: x.wealth - benchmarkWealth,
           yoyPct: x.wealth / benchmarkWealth - 1,
         };
-      });
-  }, [earliest.isValid, earliest.year, year, localDateTime, accounts, futuresWealth]);
-  return data as TimeSeriesWealth[];
+      }
+
+      const benchmarkWealth = arr[futureBenchmarkIdx]?.wealth;
+      if (!benchmarkWealth) {
+        return x;
+      }
+      return {
+        ...x,
+        yoyCash: x.wealth - benchmarkWealth,
+        yoyPct: x.wealth / benchmarkWealth - 1,
+      };
+    }) as TimeSeriesWealth[];
 };

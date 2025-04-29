@@ -78,9 +78,7 @@ export const getEmptyMeritSequence = (year: number, projectedIncome: ProjectedIn
   const equityIncreasePct = findSameYear(year, timeSeries.equityPct)?.value ?? 0;
   const meritIncreasePct = findSameYear(year, timeSeries.meritIncreasePct)?.value ?? 0;
   const meritBonusPct = findSameYear(year, timeSeries.meritBonusPct)?.value ?? 0;
-  const meritBonuses = pay.map(
-    (x) => findSameYear(DateTime.fromISO(x.date).year, timeSeries.meritBonusPct)?.value ?? 0
-  );
+  const meritBonuses = pay.map((x) => findSameYear(DateTime.fromISO(x.date).year, timeSeries.meritBonusPct)?.value ?? 0);
 
   const lastThreeMeritBonuses = meritBonuses.slice(-3);
   const lastThreeMeritBonusFactor = meritBonuses.slice(-3).reduce((acc, curr) => acc + curr, 0);
