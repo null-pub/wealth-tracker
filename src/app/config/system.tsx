@@ -1,5 +1,5 @@
 import DeleteForever from "@mui/icons-material/DeleteForever";
-import { Button, Card, CardActions, CardHeader, Stack } from "@mui/material";
+import { Button, Card, CardActions, CardContent, CardHeader, Stack, Typography } from "@mui/material";
 import InvalidDataDialog from "app/invalid-data-dialog";
 import { useState } from "react";
 import { ConfirmDialog } from "shared/components/confirm-dialog";
@@ -21,7 +21,14 @@ export const System = () => {
     <>
       <Stack spacing={2}>
         <Card>
-          <CardHeader title="Data" />
+          <CardHeader title={"System"} />
+          <CardContent>
+            <Typography variant="body2">Built On {BUILD_DATE}</Typography>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader title={"Data"} />
+
           <CardActions>
             <Button
               onClick={() =>
