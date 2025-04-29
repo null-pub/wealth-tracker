@@ -1,7 +1,7 @@
 import InsertChartIcon from "@mui/icons-material/InsertChart";
 import { Tooltip } from "@mui/material";
 import { useStore } from "@tanstack/react-store";
-import { AgCartesianChartOptions } from "ag-charts-community";
+import { AgCartesianChartOptions, AgColorType } from "ag-charts-community";
 import { AgCharts } from "ag-charts-react";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
@@ -11,28 +11,6 @@ import { ckmeans, collapseClusters } from "shared/utility/ckmeans";
 import { formatCash } from "shared/utility/format-cash";
 import { formatPercent } from "shared/utility/format-percent";
 import { sortByDate } from "shared/utility/sort-by-date";
-
-interface DataPoint {
-  date: Date;
-  value: number;
-  id: string;
-  cluster: number;
-  color: string;
-}
-
-interface ChartElement {
-  datum: DataPoint;
-  fill: string;
-  fillOpacity: number;
-  highlighted: boolean;
-  seriesId: string;
-  size: number;
-  stroke: string;
-  strokeOpacity: number;
-  strokeWidth: number;
-  xKey: string;
-  yKey: string;
-}
 
 const getColor = (probability?: number) => {
   if (!probability) {
@@ -60,7 +38,7 @@ export const SparkChart = (props: { accountName: TimeSeries; variant: "cash" | "
         return x.map((y, i, subArr) => ({
           ...y,
           cluster: subArr.length / data.length,
-          color: getColor(subArr.length / data.length),
+          color: getColor(subArr.length / data.length) as AgColorType,
         }));
       })
       .flat()
@@ -78,17 +56,15 @@ export const SparkChart = (props: { accountName: TimeSeries; variant: "cash" | "
           yKey: "value",
           xKey: "date",
           stroke: "white",
-          marker:
-            variant === "percent"
-              ? {
-                  itemStyler: (params: ChartElement) => {
-                    return {
-                      fill: params.datum.color,
-                      size: 10,
-                    };
-                  },
-                }
-              : { fill: "white", size: 10 },
+          marker: {
+            itemStyler: (params) => {
+              const fill = variant === "percent" ? "#FFF" : params.datum.color;
+              return {
+                fill,
+                size: 10,
+              };
+            },
+          },
         },
       ],
       axes: [

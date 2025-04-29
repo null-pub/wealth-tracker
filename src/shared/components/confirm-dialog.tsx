@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogActions, DialogTitle } from "@mui/material";
-import React, { ReactElement, useMemo, useState } from "react";
+import { ReactElement, useState } from "react";
 
 interface ConfirmDialogProps {
   onConfirm?: () => void;
@@ -10,13 +10,9 @@ export const ConfirmDialog = (props: ConfirmDialogProps) => {
   const { onConfirm, title, children } = props;
   const [isOpen, setIsOpen] = useState(false);
 
-  const openButton = useMemo(() => {
-    return React.cloneElement(children, { onClick: () => setIsOpen(true) });
-  }, [children]);
-
   return (
     <>
-      {openButton}
+      <div onClick={() => setIsOpen(true)}>{children}</div>
       <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
         <DialogTitle sx={{ minWidth: 300, display: "flex", justifyContent: "center" }}>{title}</DialogTitle>
         <DialogActions>

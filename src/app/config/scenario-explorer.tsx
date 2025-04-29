@@ -2,7 +2,7 @@ import Close from "@mui/icons-material/Close";
 import { Box, Button, IconButton, MenuItem, Modal, Paper, Select, Stack, Typography } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
-import { TreeItem2 } from "@mui/x-tree-view/TreeItem2";
+import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useState } from "react";
@@ -72,11 +72,11 @@ export const ScenarioExplorer = () => {
                   "lastThreeMeritBonusFactor",
                 ]}
               >
-                <TreeItem2 itemId="scenario" label={<span>Scenario</span>}>
-                  <TreeItem2 itemId="weight" label={<span>Weight: {scenario.weight}</span>} />
-                  <TreeItem2 itemId="year" label={<span>Year: {scenario.year}</span>} />
-                </TreeItem2>
-                <TreeItem2
+                <TreeItem itemId="scenario" label={<span>Scenario</span>}>
+                  <TreeItem itemId="weight" label={<span>Weight: {scenario.weight}</span>} />
+                  <TreeItem itemId="year" label={<span>Year: {scenario.year}</span>} />
+                </TreeItem>
+                <TreeItem
                   itemId="_TotalPay"
                   label={
                     <Stack direction={"row"} spacing={1}>
@@ -85,7 +85,7 @@ export const ScenarioExplorer = () => {
                     </Stack>
                   }
                 >
-                  <TreeItem2
+                  <TreeItem
                     itemId="aprToApr"
                     label={
                       <Stack direction={"row"} spacing={1}>
@@ -94,7 +94,7 @@ export const ScenarioExplorer = () => {
                       </Stack>
                     }
                   />
-                  <TreeItem2
+                  <TreeItem
                     itemId="basePay"
                     label={
                       <Stack direction={"row"} spacing={1}>
@@ -103,7 +103,7 @@ export const ScenarioExplorer = () => {
                       </Stack>
                     }
                   />
-                  <TreeItem2
+                  <TreeItem
                     itemId="taxablePay"
                     label={
                       <Stack direction={"row"} spacing={1}>
@@ -112,7 +112,7 @@ export const ScenarioExplorer = () => {
                       </Stack>
                     }
                   />
-                  <TreeItem2
+                  <TreeItem
                     itemId="totalPay"
                     label={
                       <Stack direction={"row"} spacing={1}>
@@ -121,7 +121,7 @@ export const ScenarioExplorer = () => {
                       </Stack>
                     }
                   />
-                  <TreeItem2
+                  <TreeItem
                     itemId="totalMerit"
                     label={
                       <Stack direction={"row"} spacing={1}>
@@ -130,7 +130,7 @@ export const ScenarioExplorer = () => {
                       </Stack>
                     }
                   >
-                    <TreeItem2
+                    <TreeItem
                       itemId="meritIncreasePct"
                       label={
                         <Stack direction={"row"} spacing={1}>
@@ -139,7 +139,7 @@ export const ScenarioExplorer = () => {
                         </Stack>
                       }
                     />
-                    <TreeItem2
+                    <TreeItem
                       itemId="equityIncreasePct"
                       label={
                         <Stack direction={"row"} spacing={1}>
@@ -148,9 +148,9 @@ export const ScenarioExplorer = () => {
                         </Stack>
                       }
                     />
-                  </TreeItem2>
+                  </TreeItem>
 
-                  <TreeItem2
+                  <TreeItem
                     itemId="currentPaymentIdx"
                     label={
                       <Stack direction={"row"} spacing={1}>
@@ -159,7 +159,7 @@ export const ScenarioExplorer = () => {
                       </Stack>
                     }
                   />
-                  <TreeItem2
+                  <TreeItem
                     itemId="remainingPayments"
                     label={
                       <Stack direction={"row"} spacing={1}>
@@ -168,7 +168,7 @@ export const ScenarioExplorer = () => {
                       </Stack>
                     }
                   />
-                  <TreeItem2
+                  <TreeItem
                     itemId="current_payment"
                     label={
                       <Stack direction={"row"} spacing={2}>
@@ -185,10 +185,10 @@ export const ScenarioExplorer = () => {
                         <Box> {scenario.payments[scenario.currentPaymentIdx].type}</Box>
                       </Stack>
                     }
-                  ></TreeItem2>
-                  <TreeItem2 itemId="payments" label={"Payments Considered"}>
+                  ></TreeItem>
+                  <TreeItem itemId="payments" label={"Payments Considered"}>
                     {scenario.payments.toReversed().map((x, i, arr) => (
-                      <TreeItem2
+                      <TreeItem
                         key={i}
                         itemId={`payments-${i}`}
                         label={
@@ -213,15 +213,15 @@ export const ScenarioExplorer = () => {
                         }
                       />
                     ))}
-                  </TreeItem2>
-                  <TreeItem2 itemId="pay" label={"Pay"}>
+                  </TreeItem>
+                  <TreeItem itemId="pay" label={"Pay"}>
                     {scenario.pay.toReversed().map((x, i) => (
-                      <TreeItem2 key={i} itemId={`$pay-${i}`} label={`${DateTime.fromISO(x.date).year} ${x.value}`} />
+                      <TreeItem key={i} itemId={`$pay-${i}`} label={`${DateTime.fromISO(x.date).year} ${x.value}`} />
                     ))}
-                  </TreeItem2>
-                </TreeItem2>
+                  </TreeItem>
+                </TreeItem>
 
-                <TreeItem2
+                <TreeItem
                   itemId="meritBonus"
                   label={
                     <Stack direction={"row"} spacing={1}>
@@ -230,7 +230,7 @@ export const ScenarioExplorer = () => {
                     </Stack>
                   }
                 >
-                  <TreeItem2
+                  <TreeItem
                     itemId="mertiBonusPct"
                     label={
                       <Stack direction={"row"} spacing={1}>
@@ -239,8 +239,8 @@ export const ScenarioExplorer = () => {
                       </Stack>
                     }
                   />
-                </TreeItem2>
-                <TreeItem2
+                </TreeItem>
+                <TreeItem
                   itemId="companyBonus"
                   label={
                     <Stack direction={"row"} spacing={1}>
@@ -249,7 +249,7 @@ export const ScenarioExplorer = () => {
                     </Stack>
                   }
                 >
-                  <TreeItem2
+                  <TreeItem
                     itemId="companyBonusFactor.value"
                     label={
                       <Stack direction={"row"} spacing={1}>
@@ -258,7 +258,7 @@ export const ScenarioExplorer = () => {
                       </Stack>
                     }
                   />
-                  <TreeItem2
+                  <TreeItem
                     itemId="companyBonusPct.value"
                     label={
                       <Stack direction={"row"} spacing={1}>
@@ -267,7 +267,7 @@ export const ScenarioExplorer = () => {
                       </Stack>
                     }
                   />
-                  <TreeItem2
+                  <TreeItem
                     itemId="lastThreeMeritBonusFactor"
                     label={
                       <Stack direction={"row"} spacing={1}>
@@ -277,15 +277,15 @@ export const ScenarioExplorer = () => {
                     }
                   >
                     {scenario.lastThreeMeritBonuses.toReversed().map((x, i) => (
-                      <TreeItem2
+                      <TreeItem
                         key={`${i}${x}`}
                         itemId={`lastThreeMeritBonuses${i}`}
                         label={`${year - i} ${formatPercent(x)}`}
                       />
                     ))}
-                  </TreeItem2>
-                </TreeItem2>
-                <TreeItem2
+                  </TreeItem>
+                </TreeItem>
+                <TreeItem
                   itemId="retirementBonus"
                   label={
                     <Stack direction={"row"} spacing={1}>
@@ -294,7 +294,7 @@ export const ScenarioExplorer = () => {
                     </Stack>
                   }
                 >
-                  <TreeItem2
+                  <TreeItem
                     itemId="retirementBonusPct"
                     label={
                       <Stack direction={"row"} spacing={1}>
@@ -303,7 +303,7 @@ export const ScenarioExplorer = () => {
                       </Stack>
                     }
                   />
-                </TreeItem2>
+                </TreeItem>
               </SimpleTreeView>
             </Paper>
           </Stack>

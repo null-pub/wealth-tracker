@@ -40,7 +40,7 @@ export const WealthChart = (props: { titleYear: number }) => {
           }),
         },
         marker: {
-          formatter: (params: MarkerParams<TimeSeriesWealth>) => {
+          itemStyler: (params: MarkerParams<TimeSeriesWealth>) => {
             if (params.datum.date.year === DateTime.local().plus({ years: 1 }).year) {
               return {
                 fill: "orange",

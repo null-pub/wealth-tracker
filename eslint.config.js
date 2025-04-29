@@ -35,6 +35,7 @@ export default config(
     rules: {
       curly: "error",
       "react/react-in-jsx-scope": "off",
+      "@typescript-eslint/no-unused-expressions": ["error", { allowShortCircuit: true }],
     },
   }
 );

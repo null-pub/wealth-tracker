@@ -4,7 +4,7 @@ import { ReactNode, forwardRef, useRef, useState } from "react";
 import { store } from "shared/store";
 
 type AssetType = "account" | "mortgage";
-export const NewAccount = forwardRef<HTMLButtonElement, { children?: ReactNode }>((props, ref) => {
+export const NewAccount = forwardRef<HTMLButtonElement, { children?: ReactNode }>(function NewAccount(props, ref) {
   const [open, setOpen] = useState(false);
   const nameRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState(false);
