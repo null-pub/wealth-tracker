@@ -114,8 +114,8 @@ export const ProjectedIncome = () => {
                       label: "",
                     },
                   }}
-                  onYearChange={(year) => {
-                    setSelectedYear(year.year);
+                  onChange={(value) => {
+                    setSelectedYear(value?.year ?? getLocalDateTime().year);
                   }}
                 />
               </Box>
