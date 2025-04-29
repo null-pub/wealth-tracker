@@ -10,6 +10,8 @@ import { Loan } from "shared/models/store/version-1";
 import { hideAccount, removeAccount, setLoan, store, updateAccountName } from "shared/store";
 import { ZodIssue, z } from "zod";
 
+//todo: use tantstack form
+
 const convertPct = (value: number) => {
   return value > 1 ? value / 100 : value;
 };

@@ -14,6 +14,7 @@ import { useDateRanges, useDates } from "shared/hooks/use-dates";
 import { IncomePerPeriod } from "shared/models/IncomePerPeriod";
 import { PaymentTypes } from "shared/models/payment-periods";
 import { scenarioStore } from "shared/store/scenario-store";
+import { ChunkByEquality } from "shared/utility/chunk-by-equality";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { monthDay } from "shared/utility/format-date";
 import { Layout } from "./data-entry/data-entry";
@@ -21,53 +22,42 @@ import { IncomeChart } from "./income-chart";
 import { IncomePerPeriodTooltip } from "./income-per-period";
 import { useHasMeritPairs } from "./use-has-merit-pairs";
 
-export const ProjectedIncome = () => {
-  const [selectedYear, setSelectedYear] = useState(getLocalDateTime().year);
+const usePayments = (year: number) => {
+  const dateRanges = useDateRanges(year);
+  const clusters = useClusters(year);
 
-  const hasMissingPairs = useHasMeritPairs();
-  const clusters = useClusters(selectedYear);
-  const dates = useDates(selectedYear);
-  const dateRanges = useDateRanges(selectedYear);
-
-  const basePay = clusters.pay.length === 1 ? clusters.scenarios?.at(0)?.basePay : undefined;
-  const aprToApr = clusters.pay.length === 1 ? clusters.scenarios?.at(0)?.aprToApr : undefined;
+  if (clusters.pay.length === 1) {
+    return {};
+  }
+  const firstScenario = clusters.scenarios?.at(0);
   const payPeriods =
-    clusters.scenarios?.[0].payments
+    firstScenario?.payments
       .filter((x) => x.type === PaymentTypes.regular)
       .filter((x) => {
         const payedOn = DateTime.fromISO(x.payedOn);
         return payedOn >= dateRanges.base.start && payedOn <= dateRanges.base.end;
       }) ?? [];
 
-  const paychecks =
-    clusters.pay.length === 1
-      ? payPeriods
-          .reduceRight(
-            (acc, curr) => {
-              if (acc[0]?.[0]?.value === curr.value) {
-                acc[0].unshift(curr);
-              } else {
-                acc.unshift([curr]);
-              }
+  const paychecks = ChunkByEquality(payPeriods, (x) => x.value).map((curr) => {
+    return {
+      start: DateTime.fromISO(curr[0].payedOn),
+      end: DateTime.fromISO(curr[curr.length - 1].payedOn),
+      value: curr.reduce((acc, curr) => acc + curr.value, 0),
+      perPayday: curr[0].value,
+      count: curr.length,
+      type: curr[0].type,
+    } as IncomePerPeriod;
+  });
 
-              return acc;
-            },
-            [] as (typeof payPeriods)[]
-          )
-          .reduce((acc, curr) => {
-            acc.push({
-              start: DateTime.fromISO(curr[0].payedOn),
-              end: DateTime.fromISO(curr[curr.length - 1].payedOn),
-              value: curr.reduce((acc, curr) => acc + curr.value, 0),
-              perPayday: curr[0].value,
-              count: curr.length,
-              type: curr[0].type,
-            });
+  return { aprToApr: firstScenario?.aprToApr, basePay: firstScenario?.basePay, paychecks };
+};
 
-            return acc;
-          }, [] as IncomePerPeriod[])
-      : undefined;
-
+export const ProjectedIncome = () => {
+  const [selectedYear, setSelectedYear] = useState(getLocalDateTime().year);
+  const { aprToApr, basePay, paychecks } = usePayments(selectedYear);
+  const clusters = useClusters(selectedYear);
+  const hasMissingPairs = useHasMeritPairs();
+  const dates = useDates(selectedYear);
   const scenarios = useStore(scenarioStore);
 
   return (

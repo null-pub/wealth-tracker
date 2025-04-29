@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { Account, Mortgage } from "shared/models/store/current";
 
-export const getGraphDates = (accounts: (Account | Mortgage)[]) => {
+export const useGraphDates = (accounts: (Account | Mortgage)[]) => {
   return [
     ...new Set(
       accounts.flatMap((x) => {

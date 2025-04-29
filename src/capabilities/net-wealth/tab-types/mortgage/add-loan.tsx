@@ -8,6 +8,8 @@ import { store } from "shared/store";
 import { setLoan } from "shared/store/set-loan";
 import { ZodIssue, z } from "zod";
 
+//todo: use tanstack form
+
 const convertPct = (value: number) => {
   return value > 1 ? value / 100 : value;
 };

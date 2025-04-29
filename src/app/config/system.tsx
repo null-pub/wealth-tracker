@@ -7,7 +7,7 @@ import { downloadJson, useExport } from "shared/hooks/use-export";
 import { useImport } from "shared/hooks/use-import";
 import { useStoreDataError } from "shared/hooks/use-store-data-error";
 import { resetStore } from "shared/store";
-import { getLocalDateTime } from "shared/utility/current-date";
+import { useLocalDateTime } from "shared/utility/current-date";
 import { shortDate } from "shared/utility/format-date";
 
 export const System = () => {
@@ -16,6 +16,7 @@ export const System = () => {
   const { hadError, parseError, resetError, invalidData } = useStoreDataError();
   const [error, setError] = useState(parseError);
   const [isOpen, setIsOpen] = useState(hadError);
+  const localTime = useLocalDateTime();
 
   return (
     <>
@@ -65,7 +66,7 @@ export const System = () => {
             </Button>
             <Button
               onClick={() => {
-                downloadJson(`invalid-data-wealth-tracker-${getLocalDateTime().toFormat(shortDate)}.json`, invalidData);
+                downloadJson(`invalid-data-wealth-tracker-${localTime.toFormat(shortDate)}.json`, invalidData);
               }}
             >
               Download Data

@@ -1,12 +1,18 @@
 import { useStore } from "@tanstack/react-store";
 import { store } from "shared/store";
-import { getGraphDates } from "shared/utility/get-graph-dates";
+import { useGraphDates } from "shared/utility/get-graph-dates";
 import { getGraphValue } from "shared/utility/get-graph-value";
+
+export type GraphData = {
+  total: number;
+  date: Date;
+} & Record<string, number | null>;
 
 export const useGraphData = () => {
   const wealth = useStore(store, (x) => x.wealth);
-  const dates = getGraphDates(Object.values(wealth));
+  const dates = useGraphDates(Object.values(wealth));
   const accounts = Object.entries(wealth);
+
   const graphData = dates.map((date) => {
     return accounts.reduce(
       (acc, [accountName, account]) => {
@@ -22,15 +28,15 @@ export const useGraphData = () => {
         acc["date"] = date.toJSDate();
         return acc;
       },
-      { total: 0 } as Record<string, number | Date | null>
+      { total: 0 } as GraphData
     );
   });
 
-  graphData.forEach((x, idx, arr) => {
-    if (idx < arr.length - 1) {
-      Object.keys(x).forEach((key) => {
-        if (x[key] === null && arr[idx + 1][key] !== null) {
-          x[key] = 0;
+  graphData.forEach((graphEntry, index, arr) => {
+    if (index < arr.length - 1) {
+      Object.keys(graphEntry).forEach((key) => {
+        if (graphEntry[key] === null && arr[index + 1][key] !== null) {
+          graphEntry[key] = 0;
         }
       });
     }

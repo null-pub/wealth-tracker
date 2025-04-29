@@ -9,20 +9,8 @@ import { store } from "shared/store";
 import { ckmeans, collapseClusters } from "shared/utility/ckmeans";
 import { formatCash } from "shared/utility/format-cash";
 import { formatPercent } from "shared/utility/format-percent";
+import { getProbablityColor } from "shared/utility/get-probablity-color";
 import { sortByDate } from "shared/utility/sort-by-date";
-
-const getColor = (probability?: number) => {
-  if (!probability) {
-    return "inherit";
-  }
-  if (probability >= 0.5) {
-    return "green";
-  }
-  if (probability >= 0.25) {
-    return "orange";
-  }
-  return "rgb(244, 67, 54)";
-};
 
 export const SparkChart = (props: { accountName: TimeSeries; variant: "cash" | "percent" | "number" }) => {
   const { accountName, variant } = props;
@@ -30,12 +18,13 @@ export const SparkChart = (props: { accountName: TimeSeries; variant: "cash" | "
   const data = account.map((x) => ({ ...x, date: DateTime.fromISO(x.date).toJSDate() }));
   const selector = (x: { date: Date; value: number }) => x.value;
   const maxClusters = Math.min(data.length, 3);
+
   const ckData = collapseClusters(ckmeans(data, maxClusters, selector), selector)
     .map((x) => {
       return x.map((y, i, subArr) => ({
         ...y,
         cluster: subArr.length / data.length,
-        color: getColor(subArr.length / data.length) as AgColorType,
+        color: getProbablityColor(subArr.length / data.length) as AgColorType,
       }));
     })
     .flat()

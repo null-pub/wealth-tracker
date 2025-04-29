@@ -70,7 +70,6 @@ const DataEntry = (props: {
       </Stack>
       <Box sx={{ paddingTop: 2, flex: "1 1 auto" }}>
         <AgGrid
-          reactiveCustomComponents
           rowData={account ?? []}
           columnDefs={accountColumnConfig}
           id={account + "-history"}

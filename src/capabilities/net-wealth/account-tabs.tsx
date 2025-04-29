@@ -13,7 +13,7 @@ export const AccountTabs = () => {
 
   useEffect(() => {
     if (!accounts[account]) {
-      setAccount(Object.keys(accounts)?.[0] ?? "");
+      setAccount(Object.keys(accounts)?.at(0) ?? "");
     }
   }, [account, accounts]);
 

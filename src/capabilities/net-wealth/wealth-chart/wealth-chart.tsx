@@ -7,7 +7,7 @@ import { DateTime } from "luxon";
 import { useState } from "react";
 import { useEarliestAccountEntry } from "shared/hooks/use-earliest-account-entry";
 import { store } from "shared/store";
-import { getLocalDateTime } from "shared/utility/current-date";
+import { useLocalDateTime } from "shared/utility/current-date";
 import { formatCashShort } from "shared/utility/format-cash";
 import { useGraphData } from "./use-graph-data";
 
@@ -15,12 +15,13 @@ export const WealthChart = () => {
   const wealth = useStore(store, (x) => x.wealth);
   const data = useGraphData();
   const initialFromDate = useEarliestAccountEntry().startOf("year");
-  const intialToDate = getLocalDateTime().endOf("year");
-  const [fromDate, setFromDate] = useState<DateTime>(getLocalDateTime().plus({ year: -1 }));
+  const localTime = useLocalDateTime();
+  const intialToDate = localTime.endOf("year");
+  const [fromDate, setFromDate] = useState<DateTime>(localTime.plus({ year: -1 }));
   const [toDate, setToDate] = useState<DateTime>(intialToDate);
 
   const filteredData = data.filter((x) => {
-    const year = (x["date"] as Date).getFullYear();
+    const year = x.date.getFullYear();
     return year >= fromDate.year && year <= toDate.year;
   });
 

@@ -7,19 +7,7 @@ import { useTotalPayClusters } from "shared/hooks/use-clusters";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { formatCash, formatCashShort } from "shared/utility/format-cash";
 import { formatPercent } from "shared/utility/format-percent";
-
-const getColor = (probability?: number) => {
-  if (!probability) {
-    return "inherit";
-  }
-  if (probability >= 0.5) {
-    return "green";
-  }
-  if (probability >= 0.25) {
-    return "orange";
-  }
-  return "rgb(244, 67, 54)";
-};
+import { getProbablityColor } from "shared/utility/get-probablity-color";
 
 export const IncomeChart = () => {
   const clusters = useTotalPayClusters();
@@ -73,7 +61,7 @@ export const IncomeChart = () => {
       stroke: "grey",
       marker: {
         itemStyler: (params) => {
-          const color = getColor(params.datum.lowProbability);
+          const color = getProbablityColor(params.datum.lowProbability);
           return {
             fill: color,
             stroke: color,
@@ -89,7 +77,7 @@ export const IncomeChart = () => {
     {
       marker: {
         itemStyler: (params) => {
-          const color = getColor(params.datum.medProbability);
+          const color = getProbablityColor(params.datum.medProbability);
           return {
             fill: color,
           };
@@ -111,7 +99,7 @@ export const IncomeChart = () => {
       stroke: "grey",
       marker: {
         itemStyler: (params) => {
-          const color = getColor(params.datum.highProbability);
+          const color = getProbablityColor(params.datum.highProbability);
           return {
             fill: color,
             stroke: color,

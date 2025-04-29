@@ -6,7 +6,7 @@ import { AgGrid } from "shared/components/ag-grid";
 import { Mortgage } from "shared/models/store/current";
 import { store } from "shared/store";
 import { findNearestOnOrBefore } from "shared/utility/find-nearest-on-or-before";
-import { getGraphDates } from "shared/utility/get-graph-dates";
+import { useGraphDates } from "shared/utility/get-graph-dates";
 import { calcEquity, calcLoanBalance } from "shared/utility/mortgage-calc";
 import { AddEntry } from "./add-entry";
 import { createAccountColumnConfig, mortgageColumnConfig } from "./column-config";
@@ -34,7 +34,7 @@ export const MortgageTab = (props: { accountName: string }) => {
   const allAccounts = useStore(store, (x) => x.wealth);
   const accountColumnConfig = createAccountColumnConfig(accountName);
   const accounts = Object.values(allAccounts);
-  const dates = getGraphDates(accounts);
+  const dates = useGraphDates(accounts);
   const mortgageData = account.loan ? dates.map(createLoanValueGetter(account)) : [];
 
   return (
