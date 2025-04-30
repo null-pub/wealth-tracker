@@ -2,7 +2,7 @@ import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { store } from "shared/store";
 import { scenarioStore } from "shared/store/scenario-store";
-import { isFuture } from "shared/utility/is-future";
+import { getThresholdTaxRemaining } from "shared/utility/get-threshold-tax-remaining";
 
 interface ThresholdTaxData {
   total: number;
@@ -31,28 +31,26 @@ export type ThresholdTax = Partial<Record<"min" | "max", ThresholdTaxData>>;
 const useThresholdTax = (year: number, threshold: number, taxRate: number): ThresholdTax => {
   const scenarios = useStore(scenarioStore, (x) => x.scenarios[year]);
 
-  return (
-    (scenarios ?? [])
-      .map((x) => {
-        const total = taxRate * Math.max(0, (x.payments.at(-1)?.cumulative ?? 0) - threshold);
-        const firstOccurrence = x.payments.find((x) => x.cumulative > threshold)?.payedOn;
-        const remaining = x.payments
-          .slice(x.currentPaymentIdx)
-          .filter((x) => x.cumulative >= threshold && isFuture(DateTime.fromISO(x.payedOn)))
-          .reduce((acc, curr) => {
-            return acc + Math.min(curr.value, curr.cumulative - threshold) * taxRate;
-          }, 0);
-        const perPaycheck = total && taxRate * (x.payments.at(-1)?.value ?? 0);
+  const taxesOwedPerScenario = (scenarios ?? [])
+    .map((x) => {
+      const totalTaxable = x.payments.at(-1)?.cumulative ?? 0;
+      const taxableAmountOverThreshold = Math.max(0, totalTaxable - threshold);
+      const total = taxRate * taxableAmountOverThreshold;
+      const firstOccurrence = x.payments.find((x) => x.cumulative > threshold)?.payedOn;
+      const remaining = getThresholdTaxRemaining(taxRate, threshold, x);
+      const lastPaycheck = x.payments.at(-1)?.value ?? 0;
+      const perPaycheck = total && taxRate * lastPaycheck;
 
-        return {
-          total,
-          firstOccurrence: firstOccurrence ? DateTime.fromISO(firstOccurrence) : undefined,
-          remaining,
-          perPaycheck,
-        };
-      })
-      .filter((x) => x.firstOccurrence) as ThresholdTaxData[]
-  ).reduce(
+      return {
+        total,
+        firstOccurrence: firstOccurrence ? DateTime.fromISO(firstOccurrence) : undefined,
+        remaining,
+        perPaycheck,
+      };
+    })
+    .filter((x) => x.firstOccurrence) as ThresholdTaxData[];
+
+  return taxesOwedPerScenario.reduce(
     (acc, curr, i) => {
       if (i == 0) {
         return { min: curr, max: curr };

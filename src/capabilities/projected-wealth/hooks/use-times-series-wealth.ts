@@ -41,12 +41,11 @@ export const useTimeSeriesWealth = (year: number) => {
     .fill(earliest.year)
     .map((x, i) => DateTime.fromObject({ day: 1, month: 1, year: x + i }).startOf("day"));
 
-  const idx = findNearestIdxOnOrBefore(localDateTime, dates, (x) => x);
-  if (!dates.some((x) => x.equals(localDateTime))) {
-    dates.splice(idx + 1, 0, localDateTime);
-  }
+  const futureBenchmarkIdx = findNearestIdxOnOrBefore(localDateTime, dates, (x) => x);
 
-  const futureBenchmarkIdx = idx;
+  if (!dates.some((x) => x.equals(localDateTime))) {
+    dates.splice(futureBenchmarkIdx + 1, 0, localDateTime);
+  }
 
   return dates
     .map((date) => {

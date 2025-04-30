@@ -1,25 +1,14 @@
 import { useStore } from "@tanstack/react-store";
-import { DateTime } from "luxon";
 import { useDates } from "shared/hooks/use-dates";
-import { Scenario } from "shared/models/scenario";
 import { store } from "shared/store";
 import { scenarioStore } from "shared/store/scenario-store";
 import { clusterTitle, getClusterCount } from "shared/utility/cluster-helpers";
+import { getThresholdTaxRemaining } from "shared/utility/get-threshold-tax-remaining";
 import { isFuture } from "shared/utility/is-future";
 import { ckmeans, median, sumSimple } from "simple-statistics";
 import { useFutureMortgageEquity } from "./use-future-mortgage-equity";
 import { useFutureRetirementContributions } from "./use-future-retirement-contributions";
 import { useFutureSavings } from "./use-future-savings";
-
-const thresholdTaxRemaining = (taxRate: number, threshold: number, scenario: Scenario) => {
-  const remaining = scenario.payments
-    .slice(scenario.currentPaymentIdx)
-    .filter((x) => x.cumulative >= threshold && isFuture(DateTime.fromISO(x.payedOn)))
-    .reduce((acc, curr) => {
-      return acc + Math.min(curr.value, curr.cumulative - threshold) * taxRate;
-    }, 0);
-  return remaining;
-};
 
 export const useFutureTotals = (year: number, options: { excludeHomeEquity: boolean } = { excludeHomeEquity: false }) => {
   const { excludeHomeEquity } = options;
@@ -33,22 +22,24 @@ export const useFutureTotals = (year: number, options: { excludeHomeEquity: bool
   const dates = useDates(year);
 
   const rawClusters = (() => {
-    const totals = scenarios
-      ?.map((x) => {
-        const futureBonuses = [
-          isFuture(dates.meritBonus) && x.meritBonus * bonusTakeHomeFactor,
-          isFuture(dates.companyBonus) && x.companyBonus * bonusTakeHomeFactor,
-          isFuture(dates.retirementBonus) && x.retirementBonus,
-          thresholdTaxRemaining(config.socialSecurityTaxRate, config.socialSecurityLimit, x),
-          thresholdTaxRemaining(-1 * config.medicareSupplementalTaxRate, config.medicareSupplementalTaxThreshold, x),
-        ].filter((x) => x) as number[];
-        return sumSimple(futureBonuses);
-      })
-      .map((y) => y + savings.remaining + retirement.remaining + (excludeHomeEquity ? 0 : homeEquity));
+    const totals = scenarios?.map((x) => {
+      const futureEvents = [
+        isFuture(dates.meritBonus) && x.meritBonus * bonusTakeHomeFactor,
+        isFuture(dates.companyBonus) && x.companyBonus * bonusTakeHomeFactor,
+        isFuture(dates.retirementBonus) && x.retirementBonus,
+        getThresholdTaxRemaining(config.socialSecurityTaxRate, config.socialSecurityLimit, x),
+        getThresholdTaxRemaining(-1 * config.medicareSupplementalTaxRate, config.medicareSupplementalTaxThreshold, x),
+        savings.remaining,
+        retirement.remaining,
+        excludeHomeEquity ? 0 : homeEquity,
+      ].filter((x) => x) as number[];
+      return sumSimple(futureEvents);
+    });
 
     if (!totals || totals.length === 0) {
       return [[savings.remaining + retirement.remaining]];
     }
+
     const clusters = ckmeans(
       totals,
       getClusterCount(totals, (x) => x)

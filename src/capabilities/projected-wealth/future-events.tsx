@@ -53,8 +53,8 @@ export const FutureEvents = (props: { year: number; onChange: (year: number) => 
                     label: "",
                   },
                 }}
-                onYearChange={(year) => {
-                  onChange(year.year);
+                onChange={(data) => {
+                  data?.year && onChange(data?.year);
                 }}
               />
             </>
