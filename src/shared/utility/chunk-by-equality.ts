@@ -6,7 +6,7 @@
  */
 export const ChunkByEquality = <T>(arr: T[], select: (data: T) => unknown) => {
   return arr.reduceRight((acc, curr) => {
-    if (select(acc[0]?.[0]) === select(curr)) {
+    if (acc.length > 0 && select(acc[0]?.[0]) === select(curr)) {
       acc[0].unshift(curr);
     } else {
       acc.unshift([curr]);
