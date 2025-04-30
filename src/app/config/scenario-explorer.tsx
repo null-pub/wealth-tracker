@@ -48,8 +48,8 @@ export const ScenarioExplorer = () => {
                     label: "",
                   },
                 }}
-                onYearChange={(year) => {
-                  setYear(year.year);
+                onChange={(date) => {
+                  date && setYear(date.year);
                 }}
               />
               <Select variant="standard" onChange={(event) => setScenarioIndex(+event.target.value)} defaultValue={"0"}>

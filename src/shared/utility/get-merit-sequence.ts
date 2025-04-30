@@ -76,7 +76,7 @@ export const getMeritSequence = (year: number, projectedIncome: ProjectedIncome)
 
   return meritSequence.map((values) => {
     return {
-      weight: values!.reduce((acc, curr) => acc + curr.weight, 0),
+      weight: values.at(-1)!.weight,
       values: values,
     };
   });
