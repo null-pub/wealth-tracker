@@ -3,6 +3,7 @@ import { AccountData } from "shared/models/store/current";
 
 export function getFuturePay(
   pay: AccountData[],
+  mostRecentPay: AccountData,
   meritIncreasePcts: number[],
   meritIncrease: DateTime,
   year: number,
@@ -10,7 +11,6 @@ export function getFuturePay(
 ) {
   const nextPay = pay.slice();
   const initial = nextPay.length;
-  const mostRecentPay = pay.at(-1);
 
   for (let i = initial; i < meritIncreasePcts.length + initial; i++) {
     const prior = nextPay[i - 1] ?? mostRecentPay;

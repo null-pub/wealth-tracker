@@ -71,6 +71,7 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
     const meritScenarios = meritSequence.map(({ weight, values: merits }) => {
       const nextPay = getFuturePay(
         pay,
+        mostRecentPay,
         merits.map((x) => x.meritIncreasePct),
         dates.meritIncrease,
         year,
