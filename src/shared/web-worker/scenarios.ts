@@ -1,6 +1,5 @@
 import { DateTime } from "luxon";
 import { MAX_NUM_ENTRIES } from "shared/constants";
-import { getDateRanges, getDefaultPayDates } from "shared/hooks/use-dates";
 import { PaymentPeriod, PaymentTypes } from "shared/models/payment-periods";
 import { Scenario } from "shared/models/scenario";
 import { ProjectedIncome } from "shared/models/store/current";
@@ -8,6 +7,8 @@ import { getLocalDateTime } from "shared/utility/current-date";
 import { findNearestIdxOnOrBefore } from "shared/utility/find-nearest-on-or-before";
 import { findSameYear } from "shared/utility/find-same-year";
 import { getActualDate } from "shared/utility/get-actual-date";
+import { getDefaultPayDates } from "shared/utility/get-default-pay-dates";
+import { getEligibleIncomeDateRanges } from "shared/utility/get-eligible-income-date-ranges";
 import { getEmptyMeritSequence, MeritSequence } from "shared/utility/get-empty-merit-sequence";
 import { getFuturePay } from "shared/utility/get-future-pay";
 import { getMeritSequence } from "shared/utility/get-merit-sequence";
@@ -29,7 +30,7 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
     retirement: getActualDate(year, projectedIncome.timeSeries.retirementBonus) ?? defaultDates.retirementBonus,
   };
 
-  const dateRanges = getDateRanges(year);
+  const dateRanges = getEligibleIncomeDateRanges(year);
 
   const paid = {
     meritBonus: findSameYear(year, timeSeries.meritBonus)?.value,
