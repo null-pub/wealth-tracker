@@ -7,7 +7,7 @@ import { getLocalDateTime } from "shared/utility/current-date";
 import { findNearestIdxOnOrBefore } from "shared/utility/find-nearest-on-or-before";
 import { findSameYear } from "shared/utility/find-same-year";
 import { getPayments } from "shared/utility/get-payments";
-import { valueByDateRange } from "shared/utility/get-values-by-date-range";
+import { getValueByDateRange } from "shared/utility/get-values-by-date-range";
 import { groupBySingle } from "shared/utility/group-by-single";
 import { incomeByRange } from "shared/utility/income-by-range";
 import { sumSimple } from "simple-statistics";
@@ -125,7 +125,7 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
           const payments = getPayments(
             DateTime.fromObject({ day: 1, month: 1, year: year - 1 }),
             DateTime.fromObject({ day: 31, month: 12, year: year }).endOf("day"),
-            valueByDateRange(nextPay)
+            getValueByDateRange(nextPay)
           );
 
           return {

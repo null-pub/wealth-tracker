@@ -1,7 +1,7 @@
 import { useStore } from "@tanstack/react-store";
 import { store } from "shared/store";
-import { useGraphDates } from "shared/utility/get-graph-dates";
 import { getGraphValue } from "shared/utility/get-graph-value";
+import { useGraphDates } from "shared/utility/use-graph-dates";
 
 export type GraphData = {
   total: number;

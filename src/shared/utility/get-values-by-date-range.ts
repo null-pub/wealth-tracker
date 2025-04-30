@@ -7,7 +7,7 @@ interface TimeSpanValue {
   value: number;
 }
 
-export const valueByDateRange = (account: AccountData[]): TimeSpanValue[] => {
+export const getValueByDateRange = (account: AccountData[]): TimeSpanValue[] => {
   return account.map((x, index, array) => {
     const next = array[index + 1];
     return {

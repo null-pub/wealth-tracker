@@ -3,7 +3,7 @@ import { MAX_NUM_ENTRIES } from "shared/constants";
 import { AccountData, ProjectedIncome } from "shared/models/store/current";
 import { findSameYear } from "shared/utility/find-same-year";
 import { getPayments } from "shared/utility/get-payments";
-import { valueByDateRange } from "shared/utility/get-values-by-date-range";
+import { getValueByDateRange } from "shared/utility/get-values-by-date-range";
 
 export const getScenarioSize = (year: number, projectedIncome: ProjectedIncome) => {
   const meritSequence = getMeritSequence(year, projectedIncome);
@@ -85,7 +85,7 @@ export const getEmptyMeritSequence = (year: number, projectedIncome: ProjectedIn
   const payments = getPayments(
     DateTime.fromObject({ day: 1, month: 1, year: year - 1 }),
     DateTime.fromObject({ day: 31, month: 12, year: year }).endOf("day"),
-    valueByDateRange(pay)
+    getValueByDateRange(pay)
   );
 
   return [
