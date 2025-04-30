@@ -8,12 +8,12 @@ import { MortgageTab } from "./tab-types/mortgage";
 
 export const AccountTabs = () => {
   const accounts = useStore(store, (x) => x.wealth);
-  const firstAccount = Object.keys(accounts)?.[0];
-  const [account, setAccount] = useState<string>(firstAccount);
+  const firstAccount = Object.keys(accounts)?.[0] ?? 0;
+  const [account, setAccount] = useState<string | 0>(firstAccount);
 
   useEffect(() => {
     if (!accounts[account]) {
-      setAccount(Object.keys(accounts)?.at(0) ?? "");
+      setAccount(0);
     }
   }, [account, accounts]);
 
@@ -36,8 +36,12 @@ export const AccountTabs = () => {
         </Tabs>
       </Box>
       <Box flex={"1 1 auto"} overflow={"auto"}>
-        {accounts[account]?.type === "account" && <AccountTab accountName={account} />}
-        {accounts[account]?.type === "mortgage" && <MortgageTab accountName={account} />}
+        {typeof account === "string" && (
+          <>
+            {accounts[account]?.type === "account" && <AccountTab accountName={account} />}
+            {accounts[account]?.type === "mortgage" && <MortgageTab accountName={account} />}
+          </>
+        )}
       </Box>
     </Box>
   );
