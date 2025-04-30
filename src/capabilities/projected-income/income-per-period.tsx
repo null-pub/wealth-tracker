@@ -1,7 +1,7 @@
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Table, TableBody, TableCell, TableRow } from "@mui/material";
 import { Cash } from "shared/components/formatters/cash";
-import { IncomePerPeriod } from "shared/models/IncomePerPeriod";
+import { IncomePerPeriod } from "shared/models/income-per-period";
 import { shortDate } from "shared/utility/format-date";
 
 interface IncomePerPeriodTooltipProps {

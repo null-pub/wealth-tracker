@@ -3,15 +3,16 @@ import { create } from "mutative";
 import { Scenario } from "shared/models/scenario";
 import { store } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
+import { getScenarioSize } from "shared/utility/get-scenario-size";
 import { scenarioStore } from "../store/scenario-store";
-import { getScenarioSize } from "./merit-sequence";
 
+const maxScenarioSize = 2499;
 const currentYear = getLocalDateTime().year;
 const maxYear = (() => {
   const projectedIncome = store.state.projectedIncome;
   for (let i = currentYear; i <= currentYear + 5; i++) {
     const size = getScenarioSize(i, projectedIncome);
-    if (size > 2499 || size === 0) {
+    if (size > maxScenarioSize || size === 0) {
       return Math.max(currentYear, i - 1);
     }
   }

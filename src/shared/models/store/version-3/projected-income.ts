@@ -15,4 +15,5 @@ export const projectedIncome = z.object({
 });
 
 export type ProjectedIncome = z.infer<typeof projectedIncome>;
-export type TimeSeries = keyof ProjectedIncome["timeSeries"];
+export type TimeSeries = ProjectedIncome["timeSeries"];
+export type TimeSeriesKeys = keyof ProjectedIncome["timeSeries"];

@@ -7,14 +7,14 @@ import { CustomCellRendererProps } from "ag-grid-react";
 import { DateTime } from "luxon";
 import { Cash } from "shared/components/formatters/cash";
 import { Percent } from "shared/components/formatters/percent";
-import { AccountData, TimeSeries } from "shared/models/store/current";
+import { AccountData, TimeSeriesKeys } from "shared/models/store/current";
 import { updateProjectedIncome } from "shared/store";
 import { removeProjectedIncome } from "shared/store/remove-projected-income";
 import { updateProjectedIncomeDate } from "shared/store/update-projected-income-date";
 import { shortDate } from "shared/utility/format-date";
 
 export const createAccountColumnConfig = (
-  accountName: TimeSeries,
+  accountName: TimeSeriesKeys,
   variant: "number" | "cash" | "percent",
   dateVariant: "date" | "year"
 ): ColDef<AccountData>[] => [

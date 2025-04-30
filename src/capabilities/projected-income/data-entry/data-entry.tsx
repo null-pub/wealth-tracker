@@ -5,7 +5,7 @@ import { DateTime } from "luxon";
 import { useState } from "react";
 import { AgGrid } from "shared/components/ag-grid";
 import { MAX_NUM_ENTRIES } from "shared/constants";
-import { TimeSeries } from "shared/models/store/current";
+import { TimeSeriesKeys } from "shared/models/store/current";
 import { addProjectedIncome, store } from "shared/store";
 import { shortDate } from "shared/utility/format-date";
 import { SparkChart } from "../spark-chart";
@@ -16,7 +16,7 @@ const disabledStyle = {
 };
 
 const DataEntry = (props: {
-  timeSeries: TimeSeries;
+  timeSeries: TimeSeriesKeys;
   defaultDate: DateTime;
   variant?: "number" | "cash" | "percent";
   dateVariant?: "date" | "year";
@@ -88,7 +88,7 @@ const DataEntry = (props: {
 
 interface LayoutProps {
   title: string;
-  accountName: TimeSeries;
+  accountName: TimeSeriesKeys;
   defaultDate: DateTime;
   variant: "percent" | "number" | "cash";
   dateVariant?: "date" | "year";

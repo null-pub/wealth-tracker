@@ -11,7 +11,7 @@ import { CountDown } from "shared/components/formatters/countdown";
 import { Value } from "shared/components/formatters/value";
 import { useClusters } from "shared/hooks/use-clusters";
 import { useDateRanges, useDates } from "shared/hooks/use-dates";
-import { IncomePerPeriod } from "shared/models/IncomePerPeriod";
+import { IncomePerPeriod } from "shared/models/income-per-period";
 import { PaymentTypes } from "shared/models/payment-periods";
 import { scenarioStore } from "shared/store/scenario-store";
 import { ChunkByEquality } from "shared/utility/chunk-by-equality";

@@ -1,59 +1,35 @@
 import { DateTime } from "luxon";
 import { MAX_NUM_ENTRIES } from "shared/constants";
+import { getDateRanges, getDefaultPayDates } from "shared/hooks/use-dates";
 import { PaymentPeriod, PaymentTypes } from "shared/models/payment-periods";
 import { Scenario } from "shared/models/scenario";
-import { AccountData, ProjectedIncome } from "shared/models/store/current";
+import { ProjectedIncome } from "shared/models/store/current";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { findNearestIdxOnOrBefore } from "shared/utility/find-nearest-on-or-before";
 import { findSameYear } from "shared/utility/find-same-year";
+import { getActualDate } from "shared/utility/get-actual-date";
+import { getEmptyMeritSequence, MeritSequence } from "shared/utility/get-empty-merit-sequence";
+import { getFuturePay } from "shared/utility/get-future-pay";
+import { getMeritSequence } from "shared/utility/get-merit-sequence";
 import { getPayments } from "shared/utility/get-payments";
 import { getValueByDateRange } from "shared/utility/get-values-by-date-range";
 import { groupBySingle } from "shared/utility/group-by-single";
 import { incomeByRange } from "shared/utility/income-by-range";
 import { sumSimple } from "simple-statistics";
-import { getEmptyMeritSequence, getMeritSequence } from "./merit-sequence";
-
-const getRealDate = (year: number | undefined, data: AccountData[]) => {
-  if (!year) {
-    return undefined;
-  }
-
-  const entry = findSameYear(year, data);
-  if (!entry) {
-    return undefined;
-  }
-
-  return DateTime.fromISO(entry.date);
-};
 
 export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Scenario[] => {
   const timeSeries = projectedIncome.timeSeries;
   const localDateTime = getLocalDateTime();
+
+  const defaultDates = getDefaultPayDates(year);
   const dates = {
-    meritIncrease: DateTime.fromObject({ month: 4, day: 1, year }),
-    meritBonus: getRealDate(year, projectedIncome.timeSeries.meritBonus) ?? DateTime.fromObject({ month: 4, day: 15, year }),
-    companyBonus: getRealDate(year, projectedIncome.timeSeries.companyBonus) ?? DateTime.fromObject({ month: 6, day: 15, year }),
-    retirement: getRealDate(year, projectedIncome.timeSeries.retirementBonus) ?? DateTime.fromObject({ month: 7, day: 15, year }),
+    meritIncrease: defaultDates.meritIncrease,
+    meritBonus: getActualDate(year, projectedIncome.timeSeries.meritBonus) ?? defaultDates.meritBonus,
+    companyBonus: getActualDate(year, projectedIncome.timeSeries.companyBonus) ?? defaultDates.companyBonus,
+    retirement: getActualDate(year, projectedIncome.timeSeries.retirementBonus) ?? defaultDates.retirementBonus,
   };
 
-  const dateRanges = {
-    base: {
-      start: DateTime.fromObject({ month: 1, day: 1, year }),
-      end: DateTime.fromObject({ month: 12, day: 31, year }).endOf("day"),
-    },
-    meritBonus: {
-      start: DateTime.fromObject({ month: 1, day: 1, year: year - 1 }),
-      end: DateTime.fromObject({ month: 12, day: 31, year: year - 1 }).endOf("day"),
-    },
-    companyBonus: {
-      start: DateTime.fromObject({ day: 1, month: 4, year: year - 1 }),
-      end: DateTime.fromObject({ day: 31, month: 3, year }).endOf("day"),
-    },
-    retirementBonus: {
-      start: DateTime.fromObject({ day: 1, month: 7, year: year - 1 }),
-      end: DateTime.fromObject({ day: 30, month: 6, year }).endOf("day"),
-    },
-  };
+  const dateRanges = getDateRanges(year);
 
   const paid = {
     meritBonus: findSameYear(year, timeSeries.meritBonus)?.value,
@@ -62,7 +38,6 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
   };
 
   const meritSequence = getMeritSequence(year, projectedIncome);
-
   const pay = timeSeries.paycheck.filter((x) => {
     const date = DateTime.fromISO(x.date);
     return date.year > year - 3 && date.year <= year;
@@ -74,9 +49,7 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
   }
 
   const actualMeritBonusPcts = pay.map((x) => findSameYear(DateTime.fromISO(x.date).year, timeSeries.meritBonusPct)?.value ?? 0);
-
   const equityLookup = groupBySingle(timeSeries.equityPct, (x) => DateTime.fromISO(x.date).year);
-
   const equityIncreasePct = findSameYear(year, timeSeries.equityPct)?.value ?? 0;
   const companyBonusFactor = findSameYear(year, timeSeries.companyBonusPct);
   const companyBonusPcts = companyBonusFactor
@@ -90,57 +63,50 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
     };
   });
 
-  const basePayAndMeritScenarios =
-    meritSequence.length === 0
-      ? getEmptyMeritSequence(year, projectedIncome, pay)
-      : meritSequence.map(({ weight, values: merits }) => {
-          const nextPay = pay.slice();
-          const initial = nextPay.length;
-          for (let i = initial; i < merits.length + initial; i++) {
-            const prior = nextPay[i - 1] ?? mostRecentPay;
-            const date = DateTime.fromISO(prior.date ?? mostRecentPay.date)
-              .plus({ years: 1 })
-              .set({ month: dates.meritIncrease.month, day: dates.meritIncrease.day });
+  const basePayAndMeritScenarios: MeritSequence[] = [];
+  if (meritSequence.length === 0) {
+    basePayAndMeritScenarios.push(getEmptyMeritSequence(year, projectedIncome, pay));
+  } else {
+    const meritScenarios = meritSequence.map(({ weight, values: merits }) => {
+      const nextPay = getFuturePay(
+        pay,
+        merits.map((x) => x.meritIncreasePct),
+        dates.meritIncrease,
+        year,
+        equityLookup
+      );
 
-            if (date.year > year) {
-              break;
-            }
+      nextPay.forEach((x) => {
+        x.value = Math.round(x.value);
+      });
 
-            const equity = equityLookup[date.year]?.value ?? 0;
-            nextPay.push({
-              date: date.toISO()!,
-              value: prior.value * (1 + merits[i - initial].meritIncreasePct + equity),
-            });
-          }
+      const projectedMerit = merits.map((x) => x.meritBonusPct);
+      const lastThreeMeritBonuses = actualMeritBonusPcts.concat(projectedMerit).slice(-3);
+      const lastThreeMeritBonusFactor = sumSimple(lastThreeMeritBonuses);
 
-          nextPay.forEach((x) => {
-            x.value = Math.round(x.value);
-          });
+      const lastMerit = merits.at(-1)!;
+      const payments = getPayments(
+        DateTime.fromObject({ day: 1, month: 1, year: year - 1 }),
+        DateTime.fromObject({ day: 31, month: 12, year: year }).endOf("day"),
+        getValueByDateRange(nextPay)
+      );
 
-          const projectedMerit = merits.map((x) => x.meritBonusPct);
-          const lastThreeMeritBonuses = actualMeritBonusPcts.concat(projectedMerit).slice(-3);
-          const lastThreeMeritBonusFactor = sumSimple(lastThreeMeritBonuses);
+      return {
+        year,
+        weight,
+        pay: nextPay,
+        lastThreeMeritBonusFactor,
+        lastThreeMeritBonuses,
+        meritBonusPct: lastMerit.meritBonusPct,
+        meritIncreasePct: lastMerit.meritIncreasePct,
+        payments,
+        equityIncreasePct,
+        retirementBonusPct: 0.15,
+      };
+    });
 
-          const lastMerit = merits.at(-1)!;
-          const payments = getPayments(
-            DateTime.fromObject({ day: 1, month: 1, year: year - 1 }),
-            DateTime.fromObject({ day: 31, month: 12, year: year }).endOf("day"),
-            getValueByDateRange(nextPay)
-          );
-
-          return {
-            year,
-            weight,
-            pay: nextPay,
-            lastThreeMeritBonusFactor,
-            lastThreeMeritBonuses,
-            meritBonusPct: lastMerit.meritBonusPct,
-            meritIncreasePct: lastMerit.meritIncreasePct,
-            payments,
-            equityIncreasePct,
-            retirementBonusPct: 0.15,
-          };
-        });
+    basePayAndMeritScenarios.push(...meritScenarios);
+  }
 
   const postBasePay = basePayAndMeritScenarios.map((x) => {
     const aprToApr = (x.pay.at(-1)?.value ?? 0) * 26;

@@ -4,7 +4,7 @@ import { useStore } from "@tanstack/react-store";
 import { AgCartesianChartOptions, AgColorType } from "ag-charts-community";
 import { AgCharts } from "ag-charts-react";
 import { DateTime } from "luxon";
-import { TimeSeries } from "shared/models/store/current";
+import { TimeSeriesKeys } from "shared/models/store/current";
 import { store } from "shared/store";
 import { ckmeans, collapseClusters } from "shared/utility/ckmeans";
 import { formatCash } from "shared/utility/format-cash";
@@ -12,7 +12,7 @@ import { formatPercent } from "shared/utility/format-percent";
 import { getProbablityColor } from "shared/utility/get-probablity-color";
 import { sortByDate } from "shared/utility/sort-by-date";
 
-export const SparkChart = (props: { accountName: TimeSeries; variant: "cash" | "percent" | "number" }) => {
+export const SparkChart = (props: { accountName: TimeSeriesKeys; variant: "cash" | "percent" | "number" }) => {
   const { accountName, variant } = props;
   const account = useStore(store, (x) => x.projectedIncome.timeSeries[accountName]);
   const data = account.map((x) => ({ ...x, date: DateTime.fromISO(x.date).toJSDate() }));

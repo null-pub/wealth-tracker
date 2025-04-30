@@ -1,8 +1,8 @@
 import { create } from "mutative";
-import { AccountData, TimeSeries } from "shared/models/store/current";
+import { AccountData, TimeSeriesKeys } from "shared/models/store/current";
 import { store } from ".";
 
-export const updateProjectedIncome = (timeSeries: TimeSeries, data: AccountData, value: number) => {
+export const updateProjectedIncome = (timeSeries: TimeSeriesKeys, data: AccountData, value: number) => {
   store.setState((prev) => {
     const next = create(prev, (next) => {
       const idx = prev.projectedIncome.timeSeries[timeSeries].findIndex((x) => x === data);

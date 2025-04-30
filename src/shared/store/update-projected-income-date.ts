@@ -1,9 +1,9 @@
 import { DateTime } from "luxon";
 import { create } from "mutative";
-import { AccountData, TimeSeries } from "shared/models/store/current";
+import { AccountData, TimeSeriesKeys } from "shared/models/store/current";
 import { store } from ".";
 
-export const updateProjectedIncomeDate = (timeSeries: TimeSeries, data: AccountData, date: DateTime) => {
+export const updateProjectedIncomeDate = (timeSeries: TimeSeriesKeys, data: AccountData, date: DateTime) => {
   store.setState((prev) => {
     const next = create(prev, (next) => {
       const idx = prev.projectedIncome.timeSeries[timeSeries].findIndex((x) => x === data);
