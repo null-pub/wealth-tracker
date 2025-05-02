@@ -1,4 +1,5 @@
 import { ProjectedIncome } from "shared/models/store/current";
+import "shared/utility/luxon-extensions";
 import { getScenarios } from "./scenarios";
 
 self.onmessage = (event: MessageEvent<{ year: number; projectedIncome: ProjectedIncome }>) => {

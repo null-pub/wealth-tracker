@@ -26,7 +26,7 @@ const usePayments = (year: number) => {
   const dateRanges = useDateRanges(year);
   const clusters = useClusters(year);
 
-  if (clusters.pay.length === 1) {
+  if (clusters.pay.length !== 1) {
     return {};
   }
   const firstScenario = clusters.scenarios?.at(0);
@@ -110,7 +110,7 @@ export const ProjectedIncome = () => {
                 <ClusterValue {...clusters.pay[0]} title={"Paycheck"} compact={false} />
                 <Tooltip
                   placement="bottom"
-                  componentsProps={{
+                  slotProps={{
                     tooltip: {
                       sx: {
                         maxWidth: "none",
