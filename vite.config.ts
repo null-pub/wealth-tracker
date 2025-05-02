@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import react from "@vitejs/plugin-react";
 import { DateTime } from "luxon";
 import { defineConfig } from "vite";
@@ -45,5 +46,16 @@ export default defineConfig({
   esbuild: {
     minifyIdentifiers: false,
     keepNames: true,
+  },
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: ["./src/__tests__/setup.ts"],
+    include: ["./src/__tests__/**/*.{test,spec}.{ts,tsx}"],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "html"],
+      exclude: ["node_modules/", "src/vite-env.d.ts", "src/**/*.d.ts"],
+    },
   },
 });

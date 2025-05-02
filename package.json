@@ -7,7 +7,11 @@
     "start": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest watch"
   },
   "dependencies": {
     "@emotion/css": "^11.13.5",
@@ -36,6 +40,9 @@
     "zod": "^3.24.3"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/katex": "^0.16.7",
     "@types/luxon": "^3.6.2",
     "@types/react": "^19.1.2",
@@ -44,6 +51,7 @@
     "@typescript-eslint/eslint-plugin": "^8.31.1",
     "@typescript-eslint/parser": "^8.31.1",
     "@vitejs/plugin-react": "^4.4.1",
+    "@vitest/ui": "^3.1.2",
     "babel-plugin-react-compiler": "19.1.0-rc.1",
     "eslint": "^9.25.1",
     "eslint-config-prettier": "^10.1.2",
@@ -51,9 +59,11 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^6.0.0-rc.1",
     "eslint-plugin-react-refresh": "^0.4.20",
+    "jsdom": "^26.1.0",
     "prettier-plugin-organize-imports": "^4.1.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.31.1",
-    "vite": "^6.3.3"
+    "vite": "^6.3.3",
+    "vitest": "^3.1.2"
   }
 }
