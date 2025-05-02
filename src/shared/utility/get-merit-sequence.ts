@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { MAX_NUM_ENTRIES } from "shared/constants";
-import { ProjectedIncome, TimeSeries } from "shared/models/store/current";
+import { TimeSeries } from "shared/models/store/current";
 import { findSameYear } from "shared/utility/find-same-year";
 import { groupBySingle } from "shared/utility/group-by-single";
 
@@ -50,8 +50,7 @@ const getMeritPairs = (year: number, timeSeries: TimeSeries) => {
   });
 };
 
-export const getMeritSequence = (year: number, projectedIncome: ProjectedIncome) => {
-  const timeSeries = projectedIncome.timeSeries;
+export const getMeritSequence = (year: number, timeSeries: TimeSeries) => {
   const meritPairs = getMeritPairs(year, timeSeries);
 
   const pay = timeSeries.paycheck.filter((x) => DateTime.fromISO(x.date).year > year - 3);

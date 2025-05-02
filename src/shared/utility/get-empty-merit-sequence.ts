@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { PaymentPeriod } from "shared/models/payment-periods";
-import { AccountData, ProjectedIncome } from "shared/models/store/current";
+import { AccountData, TimeSeries } from "shared/models/store/current";
 import { findSameYear } from "./find-same-year";
 import { getPayments } from "./get-payments";
 import { getValueByDateRange } from "./get-values-by-date-range";
@@ -18,8 +18,7 @@ export interface MeritSequence {
   weight: number;
 }
 
-export const getEmptyMeritSequence = (year: number, projectedIncome: ProjectedIncome, pay: AccountData[]) => {
-  const timeSeries = projectedIncome.timeSeries;
+export const getEmptyMeritSequence = (year: number, timeSeries: TimeSeries, pay: AccountData[]) => {
   const equityIncreasePct = findSameYear(year, timeSeries.equityPct)?.value ?? 0;
   const meritIncreasePct = findSameYear(year, timeSeries.meritIncreasePct)?.value ?? 0;
   const meritBonusPct = findSameYear(year, timeSeries.meritBonusPct)?.value ?? 0;

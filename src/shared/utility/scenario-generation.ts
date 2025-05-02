@@ -2,7 +2,7 @@ import { DateTime } from "luxon";
 import { MAX_NUM_ENTRIES } from "shared/constants";
 import { PaymentType, PaymentTypes } from "shared/models/payment-periods";
 import { Scenario } from "shared/models/scenario";
-import { AccountData, ProjectedIncome } from "shared/models/store/current";
+import { ProjectedIncome, TimeSeries } from "shared/models/store/current";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { findNearestIdxOnOrBefore } from "shared/utility/find-nearest-on-or-before";
 import { findSameYear } from "shared/utility/find-same-year";
@@ -16,7 +16,7 @@ import { incomeByRange } from "shared/utility/income-by-range";
 import { sumSimple } from "simple-statistics";
 import { getEmptyMeritSequence } from "./get-empty-merit-sequence";
 import { getValueByDateRange } from "./get-values-by-date-range";
-import { isDefined } from "./is-defined";
+import { groupBySingle } from "./group-by-single";
 
 interface ScenarioDates {
   meritIncrease: DateTime;
@@ -35,7 +35,7 @@ export const getScenarioDates = (year: number, projectedIncome: ProjectedIncome)
   };
 };
 
-export const getCompanyBonusFactors = (year: number, timeSeries: ProjectedIncome["timeSeries"]) => {
+const getCompanyBonusFactors = (year: number, timeSeries: TimeSeries) => {
   const companyBonusFactor = findSameYear(year, timeSeries.companyBonusPct);
   const companyBonusPcts = companyBonusFactor
     ? [companyBonusFactor.value]
@@ -47,21 +47,24 @@ export const getCompanyBonusFactors = (year: number, timeSeries: ProjectedIncome
   }));
 };
 
-export const buildBaseScenarios = (
-  year: number,
-  projectedIncome: ProjectedIncome,
-  pay: AccountData[],
-  mostRecentPay: AccountData,
-  dates: ScenarioDates,
-  equityLookup: Partial<Record<number, { date: string; value: number }>>
-) => {
-  const { timeSeries } = projectedIncome;
+const buildMeritScenarios = (year: number, timeSeries: TimeSeries, dates: ScenarioDates) => {
+  const equityLookup = groupBySingle(timeSeries.equityPct, (x) => DateTime.fromISO(x.date).year);
+
+  const pay = timeSeries.paycheck.filter((x) => {
+    const date = DateTime.fromISO(x.date);
+    return date.year > year - 3 && date.year <= year;
+  });
+
+  const mostRecentPay = pay.at(-1) ?? timeSeries.paycheck.at(-1);
+  if (!mostRecentPay) {
+    return [];
+  }
   const actualMeritBonusPcts = pay.map((x) => findSameYear(DateTime.fromISO(x.date).year, timeSeries.meritBonusPct)?.value ?? 0);
   const equityIncreasePct = findSameYear(year, timeSeries.equityPct)?.value ?? 0;
-  const meritSequence = getMeritSequence(year, projectedIncome);
+  const meritSequence = getMeritSequence(year, timeSeries);
 
   if (meritSequence.length === 0) {
-    return [getEmptyMeritSequence(year, projectedIncome, pay)];
+    return [getEmptyMeritSequence(year, timeSeries, pay)];
   }
 
   return meritSequence.map(({ weight, values: merits }) => {
@@ -104,98 +107,106 @@ export const buildBaseScenarios = (
   });
 };
 
+const buildCompanyBonusScenarios = (year: number, timeSeries: TimeSeries, baseScenarios: Partial<Scenario>[]) => {
+  const companyBonusFactors = getCompanyBonusFactors(year, timeSeries);
+  return baseScenarios.flatMap((scenario) => {
+    return companyBonusFactors.map((companyBonusFactor) => {
+      return { ...scenario, weight: scenario.weight! * companyBonusFactor.weight, companyBonusFactor: companyBonusFactor.value };
+    });
+  });
+};
+
+export const buildBaseScenarios = (year: number, timeSeries: TimeSeries, dates: ScenarioDates) => {
+  const meritScenarios = buildMeritScenarios(year, timeSeries, dates);
+  return buildCompanyBonusScenarios(year, timeSeries, meritScenarios);
+};
+
 export const applyBonuses = (
   baseScenarios: Partial<Scenario>[],
-  companyBonusFactors: Array<{ weight: number; value: number }>,
   dates: ScenarioDates,
   dateRanges: ReturnType<typeof getEligibleIncomeDateRanges>,
   paid: { meritBonus?: number; companyBonus?: number; retirementBonus?: number }
 ) => {
-  return baseScenarios.flatMap((scenario) => {
-    return companyBonusFactors.map((companyBonusFactor) => {
-      if (!isDefined(scenario.payments)) {
-        throw new Error("Scenario payments is undefined");
-      }
-      if (!isDefined(scenario.lastThreeMeritBonusFactor)) {
-        throw new Error("Scenario lastThreeMeritBonusFactor is undefined");
-      }
-      if (!isDefined(scenario.meritBonusPct)) {
-        throw new Error("Scenario meritBonusPct is undefined");
-      }
-      if (!isDefined(scenario.year)) {
-        throw new Error("Scenario year is undefined");
-      }
+  return baseScenarios.map((scenario) => {
+    if (!scenario.payments) {
+      throw new Error("Scenario payments is undefined");
+    }
+    if (!scenario.lastThreeMeritBonusFactor) {
+      throw new Error("Scenario lastThreeMeritBonusFactor is undefined");
+    }
+    if (!scenario.meritBonusPct) {
+      throw new Error("Scenario meritBonusPct is undefined");
+    }
+    if (!scenario.year) {
+      throw new Error("Scenario year is undefined");
+    }
 
-      const companyBonusPct = scenario.lastThreeMeritBonusFactor * companyBonusFactor.value;
-      const companyBonus =
-        paid.companyBonus ??
-        Math.round(incomeByRange([PaymentTypes.regular], dateRanges.companyBonus, scenario.payments) * companyBonusPct);
-      const meritBonus =
-        paid.meritBonus ??
-        Math.round(incomeByRange([PaymentTypes.regular], dateRanges.meritBonus, scenario.payments) * scenario.meritBonusPct);
+    const companyBonusPct = scenario.lastThreeMeritBonusFactor * (scenario.companyBonusFactor ?? 0);
+    const companyBonus =
+      paid.companyBonus ?? Math.round(incomeByRange([PaymentTypes.regular], dateRanges.companyBonus, scenario.payments) * companyBonusPct);
+    const meritBonus =
+      paid.meritBonus ??
+      Math.round(incomeByRange([PaymentTypes.regular], dateRanges.meritBonus, scenario.payments) * scenario.meritBonusPct);
 
-      const updatedPayments = scenario.payments.slice();
+    const updatedPayments = scenario.payments.slice();
 
-      const insertBonuses = (
-        bonusType: PaymentType,
-        bonusValue: number,
-        bonusDate: DateTime<true>,
-        dateRange: { start: DateTime<true>; end: DateTime<true> }
-      ) => {
-        const payBeforeBonus = findNearestIdxOnOrBefore(bonusDate, updatedPayments, (x) => DateTime.fromISO(x.payedOn));
-        updatedPayments.splice(payBeforeBonus + 1, 0, {
-          type: bonusType,
-          value: bonusValue,
-          cumulative: 0,
-          payedOn: bonusDate.toISO()!,
-          start: dateRange.start.toISO(),
-          end: dateRange.end.toISO()!,
-        });
-      };
-
-      insertBonuses(PaymentTypes.bonus, meritBonus, dates.meritBonus, dateRanges.meritBonus);
-      insertBonuses(PaymentTypes.bonus, companyBonus, dates.companyBonus, dateRanges.companyBonus);
-
-      const retirementBonus =
-        paid.retirementBonus ??
-        Math.round(incomeByRange([PaymentTypes.regular, PaymentTypes.bonus], dateRanges.retirementBonus, updatedPayments) * 0.15);
-      insertBonuses(PaymentTypes.nonTaxableBonus, retirementBonus, dates.retirement, dateRanges.retirementBonus);
-
-      updatedPayments.forEach((current, i) => {
-        const prior = updatedPayments[i - 1];
-        if (DateTime.fromISO(current.payedOn).year === scenario.year && DateTime.fromISO(prior.payedOn).year === scenario.year) {
-          if (current.type === PaymentTypes.bonus || current.type === PaymentTypes.regular) {
-            current.cumulative = prior.cumulative + current.value;
-          } else if (current.type === PaymentTypes.nonTaxableBonus) {
-            current.cumulative = prior.cumulative;
-          }
-        }
+    const insertBonuses = (
+      bonusType: PaymentType,
+      bonusValue: number,
+      bonusDate: DateTime<true>,
+      dateRange: { start: DateTime<true>; end: DateTime<true> }
+    ) => {
+      const payBeforeBonus = findNearestIdxOnOrBefore(bonusDate, updatedPayments, (x) => DateTime.fromISO(x.payedOn));
+      updatedPayments.splice(payBeforeBonus + 1, 0, {
+        type: bonusType,
+        value: bonusValue,
+        cumulative: 0,
+        payedOn: bonusDate.toISO(),
+        start: dateRange.start.toISO(),
+        end: dateRange.end.toISO(),
       });
+    };
 
-      const basePay = Math.round(incomeByRange([PaymentTypes.regular], dateRanges.base, updatedPayments));
-      const aprToApr = (scenario.pay!.at(-1)?.value ?? 0) * 26;
-      const taxablePay = basePay + meritBonus + companyBonus;
-      const totalPay = taxablePay + retirementBonus;
+    insertBonuses(PaymentTypes.bonus, meritBonus, dates.meritBonus, dateRanges.meritBonus);
+    insertBonuses(PaymentTypes.bonus, companyBonus, dates.companyBonus, dateRanges.companyBonus);
 
-      const currentPaymentIdx = findNearestIdxOnOrBefore(getLocalDateTime(), updatedPayments, (x) => DateTime.fromISO(x.payedOn));
-      const remainingRegularPayments = updatedPayments.slice(currentPaymentIdx + 1).filter((x) => x.type === PaymentTypes.regular).length;
+    const retirementBonus =
+      paid.retirementBonus ??
+      Math.round(incomeByRange([PaymentTypes.regular, PaymentTypes.bonus], dateRanges.retirementBonus, updatedPayments) * 0.15);
+    insertBonuses(PaymentTypes.nonTaxableBonus, retirementBonus, dates.retirement, dateRanges.retirementBonus);
 
-      return {
-        ...scenario,
-        weight: scenario.weight! * companyBonusFactor.weight,
-        companyBonusFactor: companyBonusFactor.value,
-        companyBonusPct,
-        companyBonus,
-        meritBonus,
-        retirementBonus,
-        payments: updatedPayments,
-        basePay,
-        aprToApr,
-        taxablePay,
-        totalPay,
-        currentPaymentIdx,
-        remainingRegularPayments,
-      } as Scenario;
+    updatedPayments.forEach((current, i) => {
+      const prior = updatedPayments[i - 1];
+      if (DateTime.fromISO(current.payedOn).year === scenario.year && DateTime.fromISO(prior.payedOn).year === scenario.year) {
+        if (current.type === PaymentTypes.bonus || current.type === PaymentTypes.regular) {
+          current.cumulative = prior.cumulative + current.value;
+        } else if (current.type === PaymentTypes.nonTaxableBonus) {
+          current.cumulative = prior.cumulative;
+        }
+      }
     });
+
+    const basePay = Math.round(incomeByRange([PaymentTypes.regular], dateRanges.base, updatedPayments));
+    const aprToApr = (scenario.pay!.at(-1)?.value ?? 0) * 26;
+    const taxablePay = basePay + meritBonus + companyBonus;
+    const totalPay = taxablePay + retirementBonus;
+
+    const currentPaymentIdx = findNearestIdxOnOrBefore(getLocalDateTime(), updatedPayments, (x) => DateTime.fromISO(x.payedOn));
+    const remainingRegularPayments = updatedPayments.slice(currentPaymentIdx + 1).filter((x) => x.type === PaymentTypes.regular).length;
+
+    return {
+      ...scenario,
+      companyBonusPct,
+      companyBonus,
+      meritBonus,
+      retirementBonus,
+      payments: updatedPayments,
+      basePay,
+      aprToApr,
+      taxablePay,
+      totalPay,
+      currentPaymentIdx,
+      remainingRegularPayments,
+    } as Scenario;
   });
 };

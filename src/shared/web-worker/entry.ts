@@ -9,9 +9,9 @@ import { scenarioStore } from "../store/scenario-store";
 const maxScenarioSize = 2499;
 const currentYear = getLocalDateTime().year;
 const maxYear = (() => {
-  const projectedIncome = store.state.projectedIncome;
+  const timeSeries = store.state.projectedIncome.timeSeries;
   for (let i = currentYear; i <= currentYear + 5; i++) {
-    const size = getScenarioSize(i, projectedIncome);
+    const size = getScenarioSize(i, timeSeries);
     if (size > maxScenarioSize || size === 0) {
       return Math.max(currentYear, i - 1);
     }
