@@ -17,6 +17,7 @@ import { sumSimple } from "simple-statistics";
 import { getEmptyMeritSequence } from "./get-empty-merit-sequence";
 import { getValueByDateRange } from "./get-values-by-date-range";
 import { groupBySingle } from "./group-by-single";
+import { validateDateRanges } from "./validate-date-ranges";
 
 interface ScenarioDates {
   meritIncrease: DateTime;
@@ -141,6 +142,8 @@ export const applyBonuses = (
       throw new Error("Scenario year is undefined");
     }
 
+    validateDateRanges(dateRanges);
+
     const companyBonusPct = scenario.lastThreeMeritBonusFactor * (scenario.companyBonusFactor ?? 0);
     const companyBonus =
       paid.companyBonus ?? Math.round(incomeByRange([PaymentTypes.regular], dateRanges.companyBonus, scenario.payments) * companyBonusPct);
@@ -153,17 +156,17 @@ export const applyBonuses = (
     const insertBonuses = (
       bonusType: PaymentType,
       bonusValue: number,
-      bonusDate: DateTime<true>,
-      dateRange: { start: DateTime<true>; end: DateTime<true> }
+      bonusDate: DateTime,
+      dateRange: { start: DateTime; end: DateTime }
     ) => {
       const payBeforeBonus = findNearestIdxOnOrBefore(bonusDate, updatedPayments, (x) => DateTime.fromISO(x.payedOn));
       updatedPayments.splice(payBeforeBonus + 1, 0, {
         type: bonusType,
         value: bonusValue,
         cumulative: 0,
-        payedOn: bonusDate.toISO(),
-        start: dateRange.start.toISO(),
-        end: dateRange.end.toISO(),
+        payedOn: bonusDate.toISO()!,
+        start: dateRange.start.toISO()!,
+        end: dateRange.end.toISO()!,
       });
     };
 
