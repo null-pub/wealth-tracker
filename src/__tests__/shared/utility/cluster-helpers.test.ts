@@ -143,5 +143,43 @@ describe("cluster-helpers", () => {
       expect(summed[0].min).toBe(200);
       expect(summed[1].min).toBe(300);
     });
+
+    it("should expand 2 clusters to 3 when needed", () => {
+      const clusters: Cluster[][] = [
+        [
+          { min: 100, max: 200, median: 150, probability: 0.6, title: "Low" },
+          { min: 100, max: 200, median: 150, probability: 0.5, title: "Med" },
+          { min: 300, max: 400, median: 350, probability: 0.4, title: "High" },
+        ],
+        [
+          { min: 100, max: 200, median: 150, probability: 0.6, title: "Low" },
+          { min: 300, max: 400, median: 350, probability: 0.4, title: "High" },
+        ],
+      ];
+      const summed = SumClusters(clusters); // Using same cluster twice to test summation
+      expect(summed).toEqual([
+        {
+          min: 200,
+          max: 400,
+          median: 300,
+          probability: 0.4,
+          title: "Low",
+        },
+        {
+          min: 300,
+          max: 500,
+          median: 400,
+          probability: 0.3333333333333333,
+          title: "Med",
+        },
+        {
+          min: 600,
+          max: 800,
+          median: 700,
+          probability: 0.2666666666666667,
+          title: "High",
+        },
+      ]);
+    });
   });
 });

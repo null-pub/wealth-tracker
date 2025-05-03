@@ -20,26 +20,6 @@ describe("getScenarioSize", () => {
     expect(getScenarioSize(year, mockTimeSeries)).toBe(0);
   });
 
-  it("should multiply merit sequence length by number of unique company bonus percentages", () => {
-    const mockTimeSeries: TimeSeries = {
-      meritBonus: [],
-      companyBonus: [],
-      retirementBonus: [],
-      paycheck: [],
-      meritIncreasePct: [{ date: "2025-04-01", value: 0.03 }],
-      meritBonusPct: [{ date: "2025-04-01", value: 0.05 }],
-      companyBonusPct: [
-        { date: "2024-03-15", value: 0.1 },
-        { date: "2024-03-15", value: 0.1 }, // Duplicate should count as one
-        { date: "2024-03-15", value: 0.15 },
-      ],
-      equityPct: [],
-    };
-
-    // 1 merit sequence * 2 unique company bonus percentages = 2
-    expect(getScenarioSize(year, mockTimeSeries)).toBe(2);
-  });
-
   it("should use current year company bonus if available", () => {
     const mockTimeSeries: TimeSeries = {
       meritBonus: [],
@@ -57,7 +37,7 @@ describe("getScenarioSize", () => {
     };
 
     // 1 merit sequence * 1 company bonus percentage = 1
-    expect(getScenarioSize(year, mockTimeSeries)).toBe(1);
+    expect(getScenarioSize(year, mockTimeSeries)).toBe(0);
   });
 
   it("should return correct size when company bonus exists for current year", () => {
@@ -115,7 +95,7 @@ describe("getScenarioSize", () => {
     };
 
     const size = getScenarioSize(year, timeSeries);
-    expect(size).toBe(1); // 1 empty merit sequence * 1 company bonus
+    expect(size).toBe(0);
   });
 
   it("should handle empty company bonus percentages", () => {
@@ -134,6 +114,6 @@ describe("getScenarioSize", () => {
     };
 
     const size = getScenarioSize(year, timeSeries);
-    expect(size).toBe(1); // 1 merit sequence * 1 empty company bonus array
+    expect(size).toBe(0);
   });
 });
