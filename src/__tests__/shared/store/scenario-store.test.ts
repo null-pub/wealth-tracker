@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
+import { PaymentTypes } from "shared/models/payment-periods";
+import { scenarioStore } from "shared/store/scenario-store";
 import { beforeEach, describe, expect, test } from "vitest";
-import { PaymentTypes } from "../../../shared/models/payment-periods";
-import { scenarioStore } from "../../../shared/store/scenario-store";
 
 describe("Scenario Store Operations", () => {
   const mockScenarios = {

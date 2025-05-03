@@ -1,9 +1,9 @@
 import { DateTime } from "luxon";
+import { AccountData } from "shared/models/store/current";
+import { store } from "shared/store/store";
+import { updateAccountDate } from "shared/store/update-account-date";
+import { updateProjectedIncomeDate } from "shared/store/update-projected-income-date";
 import { beforeEach, describe, expect, test } from "vitest";
-import { AccountData } from "../../../shared/models/store/current";
-import { store } from "../../../shared/store/store";
-import { updateAccountDate } from "../../../shared/store/update-account-date";
-import { updateProjectedIncomeDate } from "../../../shared/store/update-projected-income-date";
 
 describe("Date Update Operations", () => {
   const testEntry: AccountData = {

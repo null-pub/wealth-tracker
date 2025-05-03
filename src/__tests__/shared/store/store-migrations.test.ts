@@ -1,7 +1,7 @@
+import { Store as StoreV0 } from "shared/models/store/version-0";
+import { Store as StoreV5 } from "shared/models/store/version-5";
+import { migration } from "shared/store/migrations";
 import { describe, expect, test } from "vitest";
-import { Store as StoreV0 } from "../../../shared/models/store/version-0";
-import { Store as StoreV5 } from "../../../shared/models/store/version-5";
-import { migration } from "../../../shared/store/migrations";
 
 describe("Store Migrations", () => {
   test("should migrate from version 0 to version 5", () => {

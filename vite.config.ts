@@ -7,9 +7,6 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   base: "/wealth-tracker/",
-  worker: {
-    plugins: () => [tsconfigPaths()],
-  },
   plugins: [
     react({
       jsxImportSource: "@emotion/react",

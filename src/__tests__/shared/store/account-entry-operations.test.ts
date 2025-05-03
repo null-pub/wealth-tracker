@@ -1,8 +1,8 @@
 import { DateTime } from "luxon";
+import { AccountData } from "shared/models/store/current";
+import { removeAccountEntry } from "shared/store/remove-account-entry";
+import { store } from "shared/store/store";
 import { beforeEach, describe, expect, test } from "vitest";
-import { AccountData } from "../../../shared/models/store/current";
-import { removeAccountEntry } from "../../../shared/store/remove-account-entry";
-import { store } from "../../../shared/store/store";
 
 describe("Account Entry Operations", () => {
   const testEntry: AccountData = {

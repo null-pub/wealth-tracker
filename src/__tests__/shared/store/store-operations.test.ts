@@ -1,10 +1,10 @@
 import { DateTime } from "luxon";
+import { addAccountEntry } from "shared/store/add-account-entry";
+import { removeAccount } from "shared/store/remove-account";
+import { store } from "shared/store/store";
+import { updateAccountName } from "shared/store/update-account-name";
+import { updateAccountValue } from "shared/store/update-account-value";
 import { beforeEach, describe, expect, test } from "vitest";
-import { addAccountEntry } from "../../../shared/store/add-account-entry";
-import { removeAccount } from "../../../shared/store/remove-account";
-import { store } from "../../../shared/store/store";
-import { updateAccountName } from "../../../shared/store/update-account-name";
-import { updateAccountValue } from "../../../shared/store/update-account-value";
 
 describe("Store Operations", () => {
   beforeEach(() => {

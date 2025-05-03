@@ -5,9 +5,9 @@ import { App } from "app/app.tsx";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { ErrorBoundary } from "react-error-boundary";
+import "shared/utility/luxon-extensions";
 import "shared/web-worker/entry";
 import "./index.css";
-import "./shared/utility/luxon-extensions";
 
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 ModuleRegistry.registerModules([AllCommunityModule]);

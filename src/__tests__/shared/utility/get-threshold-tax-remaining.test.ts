@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
+import { Scenario } from "shared/models/scenario";
+import { getThresholdTaxRemaining } from "shared/utility/get-threshold-tax-remaining";
 import { describe, expect, it, vi } from "vitest";
-import { Scenario } from "../../../shared/models/scenario";
-import { getThresholdTaxRemaining } from "../../../shared/utility/get-threshold-tax-remaining";
 
 describe("getThresholdTaxRemaining", () => {
   const mockNow = DateTime.fromISO("2025-01-01").toValid();

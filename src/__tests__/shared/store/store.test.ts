@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
+import { Store, getDefaultStore, storeValidator } from "shared/models/store/current";
+import { createStore, store } from "shared/store/store";
 import { beforeEach, describe, expect, test } from "vitest";
-import { Store, getDefaultStore, storeValidator } from "../../../shared/models/store/current";
-import { createStore, store } from "../../../shared/store/store";
 
 describe("Store Operations", () => {
   beforeEach(() => {

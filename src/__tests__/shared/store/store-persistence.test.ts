@@ -1,7 +1,7 @@
+import { getDefaultStore, storeValidator } from "shared/models/store/current";
+import { Store as storeV0 } from "shared/models/store/version-0";
+import { createStore, store } from "shared/store/store";
 import { beforeEach, describe, expect, test } from "vitest";
-import { getDefaultStore, storeValidator } from "../../../shared/models/store/current";
-import { Store as storeV0 } from "../../../shared/models/store/version-0";
-import { createStore, store } from "../../../shared/store/store";
 
 describe("Store Persistence", () => {
   beforeEach(() => {

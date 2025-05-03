@@ -1,17 +1,15 @@
 import { useStore } from "@tanstack/react-store";
-import { useDateRanges } from "shared/hooks/use-dates";
+import { PAYMENTS_PER_YEAR } from "shared/constants";
 import { store } from "shared/store";
-import { clamp } from "shared/utility/clamp";
-
-const monthsInYear = 12;
+import { scenarioStore } from "shared/store/scenario-store";
 
 export const useFutureSavings = (year: number) => {
-  const config = useStore(store, (x) => x.projectedWealth);
-  const dateRanges = useDateRanges(year);
-  const monthsRemaining = dateRanges.base.end.diffNow("months").months;
+  const savingsPerMonth = useStore(store, (x) => x.projectedWealth.savingsPerMonth);
+  const scenarios = useStore(scenarioStore, (x) => x.scenarios[year]);
+  const remainingRegularPayments = scenarios?.at(0)?.remainingRegularPayments ?? 0;
 
   return {
-    remaining: config.savingsPerMonth * clamp(0, monthsRemaining, monthsInYear),
-    perMonth: config.savingsPerMonth,
+    remaining: savingsPerMonth * Math.min(remainingRegularPayments, PAYMENTS_PER_YEAR),
+    perMonth: savingsPerMonth,
   };
 };

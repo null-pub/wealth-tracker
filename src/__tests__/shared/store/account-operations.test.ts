@@ -1,10 +1,10 @@
 import { DateTime } from "luxon";
+import { AccountData } from "shared/models/store/current";
+import { hideAccount } from "shared/store/hide-account";
+import { setLoan } from "shared/store/set-loan";
+import { store } from "shared/store/store";
+import { updateAccountValue } from "shared/store/update-account-value";
 import { beforeEach, describe, expect, test } from "vitest";
-import { AccountData } from "../../../shared/models/store/current";
-import { hideAccount } from "../../../shared/store/hide-account";
-import { setLoan } from "../../../shared/store/set-loan";
-import { store } from "../../../shared/store/store";
-import { updateAccountValue } from "../../../shared/store/update-account-value";
 
 describe("Account Operations", () => {
   const testEntry: AccountData = {

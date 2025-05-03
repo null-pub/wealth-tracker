@@ -1,8 +1,7 @@
 import { useStore } from "@tanstack/react-store";
+import { PAYMENTS_PER_YEAR } from "shared/constants";
 import { store } from "shared/store";
 import { scenarioStore } from "shared/store/scenario-store";
-
-const paymentsPerYear = 26;
 
 export const useFutureRetirementContributions = (year: number) => {
   const scenarios = useStore(scenarioStore, (x) => x.scenarios[year]);
@@ -10,7 +9,7 @@ export const useFutureRetirementContributions = (year: number) => {
   const remainingRegularPayments = scenarios?.at(0)?.remainingRegularPayments ?? 0;
 
   return {
-    remaining: Math.min(remainingRegularPayments, paymentsPerYear) * retirementContribution,
+    remaining: Math.min(remainingRegularPayments, PAYMENTS_PER_YEAR) * retirementContribution,
     perPaycheck: retirementContribution,
   };
 };

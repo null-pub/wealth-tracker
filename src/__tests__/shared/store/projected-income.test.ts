@@ -1,10 +1,10 @@
 import { DateTime } from "luxon";
+import { TimeSeriesKeys } from "shared/models/store/current";
+import { addProjectedIncome } from "shared/store/add-projected-income";
+import { removeProjectedIncome } from "shared/store/remove-projected-income";
+import { store } from "shared/store/store";
+import { updateProjectedIncome } from "shared/store/update-projected-income";
 import { beforeEach, describe, expect, test } from "vitest";
-import { TimeSeriesKeys } from "../../../shared/models/store/current";
-import { addProjectedIncome } from "../../../shared/store/add-projected-income";
-import { removeProjectedIncome } from "../../../shared/store/remove-projected-income";
-import { store } from "../../../shared/store/store";
-import { updateProjectedIncome } from "../../../shared/store/update-projected-income";
 
 describe("Projected Income Operations", () => {
   beforeEach(() => {

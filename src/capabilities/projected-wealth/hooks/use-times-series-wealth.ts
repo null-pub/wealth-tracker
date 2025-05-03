@@ -1,11 +1,11 @@
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
+import { useEarliestAccountEntry } from "shared/hooks/use-earliest-account-entry";
 import { store } from "shared/store";
 import { findMostMostLikely } from "shared/utility/cluster-helpers";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { findNearestIdxOnOrBefore, findNearestOnOrBefore } from "shared/utility/find-nearest-on-or-before";
 import { calcEquity, calcLoanBalance } from "shared/utility/mortgage-calc";
-import { useEarliestAccountEntry } from "../../../shared/hooks/use-earliest-account-entry";
 import { useFutureTotals } from "./use-future-totals";
 
 export interface TimeSeriesWealth {
