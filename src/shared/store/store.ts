@@ -3,11 +3,23 @@ import { ZodSchema } from "zod";
 import { Store, getDefaultStore, storeValidator } from "../models/store/current";
 import { migration } from "./migrations";
 
-const createStore = <T extends object>(validator: ZodSchema, defaultValue: T) => {
+const jsonTryParse = (data?: string | null): { result: unknown; isSuccess: boolean } => {
+  if (!data) {
+    return { result: data, isSuccess: false };
+  }
+  try {
+    return { result: JSON.parse(data), isSuccess: true };
+  } catch {
+    return { result: data, isSuccess: false };
+  }
+};
+
+export const createStore = <T extends object>(validator: ZodSchema<unknown>, defaultValue: T) => {
   const key = "store";
   const invalidData = "store-invalid";
   const localData = localStorage.getItem(key);
-  const data = localData ? JSON.parse(localData) : defaultValue;
+  const { result: parsedData, isSuccess } = jsonTryParse(localData);
+  const data = isSuccess ? parsedData : defaultValue;
   const parse = validator.safeParse(data);
 
   if (!parse.success) {
@@ -17,12 +29,14 @@ const createStore = <T extends object>(validator: ZodSchema, defaultValue: T) =>
     } catch (err) {
       console.log("error", err);
       console.log("invalid data", data);
-      localStorage.setItem(invalidData, JSON.stringify(data));
+      if (localData !== null) {
+        localStorage.setItem(invalidData, localData);
+      }
       localStorage.setItem(key, JSON.stringify(defaultValue));
     }
   }
 
-  const store = new CreateStore<T>(data);
+  const store = new CreateStore<T>(data as T);
   store.subscribe(() => {
     const current = localStorage.getItem(key);
     current && localStorage.setItem(`${key}-previous`, current);
