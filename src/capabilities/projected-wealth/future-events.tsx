@@ -78,10 +78,10 @@ export const FutureEvents = (props: { year: number; onChange: (year: number) => 
         {!!socialSecurity.min && <ThresholdTaxCard thresholdTax={socialSecurity} title={"Social Security Limit"} />}
         {!!medicare.min && <ThresholdTaxCard thresholdTax={medicare} title={"Medicare Supplemental Tax"} />}
 
-        {(!!savings.perMonth || !!retirement.perPaycheck || !!equity) && (
+        {(!!savings.perPaycheck || !!retirement.perPaycheck || !!equity) && (
           <Card title={"Savings & Retirement"}>
-            {!!savings.perMonth && (
-              <Value title={"savings"} secondaryValue={<Cash tooltip="Per Month" value={savings.perMonth} />}>
+            {!!savings.perPaycheck && (
+              <Value title={"savings"} secondaryValue={<Cash tooltip="Per Month" value={savings.perPaycheck} />}>
                 <Cash tooltip="Total Remaining" value={savings.remaining} />
               </Value>
             )}

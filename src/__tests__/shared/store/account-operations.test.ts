@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { AccountData } from "shared/models/store/current";
+import { AccountData, getDefaultStore } from "shared/models/store/current";
 import { hideAccount } from "shared/store/hide-account";
 import { setLoan } from "shared/store/set-loan";
 import { store } from "shared/store/store";
@@ -14,37 +14,15 @@ describe("Account Operations", () => {
 
   beforeEach(() => {
     localStorage.clear();
-    store.setState(() => ({
-      version: 5,
-      wealth: {
-        testAccount: {
-          type: "account",
-          data: [testEntry],
-          hidden: false,
-        },
+    const initialState = getDefaultStore();
+    initialState.wealth = {
+      testAccount: {
+        type: "account",
+        data: [testEntry],
+        hidden: false,
       },
-      projectedIncome: {
-        timeSeries: {
-          paycheck: [],
-          meritIncreasePct: [],
-          equityPct: [],
-          meritBonusPct: [],
-          meritBonus: [],
-          companyBonusPct: [],
-          companyBonus: [],
-          retirementBonus: [],
-        },
-      },
-      projectedWealth: {
-        savingsPerMonth: 0,
-        retirementContributionPaycheck: 0,
-        bonusWithholdingsRate: 0,
-        socialSecurityLimit: 0,
-        socialSecurityTaxRate: 0,
-        medicareSupplementalTaxThreshold: 0,
-        medicareSupplementalTaxRate: 0,
-      },
-    }));
+    };
+    store.setState(() => initialState);
   });
 
   test("should hide account", () => {
@@ -110,38 +88,16 @@ describe("Loan Operations", () => {
 
   beforeEach(() => {
     localStorage.clear();
-    store.setState(() => ({
-      version: 5,
-      wealth: {
-        testMortgage: {
-          type: "mortgage" as const,
-          data: [],
-          hidden: false,
-          loan: undefined,
-        },
+    const initialState = getDefaultStore();
+    initialState.wealth = {
+      testMortgage: {
+        type: "mortgage" as const,
+        data: [],
+        hidden: false,
+        loan: undefined,
       },
-      projectedIncome: {
-        timeSeries: {
-          paycheck: [],
-          meritIncreasePct: [],
-          equityPct: [],
-          meritBonusPct: [],
-          meritBonus: [],
-          companyBonusPct: [],
-          companyBonus: [],
-          retirementBonus: [],
-        },
-      },
-      projectedWealth: {
-        savingsPerMonth: 0,
-        retirementContributionPaycheck: 0,
-        bonusWithholdingsRate: 0,
-        socialSecurityLimit: 0,
-        socialSecurityTaxRate: 0,
-        medicareSupplementalTaxThreshold: 0,
-        medicareSupplementalTaxRate: 0,
-      },
-    }));
+    };
+    store.setState(() => initialState);
   });
 
   test("should set loan for mortgage account", () => {

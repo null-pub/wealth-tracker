@@ -1,10 +1,11 @@
+import { getDefaultStore, Store } from "shared/models/store/current";
 import { Store as StoreV0 } from "shared/models/store/version-0";
-import { Store as StoreV5 } from "shared/models/store/version-5";
 import { migration } from "shared/store/migrations";
 import { describe, expect, test } from "vitest";
 
 describe("Store Migrations", () => {
-  test("should migrate from version 0 to version 5", () => {
+  test("should migrate from version 0 to current", () => {
+    const currentDefaultStore = getDefaultStore();
     const v0Store: StoreV0 = {
       wealth: {},
       projectedIncome: {
@@ -31,7 +32,7 @@ describe("Store Migrations", () => {
 
     const result = migration(v0Store);
 
-    expect(result.version).toBe(5);
+    expect(result.version).toBe(currentDefaultStore.version);
     expect(result).toHaveProperty("wealth");
     expect(result).toHaveProperty("projectedIncome");
     expect(result).toHaveProperty("projectedWealth");
@@ -67,7 +68,7 @@ describe("Store Migrations", () => {
       },
     };
 
-    const result = migration(v0Store) as StoreV5;
+    const result = migration(v0Store) as Store;
 
     expect(result.wealth.testAccount).toHaveProperty("hidden", false);
   });

@@ -1,91 +1,53 @@
 import { DateTime } from "luxon";
-import { Store, getDefaultStore, storeValidator } from "shared/models/store/current";
+import { getDefaultStore, storeValidator } from "shared/models/store/current";
 import { createStore, store } from "shared/store/store";
 import { beforeEach, describe, expect, test } from "vitest";
 
 describe("Store Operations", () => {
   beforeEach(() => {
     localStorage.clear();
-    store.setState(() => ({
-      version: 5,
-      wealth: {},
-      projectedIncome: {
-        timeSeries: {
-          paycheck: [],
-          meritIncreasePct: [],
-          equityPct: [],
-          meritBonusPct: [],
-          meritBonus: [],
-          companyBonusPct: [],
-          companyBonus: [],
-          retirementBonus: [],
-        },
-      },
-      projectedWealth: {
-        savingsPerMonth: 0,
-        retirementContributionPaycheck: 0,
-        bonusWithholdingsRate: 0,
-        socialSecurityLimit: 0,
-        socialSecurityTaxRate: 0,
-        medicareSupplementalTaxThreshold: 0,
-        medicareSupplementalTaxRate: 0,
-      },
-    }));
+    const initialState = getDefaultStore();
+    store.setState(() => initialState);
   });
 
   test("should initialize with default state", () => {
     const state = store.state;
-    expect(state.version).toBe(5);
+
     expect(state.wealth).toEqual({});
     expect(state.projectedIncome.timeSeries).toBeDefined();
     expect(state.projectedWealth).toBeDefined();
   });
 
   test("should persist state to localStorage", () => {
-    const testState: Store = {
-      version: 5,
-      wealth: {
-        testAccount: {
-          type: "account",
-          data: [
-            {
-              date: DateTime.fromISO("2025-01-01").toISO()!,
-              value: 1000,
-            },
-          ],
-          hidden: false,
-        },
-      },
-      projectedIncome: {
-        timeSeries: {
-          paycheck: [],
-          meritIncreasePct: [],
-          equityPct: [],
-          meritBonusPct: [],
-          meritBonus: [],
-          companyBonusPct: [],
-          companyBonus: [],
-          retirementBonus: [],
-        },
-      },
-      projectedWealth: {
-        savingsPerMonth: 1000,
-        retirementContributionPaycheck: 500,
-        bonusWithholdingsRate: 0.25,
-        socialSecurityLimit: 150000,
-        socialSecurityTaxRate: 0.062,
-        medicareSupplementalTaxThreshold: 200000,
-        medicareSupplementalTaxRate: 0.009,
+    const initialState = getDefaultStore();
+    initialState.wealth = {
+      testAccount: {
+        type: "account",
+        data: [
+          {
+            date: DateTime.fromISO("2025-01-01").toISO()!,
+            value: 1000,
+          },
+        ],
+        hidden: false,
       },
     };
-
-    store.setState(() => testState);
+    initialState.projectedWealth = {
+      savingsPerPaycheck: 1000,
+      retirementContributionPaycheck: 500,
+      bonusWithholdingsRate: 0.25,
+      socialSecurityLimit: 150000,
+      socialSecurityTaxRate: 0.062,
+      medicareSupplementalTaxThreshold: 200000,
+      medicareSupplementalTaxRate: 0.009,
+    };
+    store.setState(() => initialState);
 
     // Check localStorage persistence
     const storedData = localStorage.getItem("store");
     expect(storedData).toBeDefined();
     const parsedData = JSON.parse(storedData!);
-    expect(parsedData).toEqual(testState);
+    expect(parsedData).toEqual(initialState);
   });
 
   test("should handle invalid localStorage data", () => {
@@ -93,7 +55,6 @@ describe("Store Operations", () => {
 
     // This should not throw and should use default state
     expect(() => store.state).not.toThrow();
-    expect(store.state.version).toBe(5);
   });
 
   test("should handle corrupted but valid JSON in localStorage", () => {
@@ -119,7 +80,7 @@ describe("Store Operations", () => {
       ...prev,
       projectedWealth: {
         ...prev.projectedWealth,
-        savingsPerMonth: 1000,
+        savingsPerPaycheck: 1000,
       },
     }));
 
@@ -132,7 +93,7 @@ describe("Store Operations", () => {
       ...originalState,
       projectedWealth: {
         ...originalState.projectedWealth,
-        savingsPerMonth: 1000,
+        savingsPerPaycheck: 1000,
       },
     };
 

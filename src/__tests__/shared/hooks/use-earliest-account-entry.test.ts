@@ -1,36 +1,14 @@
 import { renderHook } from "@testing-library/react";
 import { DateTime } from "luxon";
 import { useEarliestAccountEntry } from "shared/hooks/use-earliest-account-entry";
+import { getDefaultStore } from "shared/models/store/current";
 import { store } from "shared/store";
 import { beforeEach, describe, expect, test } from "vitest";
 
 describe("useEarliestAccountEntry", () => {
   beforeEach(() => {
-    store.setState(() => ({
-      version: 5,
-      wealth: {},
-      projectedIncome: {
-        timeSeries: {
-          paycheck: [],
-          meritIncreasePct: [],
-          equityPct: [],
-          meritBonusPct: [],
-          meritBonus: [],
-          companyBonusPct: [],
-          companyBonus: [],
-          retirementBonus: [],
-        },
-      },
-      projectedWealth: {
-        savingsPerMonth: 0,
-        retirementContributionPaycheck: 0,
-        bonusWithholdingsRate: 0,
-        socialSecurityLimit: 0,
-        socialSecurityTaxRate: 0,
-        medicareSupplementalTaxThreshold: 0,
-        medicareSupplementalTaxRate: 0,
-      },
-    }));
+    const initialState = getDefaultStore();
+    store.setState(() => initialState);
   });
 
   test("should return current date when no accounts exist", () => {

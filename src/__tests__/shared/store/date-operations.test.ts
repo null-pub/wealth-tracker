@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { AccountData } from "shared/models/store/current";
+import { AccountData, getDefaultStore } from "shared/models/store/current";
 import { store } from "shared/store/store";
 import { updateAccountDate } from "shared/store/update-account-date";
 import { updateProjectedIncomeDate } from "shared/store/update-projected-income-date";
@@ -13,37 +13,16 @@ describe("Date Update Operations", () => {
 
   beforeEach(() => {
     localStorage.clear();
-    store.setState(() => ({
-      version: 5,
-      wealth: {
-        testAccount: {
-          type: "account",
-          data: [testEntry],
-          hidden: false,
-        },
+    const initialState = getDefaultStore();
+    initialState.projectedIncome.timeSeries.paycheck = [testEntry];
+    initialState.wealth = {
+      testAccount: {
+        type: "account",
+        data: [testEntry],
+        hidden: false,
       },
-      projectedIncome: {
-        timeSeries: {
-          paycheck: [testEntry],
-          meritIncreasePct: [],
-          equityPct: [],
-          meritBonusPct: [],
-          meritBonus: [],
-          companyBonusPct: [],
-          companyBonus: [],
-          retirementBonus: [],
-        },
-      },
-      projectedWealth: {
-        savingsPerMonth: 0,
-        retirementContributionPaycheck: 0,
-        bonusWithholdingsRate: 0,
-        socialSecurityLimit: 0,
-        socialSecurityTaxRate: 0,
-        medicareSupplementalTaxThreshold: 0,
-        medicareSupplementalTaxRate: 0,
-      },
-    }));
+    };
+    store.setState(() => initialState);
   });
 
   describe("Account Date Operations", () => {

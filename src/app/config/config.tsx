@@ -8,7 +8,7 @@ export const Config = () => {
       <CardHeader title="Configuration" />
       <CardContent>
         <Stack spacing={2}>
-          <ConfigEntry configName="savingsPerMonth" label="Monthly Saving Rate" />
+          <ConfigEntry configName="savingsPerPaycheck" label="Savings Per Paycheck" />
           <ConfigEntry configName="retirementContributionPaycheck" label="Retirement Contribution Per Paycheck" />
           <ConfigEntry configName="bonusWithholdingsRate" label="Bonus Withholdings Rate" variant="percent" />
           <Stack direction={"row"} spacing={2} width={"100%"} sx={{ "& > *": { flex: 1 } }}>

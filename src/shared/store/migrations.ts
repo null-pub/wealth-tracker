@@ -1,10 +1,12 @@
+import { MONTHS_PER_YEAR, PAYMENTS_PER_YEAR } from "shared/constants";
 import { storeValidator } from "shared/models/store/current";
 import { storeValidator as storeV0Validator } from "shared/models/store/version-0";
 import { Store as StoreV1, storeValidator as storeV1Validator } from "shared/models/store/version-1";
 import { Store as StoreV2, storeValidator as storeV2Validator } from "shared/models/store/version-2";
 import { Store as StoreV3, storeValidator as storeV3Validator } from "shared/models/store/version-3";
 import { Store as StoreV4, storeValidator as storeV4Validator } from "shared/models/store/version-4";
-import { Store as StoreV5 } from "shared/models/store/version-5";
+import { Store as StoreV5, storeValidator as storeV5Validator } from "shared/models/store/version-5";
+import { Store as StoreV6 } from "shared/models/store/version-6";
 
 export const migration = (data: unknown) => {
   if (data === null || data === undefined) {
@@ -42,6 +44,14 @@ export const migration = (data: unknown) => {
       for (let i = 0; i < keys.length; i++) {
         (data as StoreV5).wealth[keys[i]].hidden = false;
       }
+    }
+    if (data.version === 5) {
+      storeV5Validator.parse(data);
+      (data as StoreV6).version = 6;
+      (data as StoreV6).projectedWealth.savingsPerPaycheck =
+        (data as StoreV5).projectedWealth.savingsPerMonth * (MONTHS_PER_YEAR / PAYMENTS_PER_YEAR);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (data as any).projectedWealth.savingsPerMonth;
     }
   }
 

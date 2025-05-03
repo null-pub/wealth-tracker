@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { TimeSeriesKeys } from "shared/models/store/current";
+import { getDefaultStore, TimeSeriesKeys } from "shared/models/store/current";
 import { addProjectedIncome } from "shared/store/add-projected-income";
 import { removeProjectedIncome } from "shared/store/remove-projected-income";
 import { store } from "shared/store/store";
@@ -9,31 +9,8 @@ import { beforeEach, describe, expect, test } from "vitest";
 describe("Projected Income Operations", () => {
   beforeEach(() => {
     localStorage.clear();
-    store.setState(() => ({
-      version: 5,
-      wealth: {},
-      projectedIncome: {
-        timeSeries: {
-          paycheck: [],
-          meritBonusPct: [],
-          companyBonusPct: [],
-          meritIncreasePct: [],
-          equityPct: [],
-          meritBonus: [],
-          companyBonus: [],
-          retirementBonus: [],
-        },
-      },
-      projectedWealth: {
-        savingsPerMonth: 0,
-        retirementContributionPaycheck: 0,
-        bonusWithholdingsRate: 0,
-        socialSecurityLimit: 0,
-        socialSecurityTaxRate: 0,
-        medicareSupplementalTaxThreshold: 0,
-        medicareSupplementalTaxRate: 0,
-      },
-    }));
+    const initialState = getDefaultStore();
+    store.setState(() => initialState);
   });
 
   test("should add projected income", () => {

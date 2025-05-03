@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { AccountData, TimeSeriesKeys } from "shared/models/store/current";
+import { AccountData, getDefaultStore, TimeSeriesKeys } from "shared/models/store/current";
 import { removeProjectedIncome } from "shared/store/remove-projected-income";
 import { store } from "shared/store/store";
 import { updateProjectedIncome } from "shared/store/update-projected-income";
@@ -13,31 +13,9 @@ describe("Projected Income Operations", () => {
 
   beforeEach(() => {
     localStorage.clear();
-    store.setState(() => ({
-      version: 5,
-      wealth: {},
-      projectedIncome: {
-        timeSeries: {
-          paycheck: [testEntry],
-          meritIncreasePct: [],
-          equityPct: [],
-          meritBonusPct: [],
-          meritBonus: [],
-          companyBonusPct: [],
-          companyBonus: [],
-          retirementBonus: [],
-        },
-      },
-      projectedWealth: {
-        savingsPerMonth: 0,
-        retirementContributionPaycheck: 0,
-        bonusWithholdingsRate: 0,
-        socialSecurityLimit: 0,
-        socialSecurityTaxRate: 0,
-        medicareSupplementalTaxThreshold: 0,
-        medicareSupplementalTaxRate: 0,
-      },
-    }));
+    const initialState = getDefaultStore();
+    initialState.projectedIncome.timeSeries.paycheck.push(testEntry);
+    store.setState(() => initialState);
   });
 
   describe("Remove Projected Income", () => {

@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import { getDefaultStore } from "shared/models/store/current";
 import { addAccountEntry } from "shared/store/add-account-entry";
 import { removeAccount } from "shared/store/remove-account";
 import { store } from "shared/store/store";
@@ -8,34 +9,9 @@ import { beforeEach, describe, expect, test } from "vitest";
 
 describe("Store Operations", () => {
   beforeEach(() => {
-    // Clear localStorage before each test
     localStorage.clear();
-    // Reset store to initial state
-    store.setState(() => ({
-      version: 5,
-      wealth: {},
-      projectedIncome: {
-        timeSeries: {
-          paycheck: [],
-          meritBonusPct: [],
-          companyBonusPct: [],
-          meritIncreasePct: [],
-          equityPct: [],
-          meritBonus: [],
-          companyBonus: [],
-          retirementBonus: [],
-        },
-      },
-      projectedWealth: {
-        savingsPerMonth: 0,
-        retirementContributionPaycheck: 0,
-        bonusWithholdingsRate: 0,
-        socialSecurityLimit: 0,
-        socialSecurityTaxRate: 0,
-        medicareSupplementalTaxThreshold: 0,
-        medicareSupplementalTaxRate: 0,
-      },
-    }));
+    const initialState = getDefaultStore();
+    store.setState(() => initialState);
   });
 
   describe("Account Operations", () => {
