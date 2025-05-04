@@ -1,7 +1,8 @@
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
-import { App } from "app/app.tsx";
+import { RouterProvider } from "@tanstack/react-router";
+import { router } from "app/router";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { ErrorBoundary } from "react-error-boundary";
@@ -33,7 +34,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <LocalizationProvider dateAdapter={AdapterLuxon}>
         <ThemeProvider theme={darkTheme}>
           <CssBaseline />
-          <App />
+          <RouterProvider router={router} />
         </ThemeProvider>
       </LocalizationProvider>
     </ErrorBoundary>
