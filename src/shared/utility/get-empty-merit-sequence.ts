@@ -19,13 +19,15 @@ export interface MeritSequence {
 }
 
 export const getEmptyMeritSequence = (year: number, timeSeries: TimeSeries, pay: AccountData[]) => {
-  const equityIncreasePct = findSameYear(year, timeSeries.equityPct)?.value ?? 0;
-  const meritIncreasePct = findSameYear(year, timeSeries.meritIncreasePct)?.value ?? 0;
-  const meritBonusPct = findSameYear(year, timeSeries.meritBonusPct)?.value ?? 0;
-  const meritBonuses = pay.map((x) => findSameYear(DateTime.fromISO(x.date).year, timeSeries.meritBonusPct)?.value ?? 0);
+  const meritDetails = findSameYear(year, timeSeries.meritPct);
+  const equityIncreasePct = meritDetails?.equityPct ?? 0;
+  const meritIncreasePct = meritDetails?.meritIncreasePct ?? 0;
+  const meritBonusPct = meritDetails?.meritBonusPct ?? 0;
+  const lastThreeMeritBonuses = pay
+    .map((x) => findSameYear(DateTime.fromISO(x.date).year, timeSeries.meritPct)?.meritBonusPct ?? 0)
+    .slice(-3);
 
-  const lastThreeMeritBonuses = meritBonuses.slice(-3);
-  const lastThreeMeritBonusFactor = meritBonuses.slice(-3).reduce((acc, curr) => acc + curr, 0);
+  const lastThreeMeritBonusFactor = lastThreeMeritBonuses.reduce((acc, curr) => acc + curr, 0);
   const payments = getPayments(
     DateTime.fromObject({ day: 1, month: 1, year: year - 1 }),
     DateTime.fromObject({ day: 31, month: 12, year: year }).endOf("day"),

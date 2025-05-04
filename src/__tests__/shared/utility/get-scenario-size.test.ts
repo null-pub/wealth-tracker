@@ -11,10 +11,8 @@ describe("getScenarioSize", () => {
       companyBonus: [],
       retirementBonus: [],
       paycheck: [],
-      meritIncreasePct: [],
-      meritBonusPct: [],
+      meritPct: [],
       companyBonusPct: [],
-      equityPct: [],
     };
 
     expect(getScenarioSize(year, mockTimeSeries)).toBe(0);
@@ -25,19 +23,25 @@ describe("getScenarioSize", () => {
       meritBonus: [],
       companyBonus: [],
       retirementBonus: [],
-      paycheck: [],
-      meritIncreasePct: [{ date: "2025-04-01", value: 0.03 }],
-      meritBonusPct: [{ date: "2025-04-01", value: 0.05 }],
-      companyBonusPct: [
-        { date: "2024-03-15", value: 0.1 },
-        { date: "2024-03-15", value: 0.15 },
-        { date: "2025-03-15", value: 0.2 }, // Current year should be used exclusively
+      paycheck: [
+        {
+          value: 1000,
+          date: "2024-04-01",
+        },
       ],
-      equityPct: [],
+      meritPct: [
+        {
+          date: "2025-04-01",
+          meritIncreasePct: 0.03,
+          meritBonusPct: 0.05,
+          equityPct: 0.02,
+          enabled: true,
+        },
+      ],
+      companyBonusPct: [{ date: "2025-03-15", value: 0.2 }],
     };
 
-    // 1 merit sequence * 1 company bonus percentage = 1
-    expect(getScenarioSize(year, mockTimeSeries)).toBe(0);
+    expect(getScenarioSize(year, mockTimeSeries)).toBe(1);
   });
 
   it("should return correct size when company bonus exists for current year", () => {
@@ -49,10 +53,16 @@ describe("getScenarioSize", () => {
         { date: "2024-12-15", value: 2000 },
         { date: "2025-01-15", value: 2000 },
       ],
-      meritIncreasePct: [{ date: "2025-04-01", value: 0.03 }],
-      meritBonusPct: [{ date: "2025-04-01", value: 0.05 }],
+      meritPct: [
+        {
+          date: "2025-04-01",
+          meritIncreasePct: 0.03,
+          meritBonusPct: 0.05,
+          equityPct: 0.02,
+          enabled: true,
+        },
+      ],
       companyBonusPct: [{ date: "2025-03-15", value: 0.1 }],
-      equityPct: [{ date: "2025-04-01", value: 0.02 }],
     };
 
     const size = getScenarioSize(year, timeSeries);
@@ -68,14 +78,20 @@ describe("getScenarioSize", () => {
         { date: "2024-12-15", value: 2000 },
         { date: "2025-01-15", value: 2000 },
       ],
-      meritIncreasePct: [{ date: "2025-04-01", value: 0.03 }],
-      meritBonusPct: [{ date: "2025-04-01", value: 0.05 }],
+      meritPct: [
+        {
+          date: "2025-04-01",
+          meritIncreasePct: 0.03,
+          meritBonusPct: 0.05,
+          equityPct: 0.02,
+          enabled: true,
+        },
+      ],
       companyBonusPct: [
         { date: "2024-03-15", value: 0.1 },
         { date: "2024-03-15", value: 0.15 },
         { date: "2024-03-15", value: 0.12 },
       ],
-      equityPct: [{ date: "2025-04-01", value: 0.02 }],
     };
 
     const size = getScenarioSize(year, timeSeries);
@@ -88,14 +104,11 @@ describe("getScenarioSize", () => {
       companyBonus: [],
       retirementBonus: [],
       paycheck: [],
-      meritIncreasePct: [],
-      meritBonusPct: [],
+      meritPct: [],
       companyBonusPct: [{ date: "2025-03-15", value: 0.1 }],
-      equityPct: [],
     };
 
-    const size = getScenarioSize(year, timeSeries);
-    expect(size).toBe(0);
+    expect(getScenarioSize(year, timeSeries)).toBe(0);
   });
 
   it("should handle empty company bonus percentages", () => {
@@ -107,13 +120,18 @@ describe("getScenarioSize", () => {
         { date: "2024-12-15", value: 2000 },
         { date: "2025-01-15", value: 2000 },
       ],
-      meritIncreasePct: [{ date: "2025-04-01", value: 0.03 }],
-      meritBonusPct: [{ date: "2025-04-01", value: 0.05 }],
+      meritPct: [
+        {
+          date: "2025-04-01",
+          meritIncreasePct: 0.03,
+          meritBonusPct: 0.05,
+          equityPct: 0.02,
+          enabled: true,
+        },
+      ],
       companyBonusPct: [],
-      equityPct: [{ date: "2025-04-01", value: 0.02 }],
     };
 
-    const size = getScenarioSize(year, timeSeries);
-    expect(size).toBe(0);
+    expect(getScenarioSize(year, timeSeries)).toBe(0);
   });
 });

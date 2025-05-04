@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import { create } from "mutative";
 import { AccountData, getDefaultStore, TimeSeriesKeys } from "shared/models/store/current";
 import { removeProjectedIncome } from "shared/store/remove-projected-income";
 import { store } from "shared/store/store";
@@ -41,16 +42,11 @@ describe("Projected Income Operations", () => {
         value: 2000,
       };
 
-      store.setState((prev) => ({
-        ...prev,
-        projectedIncome: {
-          ...prev.projectedIncome,
-          timeSeries: {
-            ...prev.projectedIncome.timeSeries,
-            paycheck: [...prev.projectedIncome.timeSeries.paycheck, secondEntry],
-          },
-        },
-      }));
+      store.setState((prev) => {
+        return create(prev, (next) => {
+          next.projectedIncome.timeSeries.paycheck.push(secondEntry);
+        });
+      });
 
       removeProjectedIncome("paycheck", testEntry);
 
@@ -88,22 +84,17 @@ describe("Projected Income Operations", () => {
         value: 0.05,
       };
 
-      store.setState((prev) => ({
-        ...prev,
-        projectedIncome: {
-          ...prev.projectedIncome,
-          timeSeries: {
-            ...prev.projectedIncome.timeSeries,
-            meritIncreasePct: [percentEntry],
-          },
-        },
-      }));
+      store.setState((prev) => {
+        return create(prev, (next) => {
+          next.projectedIncome.timeSeries.companyBonus = [percentEntry];
+        });
+      });
 
       const updatedValue = 0.1;
-      updateProjectedIncome("meritIncreasePct", percentEntry, updatedValue);
+      updateProjectedIncome("companyBonus", percentEntry, updatedValue);
 
       const state = store.state;
-      expect(state.projectedIncome.timeSeries.meritIncreasePct[0].value).toBe(updatedValue);
+      expect(state.projectedIncome.timeSeries.companyBonus[0].value).toBe(updatedValue);
     });
   });
 });

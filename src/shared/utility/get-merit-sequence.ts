@@ -2,7 +2,6 @@ import { DateTime } from "luxon";
 import { MAX_NUM_ENTRIES } from "shared/constants";
 import { TimeSeries } from "shared/models/store/current";
 import { findSameYear } from "shared/utility/find-same-year";
-import { groupBySingle } from "shared/utility/group-by-single";
 
 type UnweightedPairs = {
   meritIncreasePct: number;
@@ -16,25 +15,22 @@ type UnweightedPairs = {
  * @returns an array of possible merit pairs with their frequency weighted
  */
 const getMeritPairs = (year: number, timeSeries: TimeSeries) => {
-  const meritBonusPct = findSameYear(year, timeSeries.meritBonusPct);
-  const meritIncreasePct = findSameYear(year, timeSeries.meritIncreasePct);
+  const meritDetails = findSameYear(year, timeSeries.meritPct);
 
-  if (meritBonusPct && meritIncreasePct) {
+  if (meritDetails) {
     return [
       {
-        meritIncreasePct: meritIncreasePct.value,
-        meritBonusPct: meritBonusPct.value,
+        meritIncreasePct: meritDetails.meritIncreasePct,
+        meritBonusPct: meritDetails.meritBonusPct,
         weight: 1,
       },
     ];
   }
 
-  const meritBonusPctByYear = groupBySingle(timeSeries.meritBonusPct, (x) => DateTime.fromISO(x.date).year);
-  const unweightedPairs = timeSeries.meritIncreasePct.slice(-1 * MAX_NUM_ENTRIES).map((x) => {
-    const meritBonusPctPair = meritBonusPctByYear[DateTime.fromISO(x.date).year];
+  const unweightedPairs = timeSeries.meritPct.slice(-1 * MAX_NUM_ENTRIES).map((x) => {
     return {
-      meritIncreasePct: x.value,
-      meritBonusPct: meritBonusPctPair?.value ?? 0,
+      meritIncreasePct: x.meritIncreasePct,
+      meritBonusPct: x.meritBonusPct,
     };
   });
 

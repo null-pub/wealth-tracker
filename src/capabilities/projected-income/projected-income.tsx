@@ -1,4 +1,4 @@
-import { Alert, CircularProgress, Tooltip } from "@mui/material";
+import { CircularProgress, Tooltip } from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useStore } from "@tanstack/react-store";
@@ -17,10 +17,10 @@ import { scenarioStore } from "shared/store/scenario-store";
 import { ChunkByEquality } from "shared/utility/chunk-by-equality";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { monthDay } from "shared/utility/format-date";
-import { Layout } from "./data-entry/data-entry";
+import { DataEntryLayout } from "./data-entry/data-entry";
 import { IncomeChart } from "./income-chart";
 import { IncomePerPeriodTooltip } from "./income-per-period";
-import { useHasMeritPairs } from "./use-has-merit-pairs";
+import { MeritEntryLayout } from "./merit-entry";
 
 const usePayments = (year: number) => {
   const dateRanges = useDateRanges(year);
@@ -56,7 +56,7 @@ export const ProjectedIncome = () => {
   const [selectedYear, setSelectedYear] = useState(getLocalDateTime().year);
   const { aprToApr, basePay, paychecks } = usePayments(selectedYear);
   const clusters = useClusters(selectedYear);
-  const hasMissingPairs = useHasMeritPairs();
+
   const dates = useDates(selectedYear);
   const scenarios = useStore(scenarioStore);
 
@@ -64,7 +64,6 @@ export const ProjectedIncome = () => {
     <Box display="flex" flexDirection="row" height="100%" width={"100%"}>
       <Box flex="0 1 auto" maxWidth={500} height="100%">
         <Stack gap={2} direction={"column"} overflow={"auto"} height="100%" paddingRight={1} minWidth={500}>
-          {!hasMissingPairs && <Alert severity="error">Every Merit Increase must have a paired Merit Bonus percent</Alert>}
           <Card
             title={
               <Box display="flex" alignItems={"center"} gap={2} width={"100%"}>
@@ -176,7 +175,7 @@ export const ProjectedIncome = () => {
       </Box>
       <Box flex="1 1 auto" overflow={"auto"} paddingBottom={2} paddingLeft={1}>
         <Box display={"flex"} height={"100%"} width={"100%"} gap={2}>
-          <Layout
+          <DataEntryLayout
             dateVariant="year"
             accountName="paycheck"
             variant="cash"
@@ -187,7 +186,7 @@ export const ProjectedIncome = () => {
             })}
             title="Income Per Paycheck"
           />
-          <Layout
+          {/*<Layout
             title="Merit Increase"
             accountName="meritIncreasePct"
             variant="percent"
@@ -195,17 +194,18 @@ export const ProjectedIncome = () => {
             dateVariant="year"
           />
           <Layout title="Equity Increase" accountName="equityPct" variant="percent" defaultDate={dates.meritIncrease} dateVariant="year" />
-          <Layout title="Merit Bonus" accountName="meritBonusPct" variant="percent" defaultDate={dates.meritBonus} dateVariant="year" />
-          <Layout title="Merit Bonus" accountName="meritBonus" variant="cash" defaultDate={dates.meritBonus} />
-          <Layout
+          <Layout title="Merit Bonus" accountName="meritBonusPct" variant="percent" defaultDate={dates.meritBonus} dateVariant="year" />*/}
+          <MeritEntryLayout title={"Merit Factors"} defaultDate={dates.meritBonus} />
+          <DataEntryLayout title="Merit Bonus" accountName="meritBonus" variant="cash" defaultDate={dates.meritBonus} />
+          <DataEntryLayout
             title="Company Bonus Factor"
             accountName="companyBonusPct"
             defaultDate={dates.companyBonus}
             variant="percent"
             dateVariant="year"
           />
-          <Layout title="Company Bonus" accountName="companyBonus" defaultDate={dates.companyBonus} variant="cash" />
-          <Layout title="Retirement Bonus" accountName="retirementBonus" defaultDate={dates.retirementBonus} variant="cash" />
+          <DataEntryLayout title="Company Bonus" accountName="companyBonus" defaultDate={dates.companyBonus} variant="cash" />
+          <DataEntryLayout title="Retirement Bonus" accountName="retirementBonus" defaultDate={dates.retirementBonus} variant="cash" />
         </Box>
       </Box>
     </Box>

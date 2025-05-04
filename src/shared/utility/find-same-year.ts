@@ -1,9 +1,8 @@
 import { DateTime } from "luxon";
-import { AccountData } from "shared/models/store/current";
 
-export function findSameYear(year: number, data: AccountData[]): AccountData | undefined;
-export function findSameYear(date: DateTime, data: AccountData[]): AccountData | undefined;
-export function findSameYear(date: DateTime | number, data: AccountData[]): AccountData | undefined {
+export function findSameYear<T extends { date: string }>(year: number, data: T[]): T | undefined;
+export function findSameYear<T extends { date: string }>(date: DateTime, data: T[]): T | undefined;
+export function findSameYear<T extends { date: string }>(date: DateTime | number, data: T[]): T | undefined {
   const year = typeof date === "number" ? date : date.year;
   return data.find((x) => {
     return DateTime.fromISO(x.date).year === year;

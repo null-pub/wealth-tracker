@@ -10,30 +10,20 @@ describe("get-empty-merit-sequence", () => {
       { date: "2023-06-01", value: 5500 },
       { date: "2023-12-01", value: 6000 },
     ],
-    meritIncreasePct: [
-      { date: "2023-01-02", value: 0.03 },
-      { date: "2024-01-02", value: 0.04 },
+    meritPct: [
+      { date: "2023-01-02", meritIncreasePct: 0.03, meritBonusPct: 0.05, equityPct: 0.1, enabled: true },
+      { date: "2024-01-02", meritIncreasePct: 0.04, meritBonusPct: 0.06, equityPct: 0.12, enabled: true },
     ],
-    meritBonusPct: [
-      { date: "2023-01-02", value: 0.05 },
-      { date: "2024-01-02", value: 0.06 },
-    ],
-    equityPct: [
-      { date: "2023-01-02", value: 0.1 },
-      { date: "2024-01-02", value: 0.12 },
-    ],
-    meritBonus: [],
     companyBonusPct: [],
     companyBonus: [],
     retirementBonus: [],
+    meritBonus: [],
   };
 
   it("should create a merit sequence with default values when no matches found", () => {
     const timeSeries: TimeSeries = {
       ...baseTimeSeries,
-      meritIncreasePct: [],
-      meritBonusPct: [],
-      equityPct: [],
+      meritPct: [],
     };
 
     const result = getEmptyMeritSequence(year, timeSeries, timeSeries.paycheck);

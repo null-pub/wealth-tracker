@@ -5,7 +5,6 @@ import { ConfigModal } from "./config/config-modal";
 export const App = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
   const currentPath = location.pathname.split("/").slice(2)[0];
 
   return (
