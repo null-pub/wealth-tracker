@@ -49,8 +49,11 @@ const getCompanyBonusFactors = (year: number, timeSeries: TimeSeries) => {
 };
 
 const buildMeritScenarios = (year: number, timeSeries: TimeSeries, dates: ScenarioDates) => {
-  const equityLookup = groupBySingle(timeSeries.equityPct, (x) => DateTime.fromISO(x.date).year);
-
+  const equityLookup = groupBySingle(
+    timeSeries.meritPct?.map((x) => ({ date: x.date, value: x.equityPct })),
+    (x) => DateTime.fromISO(x.date).year
+  );
+  const equityIncreasePct = findSameYear(year, timeSeries.meritPct)?.equityPct ?? 0;
   const pay = timeSeries.paycheck.filter((x) => {
     const date = DateTime.fromISO(x.date);
     return date.year > year - 3 && date.year <= year;
@@ -60,8 +63,7 @@ const buildMeritScenarios = (year: number, timeSeries: TimeSeries, dates: Scenar
   if (!mostRecentPay) {
     return [];
   }
-  const actualMeritBonusPcts = pay.map((x) => findSameYear(DateTime.fromISO(x.date).year, timeSeries.meritBonusPct)?.value ?? 0);
-  const equityIncreasePct = findSameYear(year, timeSeries.equityPct)?.value ?? 0;
+  const actualMeritBonusPcts = pay.map((x) => findSameYear(DateTime.fromISO(x.date).year, timeSeries.meritPct)?.meritBonusPct ?? 0);
   const meritSequence = getMeritSequence(year, timeSeries);
 
   if (meritSequence.length === 0) {
@@ -132,24 +134,24 @@ export const applyBonuses = (
     if (!scenario.payments) {
       throw new Error("Scenario payments is undefined");
     }
-    if (!scenario.lastThreeMeritBonusFactor) {
+    if (scenario.lastThreeMeritBonusFactor === undefined) {
       throw new Error("Scenario lastThreeMeritBonusFactor is undefined");
     }
-    if (!scenario.meritBonusPct) {
+    if (scenario.meritBonusPct === undefined) {
       throw new Error("Scenario meritBonusPct is undefined");
     }
-    if (!scenario.year) {
+    if (scenario.year === undefined) {
       throw new Error("Scenario year is undefined");
     }
 
     validateDateRanges(dateRanges);
 
-    const companyBonusPct = scenario.lastThreeMeritBonusFactor * (scenario.companyBonusFactor ?? 0);
+    const companyBonusPct = scenario.lastThreeMeritBonusFactor! * (scenario.companyBonusFactor ?? 0);
     const companyBonus =
       paid.companyBonus ?? Math.round(incomeByRange([PaymentTypes.regular], dateRanges.companyBonus, scenario.payments) * companyBonusPct);
     const meritBonus =
       paid.meritBonus ??
-      Math.round(incomeByRange([PaymentTypes.regular], dateRanges.meritBonus, scenario.payments) * scenario.meritBonusPct);
+      Math.round(incomeByRange([PaymentTypes.regular], dateRanges.meritBonus, scenario.payments) * scenario.meritBonusPct!);
 
     const updatedPayments = scenario.payments.slice();
 
@@ -180,6 +182,9 @@ export const applyBonuses = (
 
     updatedPayments.forEach((current, i) => {
       const prior = updatedPayments[i - 1];
+      if (!prior) {
+        return;
+      }
       if (DateTime.fromISO(current.payedOn).year === scenario.year && DateTime.fromISO(prior.payedOn).year === scenario.year) {
         if (current.type === PaymentTypes.bonus || current.type === PaymentTypes.regular) {
           current.cumulative = prior.cumulative + current.value;

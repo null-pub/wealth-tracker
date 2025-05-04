@@ -94,7 +94,7 @@ interface LayoutProps {
   dateVariant?: "date" | "year";
 }
 
-export const Layout = (props: LayoutProps) => {
+export const DataEntryLayout = (props: LayoutProps) => {
   const { title, accountName, defaultDate, variant, dateVariant = "date" } = props;
   return (
     <Paper sx={{ padding: 2, height: "100%", width: 450, flexShrink: 0 }}>

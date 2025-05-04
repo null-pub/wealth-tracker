@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import { MONTHS_PER_YEAR, PAYMENTS_PER_YEAR } from "shared/constants";
 import { storeValidator } from "shared/models/store/current";
 import { storeValidator as storeV0Validator } from "shared/models/store/version-0";
@@ -6,7 +7,9 @@ import { Store as StoreV2, storeValidator as storeV2Validator } from "shared/mod
 import { Store as StoreV3, storeValidator as storeV3Validator } from "shared/models/store/version-3";
 import { Store as StoreV4, storeValidator as storeV4Validator } from "shared/models/store/version-4";
 import { Store as StoreV5, storeValidator as storeV5Validator } from "shared/models/store/version-5";
-import { Store as StoreV6 } from "shared/models/store/version-6";
+import { Store as StoreV6, storeValidator as storeV6Validator } from "shared/models/store/version-6";
+import { MeritData, Store as StoreV7 } from "shared/models/store/version-7";
+import { groupBySingle } from "shared/utility/group-by-single";
 
 export const migration = (data: unknown) => {
   if (data === null || data === undefined) {
@@ -47,11 +50,34 @@ export const migration = (data: unknown) => {
     }
     if (data.version === 5) {
       storeV5Validator.parse(data);
-      (data as StoreV6).version = 6;
-      (data as StoreV6).projectedWealth.savingsPerPaycheck =
-        (data as StoreV5).projectedWealth.savingsPerMonth * (MONTHS_PER_YEAR / PAYMENTS_PER_YEAR);
+      const storeV5 = data as StoreV5;
+      const storeV6 = data as StoreV6;
+      storeV6.version = 6;
+      storeV6.projectedWealth.savingsPerPaycheck = storeV5.projectedWealth.savingsPerMonth * (MONTHS_PER_YEAR / PAYMENTS_PER_YEAR);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       delete (data as any).projectedWealth.savingsPerMonth;
+    }
+    if (data.version === 6) {
+      storeV6Validator.parse(data);
+      const storeV7 = data as StoreV7;
+      const storeV6 = data as StoreV6;
+      storeV7.version = 7;
+      storeV7.projectedIncome.timeSeries.meritPct = [];
+      const { equityPct, meritBonusPct, meritIncreasePct } = storeV6.projectedIncome.timeSeries;
+
+      const meritBonusPctByYear = groupBySingle(meritBonusPct, (x) => DateTime.fromISO(x.date).year);
+      const equityPctByYear = groupBySingle(equityPct, (x) => DateTime.fromISO(x.date).year);
+
+      storeV7.projectedIncome.timeSeries.meritPct = meritIncreasePct.map((x): MeritData => {
+        const year = DateTime.fromISO(x.date).year;
+        return {
+          date: x.date,
+          meritIncreasePct: x.value,
+          equityPct: equityPctByYear[year]?.value ?? 0,
+          meritBonusPct: meritBonusPctByYear[year]?.value ?? 0,
+          enabled: true,
+        };
+      });
     }
   }
 
