@@ -136,19 +136,15 @@ export const createMeritColumnConfig = (): ColDef<MeritData>[] =>
       sortable: false,
       filter: false,
       cellRenderer: (params: ICellRendererParams<MeritData>) => (
-        <Stack direction="row" spacing={1} alignItems="center">
-          <Tooltip title="Delete">
-            <Button
-              onClick={() => {
-                params.data && removeProjectedIncomeMerit(params.data);
-              }}
-              size="small"
-              color="error"
-            >
-              <DeleteForeverIcon />
-            </Button>
-          </Tooltip>
-        </Stack>
+        <Button
+          onClick={() => {
+            params.data && removeProjectedIncomeMerit(params.data);
+          }}
+          size="small"
+          color="error"
+        >
+          <DeleteForeverIcon />
+        </Button>
       ),
     },
   ] satisfies ColDef<MeritData>[];
