@@ -16,15 +16,13 @@ export const createMeritColumnConfig = (): ColDef<MeritData>[] =>
       width: 50,
       cellRenderer: (params: ICellRendererParams<MeritData>) => (
         <Stack direction="row" spacing={1} alignItems="center">
-          <Tooltip title="Delete">
-            <Checkbox
-              checked={params.data?.enabled}
-              disableRipple
-              onClick={() => {
-                params.data && updateProjectedIncomeMerit(params.data, { ...params.data, enabled: !params.data.enabled });
-              }}
-            />
-          </Tooltip>
+          <Checkbox
+            checked={params.data?.enabled}
+            disableRipple
+            onClick={() => {
+              params.data && updateProjectedIncomeMerit(params.data, { ...params.data, enabled: !params.data.enabled });
+            }}
+          />
         </Stack>
       ),
     },
@@ -136,15 +134,19 @@ export const createMeritColumnConfig = (): ColDef<MeritData>[] =>
       sortable: false,
       filter: false,
       cellRenderer: (params: ICellRendererParams<MeritData>) => (
-        <Button
-          onClick={() => {
-            params.data && removeProjectedIncomeMerit(params.data);
-          }}
-          size="small"
-          color="error"
-        >
-          <DeleteForeverIcon />
-        </Button>
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Tooltip title="Delete">
+            <Button
+              onClick={() => {
+                params.data && removeProjectedIncomeMerit(params.data);
+              }}
+              size="small"
+              color="error"
+            >
+              <DeleteForeverIcon />
+            </Button>
+          </Tooltip>
+        </Stack>
       ),
     },
   ] satisfies ColDef<MeritData>[];

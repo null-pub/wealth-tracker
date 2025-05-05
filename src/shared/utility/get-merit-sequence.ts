@@ -17,7 +17,7 @@ type UnweightedPairs = {
 const getMeritPairs = (year: number, timeSeries: TimeSeries) => {
   const meritDetails = findSameYear(year, timeSeries.meritPct);
 
-  if (meritDetails) {
+  if (meritDetails && meritDetails.enabled) {
     return [
       {
         meritIncreasePct: meritDetails.meritIncreasePct,
@@ -27,12 +27,15 @@ const getMeritPairs = (year: number, timeSeries: TimeSeries) => {
     ];
   }
 
-  const unweightedPairs = timeSeries.meritPct.slice(-1 * MAX_NUM_ENTRIES).map((x) => {
-    return {
-      meritIncreasePct: x.meritIncreasePct,
-      meritBonusPct: x.meritBonusPct,
-    };
-  });
+  const unweightedPairs = timeSeries.meritPct
+    .filter((x) => x.enabled)
+    .slice(-1 * MAX_NUM_ENTRIES)
+    .map((x) => {
+      return {
+        meritIncreasePct: x.meritIncreasePct,
+        meritBonusPct: x.meritBonusPct,
+      };
+    });
 
   const groupsOfPairs = Object.values(
     Object.groupBy(unweightedPairs, (x) => `${x.meritBonusPct} ${x.meritIncreasePct}`)
