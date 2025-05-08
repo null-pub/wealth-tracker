@@ -11,6 +11,7 @@ import { AccountData, TimeSeriesKeys } from "shared/models/store/current";
 import { updateProjectedIncome } from "shared/store";
 import { removeProjectedIncome } from "shared/store/remove-projected-income";
 import { updateProjectedIncomeDate } from "shared/store/update-projected-income-date";
+import { getLocalDateTime } from "shared/utility/current-date";
 import { shortDate } from "shared/utility/format-date";
 
 export const createAccountColumnConfig = (
@@ -29,7 +30,7 @@ export const createAccountColumnConfig = (
       return (
         <Stack direction={"row"} alignItems={"center"}>
           {x.valueFormatted}&nbsp;
-          {x.value && x.value > DateTime.local() && (
+          {x.value && x.value > getLocalDateTime() && (
             <Tooltip title="Future Event">
               <UpdateIcon htmlColor="orange" />
             </Tooltip>

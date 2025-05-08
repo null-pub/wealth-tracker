@@ -39,15 +39,15 @@ export const WealthChart = (props: { titleYear: number }) => {
       },
       marker: {
         itemStyler: (params: MarkerParams<TimeSeriesWealth>) => {
-          if (params.datum.date.year === DateTime.local().plus({ years: 1 }).year) {
+          if (params.datum.date.year === getLocalDateTime().plus({ years: 1 }).year) {
             return {
               fill: "orange",
             };
-          } else if (params.datum.date.year === DateTime.local().plus({ years: 2 }).year) {
+          } else if (params.datum.date.year === getLocalDateTime().plus({ years: 2 }).year) {
             return {
               fill: "rgb(244, 67, 54)",
             };
-          } else if (params.datum.date.hasSame(DateTime.local(), "day")) {
+          } else if (params.datum.date.hasSame(getLocalDateTime(), "day")) {
             return {
               fill: "lightgrey",
             };
@@ -70,15 +70,15 @@ export const WealthChart = (props: { titleYear: number }) => {
       marker: {
         fill: "grey",
         itemStyler: (params: MarkerParams<TimeSeriesWealth>) => {
-          if (params.datum.date.year === DateTime.local().plus({ years: 1 }).year) {
+          if (params.datum.date.year === getLocalDateTime().plus({ years: 1 }).year) {
             return {
               fill: "orange",
             };
-          } else if (params.datum.date.year === DateTime.local().plus({ years: 2 }).year) {
+          } else if (params.datum.date.year === getLocalDateTime().plus({ years: 2 }).year) {
             return {
               fill: "rgb(244, 67, 54)",
             };
-          } else if (params.datum.date.hasSame(DateTime.local(), "day")) {
+          } else if (params.datum.date.hasSame(getLocalDateTime(), "day")) {
             return {
               fill: "lightgrey",
             };

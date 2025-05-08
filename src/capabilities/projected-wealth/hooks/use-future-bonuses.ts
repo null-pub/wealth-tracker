@@ -4,9 +4,16 @@ import { useClusters } from "shared/hooks/use-clusters";
 import { useDates } from "shared/hooks/use-dates";
 import { store } from "shared/store";
 import { findMostMostLikely, scaleCluster } from "shared/utility/cluster-helpers";
+import { useLocalDateTime } from "shared/utility/current-date";
 
+/**
+ * Hook that calculates total future bonuses considering merit, company, and retirement bonuses
+ *
+ * @param {number} year - The year to calculate total bonuses for
+ * @returns {number} Total projected bonus amount after withholding and adjustments
+ */
 export const useFutureBonusesTotal = (year: number) => {
-  const local = DateTime.local();
+  const local = useLocalDateTime();
   const dates = useDates(year);
   const clusters = useClusters(year);
   const config = useStore(store, (x) => x.projectedWealth);

@@ -5,6 +5,7 @@ import { Percent } from "shared/components/formatters/percent";
 import { PercentRange } from "shared/components/formatters/percent-range";
 import { Value } from "shared/components/formatters/value";
 import { Cluster } from "shared/hooks/use-clusters";
+import { getLocalDateTime } from "shared/utility/current-date";
 
 interface ClusterValueProps extends Cluster {
   compact?: boolean;
@@ -33,7 +34,7 @@ export const ClusterValue = (props: ClusterValueProps) => {
 export const ClusterValues = (props: { clusters?: Cluster[]; eventDate?: DateTime; compact?: boolean }) => {
   const { clusters, eventDate, compact = true } = props;
   return clusters?.map((x, i, arr) => {
-    const title = arr.length === 1 && (eventDate?.diffNow().toMillis() ?? -1) > 0 ? "Expected" : x.title;
+    const title = arr.length === 1 && (eventDate?.diff(getLocalDateTime()).toMillis() ?? -1) > 0 ? "Expected" : x.title;
     return <ClusterValue {...x} title={title} compact={compact} key={i} />;
   });
 };

@@ -3,22 +3,32 @@ import { storeValidator } from "shared/models/store/current";
 import { store } from "shared/store";
 import { migration } from "shared/store/migrations";
 
+/**
+ * Opens a file selection dialog and returns a Promise that resolves with the selected file
+ *
+ * @param {string} contentType - The MIME type filter for the file selection dialog
+ * @returns {Promise<File>} A promise that resolves with the selected file
+ */
 function selectFile(contentType: string) {
   return new Promise<File>((resolve) => {
     const input = document.createElement("input");
     input.type = "file";
-    input.multiple = false;
     input.accept = contentType;
-
     input.onchange = () => {
-      const files = Array.from(input.files ?? []);
-      resolve(files[0]);
+      if (input.files?.length) {
+        resolve(input.files[0]);
+      }
     };
-
     input.click();
   });
 }
 
+/**
+ * React hook that provides functionality to import store data from a JSON file
+ *
+ * @returns {() => Promise<void>} A callback function that prompts for file selection and imports the data.
+ * The Promise resolves when the import is successful or rejects with validation errors.
+ */
 export const useImport = () => {
   return useCallback(() => {
     return new Promise<void>((resolve, reject) => {

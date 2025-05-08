@@ -5,6 +5,13 @@ import { store } from "shared/store";
 import { useLocalDateTime } from "shared/utility/current-date";
 import { calcLoanBalance } from "shared/utility/mortgage-calc";
 
+/**
+ * Hook that calculates the change in mortgage equity for the year
+ * Considers all mortgage accounts and calculates expected principal payments
+ *
+ * @param {number} year - The year to calculate mortgage equity changes for
+ * @returns {number} Total projected change in mortgage equity (principal payments)
+ */
 export const useFutureMortgageEquity = (year: number) => {
   const accounts = useStore(store, (x) => x.wealth);
   const mortgages = Object.values(accounts).filter((x) => x.type === "mortgage") as Mortgage[];
