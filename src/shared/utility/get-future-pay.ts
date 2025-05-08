@@ -1,6 +1,18 @@
 import { DateTime } from "luxon";
 import { AccountData } from "shared/models/store/current";
 
+/**
+ * Calculates future pay amounts based on merit increases and equity adjustments
+ * Projects pay forward using historical data and merit/equity increase percentages
+ *
+ * @param {AccountData[]} pay - Historical pay data
+ * @param {AccountData} mostRecentPay - Most recent pay data point
+ * @param {number[]} meritIncreasePcts - Array of merit increase percentages to apply
+ * @param {DateTime} meritIncrease - Date when merit increases take effect
+ * @param {number} year - Target year for projections
+ * @param {Partial<Record<number, AccountData>>} equityLookup - Lookup of equity adjustments by year
+ * @returns {AccountData[]} Array of projected pay data
+ */
 export function getFuturePay(
   pay: AccountData[],
   mostRecentPay: AccountData,

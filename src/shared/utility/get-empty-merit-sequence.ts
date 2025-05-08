@@ -5,6 +5,21 @@ import { findSameYear } from "./find-same-year";
 import { getPayments } from "./get-payments";
 import { getValueByDateRange } from "./get-values-by-date-range";
 
+/**
+ * Interface representing a sequence of merit-based compensation details
+ *
+ * @interface MeritSequence
+ * @property {number} year - The year this sequence applies to
+ * @property {AccountData[]} pay - Array of pay-related account data
+ * @property {number} lastThreeMeritBonusFactor - Sum of last three merit bonus percentages
+ * @property {number[]} lastThreeMeritBonuses - Array of last three merit bonus percentages
+ * @property {number} meritBonusPct - Current merit bonus percentage
+ * @property {number} meritIncreasePct - Merit increase percentage
+ * @property {PaymentPeriod[]} payments - Array of payment periods
+ * @property {number} equityIncreasePct - Equity increase percentage
+ * @property {number} retirementBonusPct - Retirement bonus percentage
+ * @property {number} weight - Statistical weight for probability calculations
+ */
 export interface MeritSequence {
   year: number;
   pay: AccountData[];
@@ -18,6 +33,15 @@ export interface MeritSequence {
   weight: number;
 }
 
+/**
+ * Creates an empty merit sequence with default values for a given year
+ * Used as a fallback when no merit data exists
+ *
+ * @param {number} year - The year to create the sequence for
+ * @param {TimeSeries} timeSeries - Time series data containing historical merit information
+ * @param {AccountData[]} pay - Array of pay data
+ * @returns {MeritSequence} A merit sequence with default values
+ */
 export const getEmptyMeritSequence = (year: number, timeSeries: TimeSeries, pay: AccountData[]) => {
   const meritDetails = findSameYear(year, timeSeries.meritPct);
   const equityIncreasePct = meritDetails?.equityPct ?? 0;

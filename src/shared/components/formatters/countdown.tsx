@@ -62,7 +62,7 @@ const useCountDownColor = (dateTime?: DateTime) => {
     return "white";
   }
 
-  const days = dateTime.diffNow("days").days;
+  const days = dateTime.diff(getLocalDateTime(), "days").days;
   if (days < 30) {
     return "green";
   } else if (days <= 60) {

@@ -3,6 +3,14 @@ import { TimeSeries } from "shared/models/store/current";
 import { findSameYear } from "shared/utility/find-same-year";
 import { getMeritSequence } from "./get-merit-sequence";
 
+/**
+ * Calculates the expected size of a scenario for a given year
+ * Used to prevent generating scenarios that would be too large to process efficiently
+ *
+ * @param {number} year - The year to calculate scenario size for
+ * @param {TimeSeries} timeSeries - Time series data containing historical merit and bonus info
+ * @returns {number} The expected size of scenarios for the year
+ */
 export const getScenarioSize = (year: number, timeSeries: TimeSeries) => {
   const meritSequence = getMeritSequence(year, timeSeries);
   const companyBonusFactor = findSameYear(year, timeSeries.companyBonusPct);

@@ -8,6 +8,16 @@ import { findNearestIdxOnOrBefore, findNearestOnOrBefore } from "shared/utility/
 import { calcEquity, calcLoanBalance } from "shared/utility/mortgage-calc";
 import { useFutureTotals } from "./use-future-totals";
 
+/**
+ * Interface representing wealth data for a specific point in time
+ *
+ * @interface TimeSeriesWealth
+ * @property {Date} graphDate - JavaScript Date object for charting libraries
+ * @property {DateTime} date - Luxon DateTime for calculations
+ * @property {number} wealth - Total wealth value at this point
+ * @property {number} [yoyCash] - Year-over-year change in cash value
+ * @property {number} [yoyPct] - Year-over-year percentage change
+ */
 export interface TimeSeriesWealth {
   graphDate: Date;
   date: DateTime;
@@ -16,6 +26,12 @@ export interface TimeSeriesWealth {
   yoyPct?: number;
 }
 
+/**
+ * Hook that provides wealth values for future time periods
+ *
+ * @returns {Object} Object containing wealth projections for current and next year,
+ * calculated without considering home equity
+ */
 const useFuturesWealth = () => {
   const year = getLocalDateTime().year;
   const totals = useFutureTotals(year, { excludeHomeEquity: true });
@@ -27,6 +43,12 @@ const useFuturesWealth = () => {
   };
 };
 
+/**
+ * Hook that provides time series wealth data for a given year
+ *
+ * @param {number} year - The year for which to calculate the time series wealth
+ * @returns {TimeSeriesWealth[]} Array of time series wealth data
+ */
 export const useTimeSeriesWealth = (year: number) => {
   const localDateTime = getLocalDateTime().startOf("day");
   const earliest = useEarliestAccountEntry();

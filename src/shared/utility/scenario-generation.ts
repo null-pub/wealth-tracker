@@ -19,6 +19,15 @@ import { getValueByDateRange } from "./get-values-by-date-range";
 import { groupBySingle } from "./group-by-single";
 import { validateDateRanges } from "./validate-date-ranges";
 
+/**
+ * Interface defining important dates for a scenario
+ *
+ * @interface ScenarioDates
+ * @property {DateTime} meritIncrease - Date when merit increases take effect
+ * @property {DateTime} meritBonus - Date when merit bonuses are paid
+ * @property {DateTime} companyBonus - Date when company bonuses are paid
+ * @property {DateTime} retirement - Date when retirement bonuses are paid
+ */
 interface ScenarioDates {
   meritIncrease: DateTime;
   meritBonus: DateTime;
@@ -26,6 +35,14 @@ interface ScenarioDates {
   retirement: DateTime;
 }
 
+/**
+ * Gets the relevant dates for a scenario based on projected income data
+ * Falls back to default dates if actual dates aren't available
+ *
+ * @param {number} year - The year to get dates for
+ * @param {ProjectedIncome} projectedIncome - Projected income data
+ * @returns {ScenarioDates} Object containing all relevant dates for the scenario
+ */
 export const getScenarioDates = (year: number, projectedIncome: ProjectedIncome): ScenarioDates => {
   const defaultDates = getDefaultPayDates(year);
   return {
@@ -36,6 +53,13 @@ export const getScenarioDates = (year: number, projectedIncome: ProjectedIncome)
   };
 };
 
+/**
+ * Gets company bonus factors for a given year from time series data
+ *
+ * @param {number} year - The year to get bonus factors for
+ * @param {TimeSeries} timeSeries - Time series data containing bonus information
+ * @returns {Array<{value: number, weight: number}>} Array of bonus factors and their weights
+ */
 const getCompanyBonusFactors = (year: number, timeSeries: TimeSeries) => {
   const companyBonusFactor = findSameYear(year, timeSeries.companyBonusPct);
   const companyBonusPcts = companyBonusFactor
@@ -48,6 +72,14 @@ const getCompanyBonusFactors = (year: number, timeSeries: TimeSeries) => {
   }));
 };
 
+/**
+ * Builds merit scenarios for a given year from time series data and important dates
+ *
+ * @param {number} year - The year to build scenarios for
+ * @param {TimeSeries} timeSeries - Time series data containing merit information
+ * @param {ScenarioDates} dates - Important dates for the scenario
+ * @returns {Partial<Scenario>[]} Array of merit scenarios
+ */
 const buildMeritScenarios = (year: number, timeSeries: TimeSeries, dates: ScenarioDates) => {
   const equityLookup = groupBySingle(
     timeSeries.meritPct?.map((x) => ({ date: x.date, value: x.equityPct })),
@@ -110,6 +142,14 @@ const buildMeritScenarios = (year: number, timeSeries: TimeSeries, dates: Scenar
   });
 };
 
+/**
+ * Builds company bonus scenarios for a given year from time series data and base scenarios
+ *
+ * @param {number} year - The year to build scenarios for
+ * @param {TimeSeries} timeSeries - Time series data containing bonus information
+ * @param {Partial<Scenario>[]} baseScenarios - Base scenarios to apply company bonus factors to
+ * @returns {Partial<Scenario>[]} Array of company bonus scenarios
+ */
 const buildCompanyBonusScenarios = (year: number, timeSeries: TimeSeries, baseScenarios: Partial<Scenario>[]) => {
   const companyBonusFactors = getCompanyBonusFactors(year, timeSeries);
   return baseScenarios.flatMap((scenario) => {
@@ -119,11 +159,31 @@ const buildCompanyBonusScenarios = (year: number, timeSeries: TimeSeries, baseSc
   });
 };
 
+/**
+ * Builds base scenarios with merit and company bonus factors
+ *
+ * @param {number} year - The year to build scenarios for
+ * @param {TimeSeries} timeSeries - Time series data containing merit and bonus information
+ * @param {ScenarioDates} dates - Important dates for the scenario
+ * @returns {Partial<Scenario>[]} Array of base scenarios
+ */
 export const buildBaseScenarios = (year: number, timeSeries: TimeSeries, dates: ScenarioDates) => {
   const meritScenarios = buildMeritScenarios(year, timeSeries, dates);
   return buildCompanyBonusScenarios(year, timeSeries, meritScenarios);
 };
 
+/**
+ * Applies bonuses to base scenarios to create final scenarios
+ *
+ * @param {Partial<Scenario>[]} baseScenarios - Base scenarios to apply bonuses to
+ * @param {ScenarioDates} dates - Important dates for the scenarios
+ * @param {Object} dateRanges - Date ranges for different types of income
+ * @param {Object} paid - Already paid bonus amounts
+ * @param {number} [paid.meritBonus] - Merit bonus amount if already paid
+ * @param {number} [paid.companyBonus] - Company bonus amount if already paid
+ * @param {number} [paid.retirementBonus] - Retirement bonus amount if already paid
+ * @returns {Scenario[]} Array of complete scenarios with bonuses applied
+ */
 export const applyBonuses = (
   baseScenarios: Partial<Scenario>[],
   dates: ScenarioDates,

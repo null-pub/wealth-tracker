@@ -13,6 +13,14 @@ export interface Cluster {
   title: string;
 }
 
+/**
+ * Creates statistical clusters from an array of scenarios based on a selector function
+ *
+ * @template T - A type extending the Scenario interface
+ * @param {T[] | undefined} values - Array of scenario objects to cluster
+ * @param {(x: T) => number} selector - Function that extracts a numeric value from each scenario
+ * @returns {Cluster[]} Array of clusters with statistical properties
+ */
 const clusters = <T extends Scenario>(values: T[] | undefined, selector: (x: T) => number): Cluster[] => {
   if (!values || values.length === 0) {
     return [];
@@ -35,6 +43,12 @@ const clusters = <T extends Scenario>(values: T[] | undefined, selector: (x: T) 
   return result;
 };
 
+/**
+ * React hook that provides clustered statistical analyses for various financial metrics for a specific year
+ *
+ * @param {number} year - The year to retrieve and analyze scenarios for
+ * @returns {Object} Object containing clusters for different financial metrics (totalPay, meritBonus, etc.)
+ */
 export const useClusters = (year: number) => {
   const scenarios = useStore(scenarioStore, (x) => x.scenarios[year]);
 
@@ -63,6 +77,11 @@ export const useClusters = (year: number) => {
   };
 };
 
+/**
+ * React hook that provides total pay clusters across all available years
+ *
+ * @returns {Array} An array of tuples containing year and corresponding total pay clusters
+ */
 export const useTotalPayClusters = () => {
   const scenarios = useStore(scenarioStore, (x) => x.scenarios);
   const allScenarios = Object.entries(scenarios);
