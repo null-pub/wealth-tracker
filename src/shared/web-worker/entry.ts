@@ -5,8 +5,25 @@ import { store } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { getScenarioSize } from "shared/utility/get-scenario-size";
 import { scenarioStore } from "../store/scenario-store";
+
+/**
+ * Maximum number of data points allowed in a scenario to prevent performance issues
+ * @constant {number}
+ */
 const maxScenarioSize = 2499;
+
+/**
+ * Current year from local system time
+ * @constant {number}
+ */
 const currentYear = getLocalDateTime().year;
+
+/**
+ * Calculates the maximum year for scenario generation based on data size constraints
+ * Looks ahead up to 5 years but stops if scenarios would become too large
+ * 
+ * @constant {number}
+ */
 const maxYear = (() => {
   const timeSeries = store.state.projectedIncome.timeSeries;
   for (let i = currentYear; i <= currentYear + 5; i++) {
@@ -18,6 +35,12 @@ const maxYear = (() => {
   return currentYear + 5;
 })();
 
+/**
+ * Pool of web workers for parallel scenario generation
+ * Each worker handles generating scenarios for different years
+ * 
+ * @type {Worker[]}
+ */
 const workers = [
   new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "1" }),
   new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "2" }),
@@ -25,28 +48,29 @@ const workers = [
   new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "4" }),
 ];
 
-workers.forEach((x) => {
-  x.onmessage = (event: MessageEvent<{ year: number; scenarios: Scenario[] }>) => {
+/**
+ * Sets up message handlers for all workers in the pool
+ * Updates scenario store when workers complete scenario generation
+ */
+workers.forEach((worker) =>
+  worker.addEventListener("message", (e: MessageEvent<{ year: number; scenarios: Scenario[] }>) => {
     scenarioStore.setState((prev) => {
-      return create(prev, (x) => {
-        x.scenarios[event.data.year] = event.data.scenarios;
+      return create(prev, (next) => {
+        next.scenarios[e.data.year] = e.data.scenarios;
 
-        const range = Object.keys(x.scenarios)
-          .map((x) => +x)
-          .filter((x, i, arr) => {
-            return i === 0 ? true : x - arr[i - 1] === 1;
-          });
-        const min = range[0];
-        const max = range.at(-1);
-
-        x.loading = max !== maxYear;
-        x.maxYear = max!;
-        x.minYear = min;
+        // Update min/max year range based on available scenarios
+        const years = Object.keys(next.scenarios).map((x) => +x);
+        const min = Math.min(...years);
+        next.minYear = min;
       });
     });
-  };
-});
+  }))
+);
 
+/**
+ * Triggers scenario generation for all relevant years across the worker pool
+ * Distributes work among available workers in a round-robin fashion
+ */
 const loadAllScenarios = () => {
   const projectedIncome = store.state.projectedIncome;
   const first = projectedIncome.timeSeries.paycheck[1]?.date;
@@ -66,14 +90,16 @@ const loadAllScenarios = () => {
     workers[idx].postMessage({ year: i, projectedIncome });
   }
 };
+
+// Initial load of all scenarios
 loadAllScenarios();
 
+// Track projected income changes to regenerate scenarios when needed
 let priorProjectedIncome = store.state.projectedIncome;
 store.subscribe(() => {
   if (priorProjectedIncome === store.state.projectedIncome) {
     return;
   }
-  scenarioStore.setState(() => ({ loading: false, scenarios: {}, maxYear: currentYear, minYear: currentYear }));
   priorProjectedIncome = store.state.projectedIncome;
   loadAllScenarios();
 });
