@@ -8,7 +8,8 @@ import { Store as StoreV3, storeValidator as storeV3Validator } from "shared/mod
 import { Store as StoreV4, storeValidator as storeV4Validator } from "shared/models/store/version-4";
 import { Store as StoreV5, storeValidator as storeV5Validator } from "shared/models/store/version-5";
 import { Store as StoreV6, storeValidator as storeV6Validator } from "shared/models/store/version-6";
-import { MeritData, Store as StoreV7 } from "shared/models/store/version-7";
+import { MeritData, Store as StoreV7, storeValidator as storeV7Validator } from "shared/models/store/version-7";
+import { Store as StoreV8, getDefaultStore as getDefaultStoreV8 } from "shared/models/store/version-8";
 import { groupBySingle } from "shared/utility/group-by-single";
 
 export const migration = (data: unknown) => {
@@ -78,6 +79,14 @@ export const migration = (data: unknown) => {
           enabled: true,
         };
       });
+    }
+    if (data.version === 7) {
+      storeV7Validator.parse(data);
+      const storeV8 = data as StoreV8;
+      storeV8.version = 8;
+
+      const defaultStore = getDefaultStoreV8();
+      storeV8.projectedIncome.config = defaultStore.projectedIncome.config;
     }
   }
 
