@@ -1,18 +1,18 @@
 import { InputAdornment, TextField } from "@mui/material";
 import { useStore } from "@tanstack/react-store";
 import { useCallback, useState } from "react";
-import { ProjectedWealthKeys } from "shared/models/store/current";
+import { Store } from "shared/models/store/current";
 import { store } from "shared/store";
-import { setProjectedWealth } from "shared/store/set-projected-wealth";
 
 interface ConfigEntryProps {
-  configName: ProjectedWealthKeys;
+  getStore: (store: Store) => number;
+  setStore: (value: number) => void;
   label: string;
   variant?: "cash" | "percent";
 }
 
 export const ConfigEntry = (props: ConfigEntryProps) => {
-  const { configName, label, variant = "cash" } = props;
+  const { label, variant = "cash", getStore, setStore } = props;
   const [error, setError] = useState(false);
   const isPercent = variant === "percent";
 
@@ -29,12 +29,12 @@ export const ConfigEntry = (props: ConfigEntryProps) => {
         value /= 100;
       }
 
-      setProjectedWealth(configName, value);
+      setStore(value);
     },
-    [configName, isPercent]
+    [isPercent, setStore]
   );
 
-  const value = useStore(store, (x) => x.projectedWealth[configName]);
+  const value = useStore(store, getStore);
   const defaultValue = isPercent ? value * 100 : value;
 
   return (

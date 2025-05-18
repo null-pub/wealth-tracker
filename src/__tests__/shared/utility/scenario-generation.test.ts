@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { PaymentTypes } from "shared/models/payment-periods";
-import { ProjectedIncome } from "shared/models/store/current";
+import { getDefaultStore, ProjectedIncome } from "shared/models/store/current";
 import { applyBonuses, buildBaseScenarios, getScenarioDates } from "shared/utility/scenario-generation";
 import { beforeEach, describe, expect, it } from "vitest";
 
@@ -9,18 +9,8 @@ describe("scenario-generation", () => {
 
   describe("getScenarioDates", () => {
     it("should return default dates when no actual dates exist", () => {
-      const mockProjectedIncome: ProjectedIncome = {
-        timeSeries: {
-          meritBonus: [],
-          companyBonus: [],
-          retirementBonus: [],
-          paycheck: [],
-          meritPct: [],
-          companyBonusPct: [],
-        },
-      };
-
-      const dates = getScenarioDates(year, mockProjectedIncome);
+      const defaultStore = getDefaultStore();
+      const dates = getScenarioDates(year, defaultStore.projectedIncome);
 
       expect(dates.meritIncrease.year).toBe(year);
       expect(dates.meritIncrease.month).toBe(4); // April
@@ -33,7 +23,9 @@ describe("scenario-generation", () => {
     });
 
     it("should use actual dates when they exist", () => {
-      const mockProjectedIncome: ProjectedIncome = {
+      const defaultStore = getDefaultStore();
+      const mockProjectedIncome = {
+        ...defaultStore.projectedIncome,
         timeSeries: {
           meritBonus: [{ date: "2025-05-15", value: 1000 }],
           companyBonus: [{ date: "2025-06-15", value: 5000 }],
