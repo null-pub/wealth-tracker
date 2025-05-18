@@ -21,7 +21,7 @@ const currentYear = getLocalDateTime().year;
 /**
  * Calculates the maximum year for scenario generation based on data size constraints
  * Looks ahead up to 5 years but stops if scenarios would become too large
- * 
+ *
  * @constant {number}
  */
 const maxYear = (() => {
@@ -38,7 +38,7 @@ const maxYear = (() => {
 /**
  * Pool of web workers for parallel scenario generation
  * Each worker handles generating scenarios for different years
- * 
+ *
  * @type {Worker[]}
  */
 const workers = [
@@ -64,7 +64,7 @@ workers.forEach((worker) =>
         next.minYear = min;
       });
     });
-  }))
+  })
 );
 
 /**

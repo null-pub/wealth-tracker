@@ -50,18 +50,6 @@ const getMeritPairs = (year: number, timeSeries: TimeSeries) => {
 };
 
 /**
- * Interface representing a sequence of merit data points
- *
- * @interface MeritSequenceValues
- * @property {number} meritIncreasePct - Merit increase percentage
- * @property {number} meritBonusPct - Merit bonus percentage
- */
-interface MeritSequenceValues {
-  meritIncreasePct: number;
-  meritBonusPct: number;
-}
-
-/**
  * Gets the merit sequence for a given year, including historical data and projections
  * Used to calculate likely merit increases and bonuses based on past performance
  *
