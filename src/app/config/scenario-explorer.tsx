@@ -5,7 +5,7 @@ import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Cash } from "shared/components/formatters/cash";
 import { Percent } from "shared/components/formatters/percent";
 import { scenarioStore } from "shared/store/scenario-store";
@@ -13,6 +13,7 @@ import { getLocalDateTime } from "shared/utility/current-date";
 import { formatCash } from "shared/utility/format-cash";
 import { shortDate } from "shared/utility/format-date";
 import { formatPercent } from "shared/utility/format-percent";
+import { sortByNumbers } from "shared/utility/sort-by-number";
 
 export const ScenarioExplorer = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,9 +22,15 @@ export const ScenarioExplorer = () => {
   const scenarioData = useStore(scenarioStore);
   const scenarios = scenarioData.scenarios[year];
   const scenario = scenarios?.[scenarioIndex];
-  if (!scenario) {
+
+  const sortedScenarios = useMemo(() => {
+    return scenarios?.toSorted(sortByNumbers(["desc", (x) => x.weight], ["desc", (x) => x.totalPay]));
+  }, [scenarios]);
+
+  if (!sortedScenarios || !scenario) {
     return null;
   }
+
   return (
     <>
       <Button onClick={() => setIsOpen(true)}>Scenario Explorer</Button>
@@ -53,7 +60,7 @@ export const ScenarioExplorer = () => {
                 }}
               />
               <Select variant="standard" onChange={(event) => setScenarioIndex(+event.target.value)} defaultValue={"0"}>
-                {scenarios?.map((x, i) => (
+                {sortedScenarios.map((x, i) => (
                   <MenuItem key={i} value={i}>
                     {x.weight} {formatCash(x.totalPay)}
                   </MenuItem>
