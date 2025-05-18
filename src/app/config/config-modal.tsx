@@ -27,7 +27,7 @@ export const ConfigModal = () => {
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <Box width={600} height={450}>
+          <Box width={600} height={600}>
             {tab === "projected-Income" && <ProjectedIncome />}
             {tab === "projected-wealth" && <Config />}
             {tab === "system" && <System />}

@@ -4,16 +4,10 @@ import { ScenarioExplorer } from "./scenario-explorer";
 
 export const ProjectedIncome = () => {
   return (
-    <Box display="flex" flexDirection="row" height="100%" width={"100%"}>
-      <Box flex="0 1 auto" maxWidth={500} height="100%">
-        <ScenarioExplorer />
-      </Box>
+    <Box display="flex" flexDirection="column" height="100%" width={"100%"} gap={2}>
+      <ScenarioExplorer />
 
-      <Box flex="1 1 auto" overflow={"auto"} paddingBottom={2} paddingLeft={1}>
-        <Box display={"flex"} height={"100%"} width={"100%"} gap={2}>
-          <PerformanceConfig />
-        </Box>
-      </Box>
+      <PerformanceConfig />
     </Box>
   );
 };

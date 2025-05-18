@@ -1,5 +1,5 @@
 import Close from "@mui/icons-material/Close";
-import { Box, Button, IconButton, MenuItem, Modal, Paper, Select, Stack, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, CardHeader, IconButton, MenuItem, Modal, Paper, Select, Stack, Typography } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
@@ -33,7 +33,12 @@ export const ScenarioExplorer = () => {
 
   return (
     <>
-      <Button onClick={() => setIsOpen(true)}>Scenario Explorer</Button>
+      <Card>
+        <CardHeader title="Scenario Explorer" />
+        <CardContent>
+          <Button onClick={() => setIsOpen(true)}>Open Scenario Explorer</Button>
+        </CardContent>
+      </Card>
       <Modal open={isOpen}>
         <Paper sx={{ position: "absolute", top: 24, bottom: 24, right: 24, left: 24, padding: 2, overflow: "auto" }}>
           <IconButton onClick={() => setIsOpen(false)} sx={{ position: "absolute", top: 8, right: 8 }}>
