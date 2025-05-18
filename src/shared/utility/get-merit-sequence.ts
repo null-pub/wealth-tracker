@@ -49,6 +49,14 @@ const getMeritPairs = (year: number, timeSeries: TimeSeries) => {
   });
 };
 
+/**
+ * Gets the merit sequence for a given year, including historical data and projections
+ * Used to calculate likely merit increases and bonuses based on past performance
+ *
+ * @param {number} year - Target year to get merit sequence for
+ * @param {TimeSeries} timeSeries - Time series data containing merit history
+ * @returns {Array<{weight: number, values: {meritIncreasePct: number; meritBonusPct: number; weight: number;}[]}>} Array of possible merit sequences with weights
+ */
 export const getMeritSequence = (year: number, timeSeries: TimeSeries) => {
   const meritPairs = getMeritPairs(year, timeSeries);
 

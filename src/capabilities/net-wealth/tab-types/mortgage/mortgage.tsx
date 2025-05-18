@@ -20,7 +20,7 @@ function createLoanValueGetter(account: Mortgage) {
       balance: loanBalance,
       equity: calcEquity(
         account.loan!.ownershipPct,
-        findNearestOnOrBefore(date, account.data)?.value,
+        findNearestOnOrBefore(date, account.data, (x) => x.date)?.value,
         loanBalance,
         account.loan!.principal
       ),

@@ -4,6 +4,14 @@ import { findSameYear } from "shared/utility/find-same-year";
 import { getEligibleIncomeDateRanges } from "shared/utility/get-eligible-income-date-ranges";
 import { applyBonuses, buildBaseScenarios, getScenarioDates } from "shared/utility/scenario-generation";
 
+/**
+ * Generates financial scenarios for a specific year
+ * Combines actual income data with projections to create possible future scenarios
+ *
+ * @param {number} year - The year to generate scenarios for
+ * @param {ProjectedIncome} projectedIncome - Historical and projected income data
+ * @returns {Scenario[]} Array of possible financial scenarios for the year
+ */
 export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Scenario[] => {
   const { timeSeries } = projectedIncome;
 

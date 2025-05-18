@@ -7,6 +7,7 @@
     "start": "vite",
     "build": "tsc && vite build && copy /Y .\\docs\\index.html .\\docs\\404.html",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "prettier": "prettier --write ./src/**",
     "preview": "vite preview",
     "test": "vitest run",
     "test:ui": "vitest --ui",

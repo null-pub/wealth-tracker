@@ -5,7 +5,6 @@ import { store } from "shared/store";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { getScenarioSize } from "shared/utility/get-scenario-size";
 import { scenarioStore } from "../store/scenario-store";
-
 const maxScenarioSize = 2499;
 const currentYear = getLocalDateTime().year;
 const maxYear = (() => {
@@ -26,28 +25,27 @@ const workers = [
   new Worker(new URL("worker.js", import.meta.url), { type: "module", name: "4" }),
 ];
 
-workers.map(
-  (x) =>
-    (x.onmessage = (event: MessageEvent<{ year: number; scenarios: Scenario[] }>) => {
-      scenarioStore.setState((prev) => {
-        return create(prev, (x) => {
-          x.scenarios[event.data.year] = event.data.scenarios;
+workers.forEach((x) => {
+  x.onmessage = (event: MessageEvent<{ year: number; scenarios: Scenario[] }>) => {
+    scenarioStore.setState((prev) => {
+      return create(prev, (x) => {
+        x.scenarios[event.data.year] = event.data.scenarios;
 
-          const range = Object.keys(x.scenarios)
-            .map((x) => +x)
-            .filter((x, i, arr) => {
-              return i === 0 ? true : x - arr[i - 1] === 1;
-            });
-          const min = range[0];
-          const max = range.at(-1);
+        const range = Object.keys(x.scenarios)
+          .map((x) => +x)
+          .filter((x, i, arr) => {
+            return i === 0 ? true : x - arr[i - 1] === 1;
+          });
+        const min = range[0];
+        const max = range.at(-1);
 
-          x.loading = max !== maxYear;
-          x.maxYear = max!;
-          x.minYear = min;
-        });
+        x.loading = max !== maxYear;
+        x.maxYear = max!;
+        x.minYear = min;
       });
-    })
-);
+    });
+  };
+});
 
 const loadAllScenarios = () => {
   const projectedIncome = store.state.projectedIncome;

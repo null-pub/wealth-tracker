@@ -4,8 +4,11 @@ import { getThresholdTaxRemaining } from "shared/utility/get-threshold-tax-remai
 import { describe, expect, it, vi } from "vitest";
 
 describe("getThresholdTaxRemaining", () => {
-  const mockNow = DateTime.fromISO("2025-01-01").toValid();
-  vi.spyOn(DateTime, "now").mockReturnValue(mockNow);
+  vi.mock("shared/utility/current-date", () => {
+    return {
+      getLocalDateTime: () => DateTime.fromObject({ year: 2025, month: 2, day: 14 }),
+    };
+  });
 
   it("should return 0 if no payments are above threshold", () => {
     const scenario: Scenario = {

@@ -7,8 +7,8 @@ const getMortgageValue = (date: DateTime, mortgage: Mortgage) => {
   if (!mortgage.loan) {
     return 0;
   }
-  const entry = findNearestOnOrBefore(date, mortgage.data);
-  if (entry?.date && mortgage.data[0] === entry && DateTime.fromISO(entry.date).startOf("day") > date) {
+  const entry = findNearestOnOrBefore(date, mortgage.data, (x) => x.date);
+  if (!entry || (entry?.date && mortgage.data[0] === entry && DateTime.fromISO(entry.date).startOf("day") > date)) {
     return 0;
   }
   const { ownershipPct, principal } = mortgage.loan;
@@ -17,8 +17,8 @@ const getMortgageValue = (date: DateTime, mortgage: Mortgage) => {
 };
 
 const getAccountValue = (date: DateTime, account: Account) => {
-  const entry = findNearestOnOrBefore(date, account.data);
-  if (entry?.date && account.data[0] === entry && DateTime.fromISO(entry.date).startOf("day") > date) {
+  const entry = findNearestOnOrBefore(date, account.data, (x) => x.date);
+  if (!entry || (entry?.date && account.data[0] === entry && DateTime.fromISO(entry.date).startOf("day") > date)) {
     return 0;
   }
   return entry?.value;
