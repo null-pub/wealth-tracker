@@ -3,7 +3,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { Box, Button, Dialog, DialogContent, DialogTitle, IconButton, Tab, Tabs } from "@mui/material";
 import { useState } from "react";
 import { Config } from "./config";
-import { ScenarioExplorer } from "./scenario-explorer";
+import { ProjectedIncome } from "./projected-income";
 import { System } from "./system";
 
 export const ConfigModal = () => {
@@ -28,7 +28,7 @@ export const ConfigModal = () => {
         </DialogTitle>
         <DialogContent>
           <Box width={600} height={450}>
-            {tab === "projected-Income" && <ScenarioExplorer />}
+            {tab === "projected-Income" && <ProjectedIncome />}
             {tab === "projected-wealth" && <Config />}
             {tab === "system" && <System />}
           </Box>
