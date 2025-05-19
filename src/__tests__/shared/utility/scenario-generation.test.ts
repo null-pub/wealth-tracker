@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { PaymentTypes } from "shared/models/payment-periods";
-import { getDefaultStore, ProjectedIncome } from "shared/models/store/current";
+import { getDefaultStore, ProjectedIncome, Store } from "shared/models/store/current";
 import { applyBonuses, buildBaseScenarios, getScenarioDates } from "shared/utility/scenario-generation";
 import { beforeEach, describe, expect, it } from "vitest";
 
@@ -47,8 +47,11 @@ describe("scenario-generation", () => {
   describe("buildBaseScenarios", () => {
     let mockTimeSeries: ProjectedIncome["timeSeries"];
     let mockDates: ReturnType<typeof getScenarioDates>;
+    let defaultStore: Store;
 
     beforeEach(() => {
+      defaultStore = getDefaultStore();
+
       mockTimeSeries = {
         meritBonus: [],
         companyBonus: [],
@@ -68,6 +71,7 @@ describe("scenario-generation", () => {
         ],
         companyBonusPct: [{ date: "2025-03-15", value: 0.1 }],
       };
+      defaultStore.projectedIncome.timeSeries = mockTimeSeries;
 
       mockDates = {
         meritIncrease: DateTime.fromISO("2025-04-01").toValid(),
@@ -78,7 +82,7 @@ describe("scenario-generation", () => {
     });
 
     it("should generate base scenarios with merit and company bonus factors", () => {
-      const scenarios = buildBaseScenarios(year, mockTimeSeries, mockDates);
+      const scenarios = buildBaseScenarios(year, defaultStore.projectedIncome, mockDates);
 
       expect(scenarios.length).toBeGreaterThan(0);
       expect(scenarios[0]).toHaveProperty("weight");
@@ -94,7 +98,7 @@ describe("scenario-generation", () => {
         { date: "2024-03-15", value: 0.12 },
       ];
 
-      const scenarios = buildBaseScenarios(year, mockTimeSeries, mockDates);
+      const scenarios = buildBaseScenarios(year, defaultStore.projectedIncome, mockDates);
 
       expect(scenarios.length).toBeGreaterThan(0);
       const uniqueFactors = new Set(scenarios.map((s) => s.companyBonusFactor));

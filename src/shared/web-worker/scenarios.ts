@@ -18,7 +18,7 @@ export const getScenarios = (year: number, projectedIncome: ProjectedIncome): Sc
   const paid = getActualIncomeForYear(year, projectedIncome);
 
   // Build base scenarios with merit increases & company bonuses
-  const baseScenarios = buildBaseScenarios(year, projectedIncome.timeSeries, dates);
+  const baseScenarios = buildBaseScenarios(year, projectedIncome, dates);
 
   // Apply all bonuses and finalize scenarios
   return applyBonuses(baseScenarios, dates, dateRanges, paid);

@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { MAX_NUM_ENTRIES } from "shared/constants";
-import { TimeSeries } from "shared/models/store/current";
+import { ProjectedIncome, TimeSeries } from "shared/models/store/current";
 import { findSameYear } from "shared/utility/find-same-year";
 
 type UnweightedPairs = {
@@ -11,17 +11,19 @@ type UnweightedPairs = {
 /**
  *
  * @param year year to generate merit pairs for
- * @param timeseries pojected
+ * @param {ProjectedIncome} projectedIncome pojected
  * @returns an array of possible merit pairs with their frequency weighted
  */
-const getMeritPairs = (year: number, timeSeries: TimeSeries) => {
-  const meritDetails = findSameYear(year, timeSeries.meritPct);
+const getMeritPairs = (year: number, projectedIncome: ProjectedIncome) => {
+  const { config, timeSeries } = projectedIncome;
+  const actualMeritDetails = findSameYear(year, timeSeries.meritPct);
 
-  if (meritDetails && meritDetails.enabled) {
+  if (actualMeritDetails && actualMeritDetails.enabled) {
     return [
       {
-        meritIncreasePct: meritDetails.meritIncreasePct,
-        meritBonusPct: meritDetails.meritBonusPct,
+        meritIncreasePct: actualMeritDetails.meritIncreasePct,
+        meritBonusPct: actualMeritDetails.meritBonusPct,
+        rating: actualMeritDetails.rating,
         weight: 1,
       },
     ];
@@ -34,6 +36,7 @@ const getMeritPairs = (year: number, timeSeries: TimeSeries) => {
       return {
         meritIncreasePct: x.meritIncreasePct,
         meritBonusPct: x.meritBonusPct,
+        rating: actualMeritDetails?.rating,
       };
     });
 
@@ -57,8 +60,9 @@ const getMeritPairs = (year: number, timeSeries: TimeSeries) => {
  * @param {TimeSeries} timeSeries - Time series data containing merit history
  * @returns {Array<{weight: number, values: MeritSequenceValues[]}>} Array of possible merit sequences with weights
  */
-export const getMeritSequence = (year: number, timeSeries: TimeSeries) => {
-  const meritPairs = getMeritPairs(year, timeSeries);
+export const getMeritSequence = (year: number, projectedIncome: ProjectedIncome) => {
+  const { timeSeries } = projectedIncome;
+  const meritPairs = getMeritPairs(year, projectedIncome);
 
   const pay = timeSeries.paycheck.filter((x) => DateTime.fromISO(x.date).year > year - 3);
   const mostRecentPay = pay.at(-1) ?? timeSeries.paycheck.at(-1);

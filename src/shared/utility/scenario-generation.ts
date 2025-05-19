@@ -76,11 +76,12 @@ const getCompanyBonusFactors = (year: number, timeSeries: TimeSeries) => {
  * Builds merit scenarios for a given year from time series data and important dates
  *
  * @param {number} year - The year to build scenarios for
- * @param {TimeSeries} timeSeries - Time series data containing merit information
+ * @param {ProjectedIncome} projectedIncome - Time series data containing merit information
  * @param {ScenarioDates} dates - Important dates for the scenario
  * @returns {Partial<Scenario>[]} Array of merit scenarios
  */
-const buildMeritScenarios = (year: number, timeSeries: TimeSeries, dates: ScenarioDates) => {
+const buildMeritScenarios = (year: number, projectedIncome: ProjectedIncome, dates: ScenarioDates) => {
+  const { timeSeries } = projectedIncome;
   const equityLookup = groupBySingle(
     timeSeries.meritPct?.map((x) => ({ date: x.date, value: x.equityPct })),
     (x) => DateTime.fromISO(x.date).year
@@ -96,7 +97,7 @@ const buildMeritScenarios = (year: number, timeSeries: TimeSeries, dates: Scenar
     return [];
   }
   const actualMeritBonusPcts = pay.map((x) => findSameYear(DateTime.fromISO(x.date).year, timeSeries.meritPct)?.meritBonusPct ?? 0);
-  const meritSequence = getMeritSequence(year, timeSeries);
+  const meritSequence = getMeritSequence(year, projectedIncome);
 
   if (meritSequence.length === 0) {
     return [getEmptyMeritSequence(year, timeSeries, pay)];
@@ -167,9 +168,9 @@ const buildCompanyBonusScenarios = (year: number, timeSeries: TimeSeries, baseSc
  * @param {ScenarioDates} dates - Important dates for the scenario
  * @returns {Partial<Scenario>[]} Array of base scenarios
  */
-export const buildBaseScenarios = (year: number, timeSeries: TimeSeries, dates: ScenarioDates) => {
-  const meritScenarios = buildMeritScenarios(year, timeSeries, dates);
-  return buildCompanyBonusScenarios(year, timeSeries, meritScenarios);
+export const buildBaseScenarios = (year: number, projectedIncome: ProjectedIncome, dates: ScenarioDates) => {
+  const meritScenarios = buildMeritScenarios(year, projectedIncome, dates);
+  return buildCompanyBonusScenarios(year, projectedIncome.timeSeries, meritScenarios);
 };
 
 /**
