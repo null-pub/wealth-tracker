@@ -12,10 +12,19 @@ export const getDefaultStore = (): Store => ({
       meritBonus: [],
     },
     config: {
-      outstanding: {},
-      exceedsExpectations: {},
-      meetsExpectations: {},
-      didNotMeet: {},
+      outstanding: {
+        bonusPct: 0,
+        meritIncreasePct: 0,
+      },
+      exceedsExpectations: {
+        bonusPct: 0,
+        meritIncreasePct: 0,
+      },
+      meetsExpectations: {
+        bonusPct: 0,
+        meritIncreasePct: 0,
+      },
+      didNotMeet: { bonusPct: 0, meritIncreasePct: 0 },
     },
   },
   wealth: {},

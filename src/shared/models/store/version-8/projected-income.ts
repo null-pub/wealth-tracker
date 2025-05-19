@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { accountDataValidator, meritData } from "../version-7";
+import { accountDataValidator, meritData, Rating, ratings } from "../version-7";
 
 export const projectedIncome = z.object({
   timeSeries: z.object({
@@ -38,3 +38,10 @@ export type PerformanceConfig = ProjectedIncome["config"];
 export type Ratings = keyof ProjectedIncome["config"];
 
 export type RatingConfig = { mermeritIncreasePct: number; bonusPct: number };
+
+export const ratingToTimeSeries: Record<Rating, keyof PerformanceConfig> = {
+  [ratings.outstanding]: "outstanding",
+  [ratings.exceedsExpectations]: "exceedsExpectations",
+  [ratings.meetsExpectations]: "meetsExpectations",
+  [ratings.doesNotMeetExpectations]: "didNotMeet",
+};

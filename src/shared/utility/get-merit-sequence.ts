@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { MAX_NUM_ENTRIES } from "shared/constants";
-import { ProjectedIncome, TimeSeries } from "shared/models/store/current";
+import { ProjectedIncome, Rating, ratingToTimeSeries } from "shared/models/store/current";
 import { findSameYear } from "shared/utility/find-same-year";
 
 type UnweightedPairs = {
@@ -29,13 +29,24 @@ const getMeritPairs = (year: number, projectedIncome: ProjectedIncome) => {
     ];
   }
 
+  const getConfiguredValue = (rating?: Rating) => {
+    const key = rating ? ratingToTimeSeries[rating] : undefined;
+    if (key && config[key]) {
+      return {
+        meritIncreasePct: (config[key].meritIncreasePct ?? 0) > 0 ? config[key].meritIncreasePct : undefined,
+        meritBonusPct: (config[key].bonusPct ?? 0) > 0 ? config[key].bonusPct : undefined,
+      };
+    }
+  };
+
   const unweightedPairs = timeSeries.meritPct
     .filter((x) => x.enabled)
     .slice(-1 * MAX_NUM_ENTRIES)
     .map((x) => {
+      const config = getConfiguredValue(x.rating);
       return {
-        meritIncreasePct: x.meritIncreasePct,
-        meritBonusPct: x.meritBonusPct,
+        meritIncreasePct: config ? config.meritIncreasePct : x.meritIncreasePct,
+        meritBonusPct: config ? config.meritBonusPct : x.meritBonusPct,
         rating: actualMeritDetails?.rating,
       };
     });
