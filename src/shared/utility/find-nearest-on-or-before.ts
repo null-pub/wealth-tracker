@@ -27,5 +27,6 @@ export const findNearestOnOrBefore = <T>(searchDate: DateTime, data: T[], dateSe
  * findNearestIdxOnOrBefore(DateTime.fromISO('2025-03-15'), items, x => x.date); // returns 0
  */
 export const findNearestIdxOnOrBefore = <T>(target: DateTime, items: T[], selector: (x: T) => DateTime) => {
-  return items.findLastIndex((x) => selector(x) <= target);
+  target = target.startOf("day");
+  return items.findLastIndex((x) => selector(x).startOf("day") <= target);
 };
