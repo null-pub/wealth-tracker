@@ -9,6 +9,7 @@ import { useEarliestAccountEntry } from "shared/hooks/use-earliest-account-entry
 import { store } from "shared/store";
 import { useLocalDateTime } from "shared/utility/current-date";
 import { formatCashShort } from "shared/utility/format-cash";
+import { shortDate } from "shared/utility/format-date";
 import { useGraphData } from "./use-graph-data";
 
 export const WealthChart = () => {
@@ -35,7 +36,8 @@ export const WealthChart = () => {
         yName: `${x}${data.hidden ? " (hidden)" : ""}`,
         tooltip: {
           renderer: ({ datum, yKey, xKey }) => ({
-            content: `${DateTime.fromJSDate(datum[xKey]).toISODate()} ${formatCashShort(datum[yKey])}`,
+            heading: DateTime.fromJSDate(datum[xKey]).toFormat(shortDate),
+            data: [{ label: yKey, value: formatCashShort(datum[yKey]) }],
           }),
         },
       } as AgAreaSeriesOptions;
@@ -47,7 +49,8 @@ export const WealthChart = () => {
       yName: "Total",
       tooltip: {
         renderer: ({ datum, yKey, xKey }) => ({
-          content: `${DateTime.fromJSDate(datum[xKey]).toISODate()} ${formatCashShort(datum[yKey])}`,
+          heading: DateTime.fromJSDate(datum[xKey]).toFormat(shortDate),
+          data: [{ label: yKey, value: formatCashShort(datum[yKey]) }],
         }),
       },
     } as AgLineSeriesOptions,

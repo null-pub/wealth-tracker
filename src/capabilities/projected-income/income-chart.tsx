@@ -6,6 +6,7 @@ import { DateTime } from "luxon";
 import { useTotalPayClusters } from "shared/hooks/use-clusters";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { formatCash, formatCashShort } from "shared/utility/format-cash";
+import { shortDate } from "shared/utility/format-date";
 import { formatPercent } from "shared/utility/format-percent";
 import { getProbablityColor } from "shared/utility/get-probablity-color";
 
@@ -48,7 +49,8 @@ export const IncomeChart = () => {
 
       tooltip: {
         renderer: ({ datum, yKey, xKey }) => ({
-          content: `${DateTime.fromJSDate(datum[xKey]).year} ${formatCashShort(datum[yKey])}`,
+          heading: DateTime.fromJSDate(datum[xKey]).toFormat(shortDate),
+          data: [{ label: yKey, value: formatCashShort(datum[yKey]) }],
         }),
       },
     },
@@ -70,7 +72,8 @@ export const IncomeChart = () => {
       },
       tooltip: {
         renderer: ({ datum, yKey, xKey }) => ({
-          content: `${DateTime.fromJSDate(datum[xKey]).year} ${formatCashShort(datum[yKey])} ${formatPercent(datum.lowProbability)}`,
+          heading: DateTime.fromJSDate(datum[xKey]).year,
+          data: [{ label: yKey, value: `${formatCashShort(datum[yKey])} ${formatPercent(datum.lowProbability)}` }],
         }),
       },
     },
@@ -91,7 +94,8 @@ export const IncomeChart = () => {
       yName: "Medium",
       tooltip: {
         renderer: ({ datum, yKey, xKey }) => ({
-          content: `${DateTime.fromJSDate(datum[xKey]).year} ${formatCashShort(datum[yKey])} ${formatPercent(datum.medProbability)}`,
+          heading: DateTime.fromJSDate(datum[xKey]).year,
+          data: [{ label: yKey, value: `${formatCashShort(datum[yKey])} ${formatPercent(datum.medProbability)}` }],
         }),
       },
     },
@@ -113,7 +117,8 @@ export const IncomeChart = () => {
       yName: "High",
       tooltip: {
         renderer: ({ datum, yKey, xKey }) => ({
-          content: `${DateTime.fromJSDate(datum[xKey]).year} ${formatCashShort(datum[yKey])} ${formatPercent(datum.highProbability)}`,
+          heading: DateTime.fromJSDate(datum[xKey]).year,
+          data: [{ label: yKey, value: `${formatCashShort(datum[yKey])} ${formatPercent(datum.highProbability)}` }],
         }),
       },
     },

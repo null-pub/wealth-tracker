@@ -2,7 +2,7 @@ import { AgCartesianChartOptions, AgLineSeriesOptions } from "ag-charts-communit
 import { AgCharts } from "ag-charts-react";
 import { DateTime } from "luxon";
 import { getLocalDateTime } from "shared/utility/current-date";
-import { formatCash, formatCashShort } from "shared/utility/format-cash";
+import { formatCashShort } from "shared/utility/format-cash";
 import { shortDate } from "shared/utility/format-date";
 import { TimeSeriesWealth, useTimeSeriesWealth } from "./hooks/use-times-series-wealth";
 
@@ -34,7 +34,8 @@ export const WealthChart = (props: { titleYear: number }) => {
       yName: "Wealth",
       tooltip: {
         renderer: ({ datum, yKey, xKey }) => ({
-          content: `${DateTime.fromJSDate(datum[xKey]).toISODate()} ${formatCash(datum[yKey])}`,
+          heading: DateTime.fromJSDate(datum[xKey]).year.toString(),
+          data: [{ label: yKey, value: formatCashShort(datum[yKey]) }],
         }),
       },
       marker: {
@@ -64,7 +65,8 @@ export const WealthChart = (props: { titleYear: number }) => {
 
       tooltip: {
         renderer: ({ datum, yKey, xKey }) => ({
-          content: `${DateTime.fromJSDate(datum[xKey]).toISODate()} ${formatCash(datum[yKey])}`,
+          heading: DateTime.fromJSDate(datum[xKey]).year.toString(),
+          data: [{ label: yKey, value: formatCashShort(datum[yKey]) }],
         }),
       },
       marker: {
