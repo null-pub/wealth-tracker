@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useEarliestAccountEntry } from "shared/hooks/use-earliest-account-entry";
 import { store } from "shared/store";
 import { useLocalDateTime } from "shared/utility/current-date";
-import { formatCashShort } from "shared/utility/format-cash";
+import { formatCash, formatCashShort } from "shared/utility/format-cash";
 import { shortDate } from "shared/utility/format-date";
 import { useGraphData } from "./use-graph-data";
 
@@ -59,7 +59,7 @@ export const WealthChart = () => {
   const options: AgCartesianChartOptions = {
     theme: "ag-default-dark",
     title: {
-      text: `Total Wealth ${formatCashShort((data[data.length - 1]?.total ?? 0) as number)}`,
+      text: `Total Wealth ${formatCash((data[data.length - 1]?.total ?? 0) as number)}`,
     },
     data: filteredData,
     axes: [
@@ -85,7 +85,7 @@ export const WealthChart = () => {
   return (
     <Box position={"relative"} height="100%" width="100%">
       <AgCharts options={options} css={{ height: "100%", width: "100%" }} />
-      <Box position={"absolute"} top={16} right={16} zIndex={100} width={250} display={"flex"} gap={2}>
+      <Box position={"absolute"} top={16} left={150} zIndex={100} width={250} display={"flex"} gap={2}>
         <DatePicker
           sx={{ backgroundColor: "#121212" }}
           views={["year"]}
