@@ -244,9 +244,8 @@ export const applyBonuses = (
     updatedPayments.forEach((current, i) => {
       const prior = updatedPayments[i - 1];
       if (!prior) {
-        return;
-      }
-      if (DateTime.fromISO(current.payedOn).year === scenario.year && DateTime.fromISO(prior.payedOn).year === scenario.year) {
+        return null;
+      } else if (DateTime.fromISO(current.payedOn).year === scenario.year) {
         if (current.type === PaymentTypes.bonus || current.type === PaymentTypes.regular) {
           current.cumulative = prior.cumulative + current.value;
         } else if (current.type === PaymentTypes.nonTaxableBonus) {
