@@ -85,7 +85,18 @@ export const WealthChart = () => {
   return (
     <Box position={"relative"} height="100%" width="100%">
       <AgCharts options={options} css={{ height: "100%", width: "100%" }} />
-      <Box position={"absolute"} top={16} left={150} zIndex={100} width={250} display={"flex"} gap={2}>
+      <Box
+        position={"absolute"}
+        bottom={128}
+        left={128}
+        zIndex={100}
+        width={250}
+        padding={1.5}
+        borderRadius={4}
+        bgcolor={"rgba(0,0,0,.5)"}
+        display={"flex"}
+        gap={2}
+      >
         <DatePicker
           sx={{ backgroundColor: "#121212" }}
           views={["year"]}
