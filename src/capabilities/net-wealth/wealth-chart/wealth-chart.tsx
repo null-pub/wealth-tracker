@@ -87,8 +87,8 @@ export const WealthChart = () => {
       <AgCharts options={options} css={{ height: "100%", width: "100%" }} />
       <Box
         position={"absolute"}
-        bottom={128}
-        left={128}
+        top={16}
+        right={16}
         zIndex={100}
         width={250}
         padding={1.5}
@@ -96,6 +96,13 @@ export const WealthChart = () => {
         bgcolor={"rgba(0,0,0,.5)"}
         display={"flex"}
         gap={2}
+        sx={{
+          transition: "opacity 150ms",
+          "&:hover": {
+            opacity: "100%",
+          },
+          opacity: "35%",
+        }}
       >
         <DatePicker
           sx={{ backgroundColor: "#121212" }}
