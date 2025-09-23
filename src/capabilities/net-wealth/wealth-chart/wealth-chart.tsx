@@ -1,10 +1,10 @@
 import { Box } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useStore } from "@tanstack/react-store";
-import { AgAreaSeriesOptions, AgCartesianChartOptions, AgLineSeriesOptions, time } from "ag-charts-community";
+import { AgAreaSeriesOptions, AgCartesianChartOptions, AgChartInstance, AgLineSeriesOptions, time } from "ag-charts-community";
 import { AgCharts } from "ag-charts-react";
 import { DateTime } from "luxon";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useEarliestAccountEntry } from "shared/hooks/use-earliest-account-entry";
 import { store } from "shared/store";
 import { useLocalDateTime } from "shared/utility/current-date";
@@ -14,16 +14,18 @@ import { useGraphData } from "./use-graph-data";
 
 export const WealthChart = () => {
   const wealth = useStore(store, (x) => x.wealth);
-  const data = useGraphData();
+  const [hidden, setHidden] = useState<string[]>([]);
+  const data = useGraphData(hidden);
   const initialFromDate = useEarliestAccountEntry().startOf("year");
   const localTime = useLocalDateTime();
   const intialToDate = localTime.endOf("year");
   const [fromDate, setFromDate] = useState<DateTime>(localTime.plus({ year: -1 }));
   const [toDate, setToDate] = useState<DateTime>(intialToDate);
+  const ref = useRef<AgChartInstance>(null);
 
   const filteredData = data.filter((x) => {
-    const year = x.date.getFullYear();
-    return year >= fromDate.year && year <= toDate.year;
+    const year = x.date?.getFullYear();
+    return year && year >= fromDate.year && year <= toDate.year;
   });
 
   const series = [
@@ -61,6 +63,7 @@ export const WealthChart = () => {
     title: {
       text: `Total Wealth ${formatCash((data[data.length - 1]?.total ?? 0) as number)}`,
     },
+
     data: filteredData,
     axes: [
       {
@@ -80,11 +83,25 @@ export const WealthChart = () => {
       },
     ],
     series,
+    legend: {
+      listeners: {
+        legendItemClick: () => {
+          setTimeout(() => {
+            setHidden(
+              ref.current
+                ?.getState()
+                .legend?.filter((x) => !x.visible)
+                .map((x) => x.itemId as string) ?? []
+            );
+          }, 1);
+        },
+      },
+    },
   };
 
   return (
     <Box position={"relative"} height="100%" width="100%">
-      <AgCharts options={options} css={{ height: "100%", width: "100%" }} />
+      <AgCharts ref={ref} options={options} css={{ height: "100%", width: "100%" }} />
       <Box
         position={"absolute"}
         top={16}

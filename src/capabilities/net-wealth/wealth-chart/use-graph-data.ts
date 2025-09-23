@@ -8,28 +8,30 @@ export type GraphData = {
   date: Date;
 } & Record<string, number | null>;
 
-export const useGraphData = () => {
+export const useGraphData = (visibleIds: string[]) => {
   const wealth = useStore(store, (x) => x.wealth);
   const dates = useGraphDates(Object.values(wealth));
   const accounts = Object.entries(wealth);
 
   const graphData = dates.map((date) => {
-    return accounts.reduce(
-      (acc, [accountName, account]) => {
-        const value = getGraphValue(date, account);
+    return accounts
+      .filter((x) => !visibleIds.includes(x[0]))
+      .reduce(
+        (acc, [accountName, account]) => {
+          const value = getGraphValue(date, account);
 
-        if (value) {
-          acc[accountName] = value;
-          acc.total = acc.total + value;
-        } else {
-          acc[accountName] = null;
-        }
+          if (value) {
+            acc[accountName] = value;
+            acc.total = acc.total + value;
+          } else {
+            acc[accountName] = null;
+          }
 
-        acc.date = date.toJSDate();
-        return acc;
-      },
-      { total: 0 } as GraphData
-    );
+          acc.date = date.toJSDate();
+          return acc;
+        },
+        { total: 0 } as GraphData
+      );
   });
 
   graphData.forEach((graphEntry, index, arr) => {
