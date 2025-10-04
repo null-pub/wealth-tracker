@@ -8,7 +8,7 @@ import { useRef, useState } from "react";
 import { useEarliestAccountEntry } from "shared/hooks/use-earliest-account-entry";
 import { store } from "shared/store";
 import { useLocalDateTime } from "shared/utility/current-date";
-import { formatCash, formatCashShort } from "shared/utility/format-cash";
+import { formatCash } from "shared/utility/format-cash";
 import { shortDate } from "shared/utility/format-date";
 import { useGraphData } from "./use-graph-data";
 
@@ -39,7 +39,7 @@ export const WealthChart = () => {
         tooltip: {
           renderer: ({ datum, yKey, xKey }) => ({
             heading: DateTime.fromJSDate(datum[xKey]).toFormat(shortDate),
-            data: [{ label: yKey, value: formatCashShort(datum[yKey]) }],
+            data: [{ label: yKey, value: formatCash(datum[yKey]) }],
           }),
         },
       } as AgAreaSeriesOptions;
@@ -52,7 +52,7 @@ export const WealthChart = () => {
       tooltip: {
         renderer: ({ datum, yKey, xKey }) => ({
           heading: DateTime.fromJSDate(datum[xKey]).toFormat(shortDate),
-          data: [{ label: yKey, value: formatCashShort(datum[yKey]) }],
+          data: [{ label: yKey, value: formatCash(datum[yKey]) }],
         }),
       },
     } as AgLineSeriesOptions,
