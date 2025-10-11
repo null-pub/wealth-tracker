@@ -8,9 +8,9 @@ import { useRef, useState } from "react";
 import { useEarliestAccountEntry } from "shared/hooks/use-earliest-account-entry";
 import { store } from "shared/store";
 import { useLocalDateTime } from "shared/utility/current-date";
-import { formatCash } from "shared/utility/format-cash";
+import { formatCash, formatDeltaCash } from "shared/utility/format-cash";
 import { shortDate } from "shared/utility/format-date";
-import { useGraphData } from "./use-graph-data";
+import { GraphData, useGraphData } from "./use-graph-data";
 
 export const WealthChart = () => {
   const wealth = useStore(store, (x) => x.wealth);
@@ -50,12 +50,12 @@ export const WealthChart = () => {
       yKey: "total",
       yName: "Total",
       tooltip: {
-        renderer: ({ datum, yKey, xKey }) => ({
-          heading: DateTime.fromJSDate(datum[xKey]).toFormat(shortDate),
-          data: [{ label: yKey, value: formatCash(datum[yKey]) }],
+        renderer: ({ datum, yKey }) => ({
+          heading: DateTime.fromJSDate(datum.date).toFormat(shortDate),
+          data: [{ label: yKey, value: `${formatCash(datum.total)} ${formatDeltaCash(datum.delta)}` }],
         }),
       },
-    } as AgLineSeriesOptions,
+    } as AgLineSeriesOptions<GraphData>,
   ];
 
   const options: AgCartesianChartOptions = {

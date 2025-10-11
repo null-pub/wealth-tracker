@@ -12,3 +12,10 @@ export const formatCash = new Intl.NumberFormat("en-US", {
   currency: "USD",
   maximumFractionDigits: 0,
 }).format;
+
+export const formatDeltaCash = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  maximumFractionDigits: 0,
+  signDisplay: "exceptZero",
+}).format;
