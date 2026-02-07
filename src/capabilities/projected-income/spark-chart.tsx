@@ -50,8 +50,8 @@ export const SparkChart = (props: { accountName: TimeSeriesKeys; variant: "cash"
         },
       },
     ],
-    axes: [
-      {
+    axes: {
+      y: {
         type: "number",
         position: "left",
 
@@ -65,7 +65,7 @@ export const SparkChart = (props: { accountName: TimeSeriesKeys; variant: "cash"
           },
         },
       },
-      {
+      x: {
         nice: false,
         type: "time",
         position: "bottom",
@@ -73,7 +73,7 @@ export const SparkChart = (props: { accountName: TimeSeriesKeys; variant: "cash"
           format: "%Y",
         },
       },
-    ],
+    },
   };
 
   const isDisabled = account.length === 0;

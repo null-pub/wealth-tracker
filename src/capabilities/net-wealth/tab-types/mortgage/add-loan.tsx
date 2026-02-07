@@ -6,7 +6,7 @@ import { useRef, useState } from "react";
 import { Loan } from "shared/models/store/current";
 import { store } from "shared/store";
 import { setLoan } from "shared/store/set-loan";
-import { ZodIssue, z } from "zod";
+import { z } from "zod";
 
 //todo: use tanstack form
 
@@ -34,12 +34,13 @@ export const AddLoan = (props: { accountName: string }) => {
   });
 
   const ref = useRef<Partial<Loan>>(loan ?? {});
-  const [error, setError] = useState<Partial<Record<keyof Loan, ZodIssue>>>({});
+  const [error, setError] = useState<Partial<Record<string, z.core.$ZodIssue[]>>>({});
+  const defaultFirstPaymentDate = loan?.firstPaymentDate ? DateTime.fromISO(loan.firstPaymentDate) : null;
 
   return (
     <>
       <DatePicker
-        defaultValue={ref.current?.firstPaymentDate ? DateTime.fromISO(ref.current.firstPaymentDate) : null}
+        defaultValue={defaultFirstPaymentDate}
         label="First Payment"
         slotProps={{
           textField: {

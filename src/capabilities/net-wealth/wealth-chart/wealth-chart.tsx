@@ -57,6 +57,9 @@ export const WealthChart = () => {
         xKey: "date",
         yKey: x,
         yName: `${x}${data.hidden ? " (hidden)" : ""}`,
+        highlight: {
+          enabled: false,
+        },
         tooltip: {
           renderer: ({ datum, yKey, xKey }) => ({
             heading: DateTime.fromJSDate(datum[xKey]).toFormat(shortDate),
@@ -70,6 +73,9 @@ export const WealthChart = () => {
       xKey: "date",
       yKey: "total",
       yName: "Total",
+      highlight: {
+        enabled: false,
+      },
       tooltip: {
         renderer: ({ datum, yKey }) => {
           const ath = datum.total - getMaxTotalUpTo(datum.date);
@@ -105,23 +111,24 @@ export const WealthChart = () => {
     },
 
     data: filteredData,
-    axes: [
-      {
+    axes: {
+      x: {
         type: "time",
         position: "bottom",
         label: {
           format: "%Y",
         },
+
         nice: false,
         interval: {
-          step: time.year.every(1, { snapTo: "start" }),
+          step: time.year.every(1),
         },
       },
-      {
+      y: {
         type: "number",
         position: "left",
       },
-    ],
+    },
     series,
     legend: {
       listeners: {

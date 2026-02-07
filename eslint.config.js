@@ -5,17 +5,22 @@ import eslintPluginPrettier from "eslint-plugin-prettier/recommended";
 import react from "eslint-plugin-react";
 import ReactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
-import tseslint, { config } from "typescript-eslint";
+import tseslint from "typescript-eslint";
 
-export default config(
+export default tseslint.config(
+  {
+    ignores: ["docs/**", "coverage/**"],
+  },
   eslint.configs.recommended,
   tseslint.configs.recommended,
   reactRefresh.configs.recommended,
   react.configs.flat.recommended,
-  ReactHooks.configs.recommended,
   prettier,
   eslintPluginPrettier,
   {
+    plugins: {
+      "react-hooks": ReactHooks,
+    },
     languageOptions: {
       parserOptions: {
         projectService: {
@@ -35,7 +40,7 @@ export default config(
       },
     },
     rules: {
-      "react-hooks/react-compiler": "error",
+      ...ReactHooks.configs.recommended.rules,
       curly: "error",
       "react/react-in-jsx-scope": "off",
       "@typescript-eslint/no-unused-expressions": ["error", { allowShortCircuit: true }],

@@ -10,7 +10,10 @@ import "shared/utility/luxon-extensions";
 import "shared/web-worker/entry";
 import "./index.css";
 
+import { AllCommunityModule as AgChartsAllCommunity, ModuleRegistry as AgChartsModuleRegistry } from "ag-charts-community";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
+
+AgChartsModuleRegistry.registerModules([AgChartsAllCommunity]);
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 const darkTheme = createTheme({
@@ -23,10 +26,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary
       fallbackRender={(props) => {
+        const error = props.error as Error;
         return (
           <>
-            <div style={{ backgroundColor: "#FFF" }}>{props.error.message}</div>
-            <div style={{ backgroundColor: "#FFF" }}>{props.error.stackTrace}</div>
+            <div style={{ backgroundColor: "#FFF" }}>{error.message}</div>
+            <div style={{ backgroundColor: "#FFF" }}>{error.stack}</div>
           </>
         );
       }}

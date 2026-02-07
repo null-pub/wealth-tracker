@@ -1,24 +1,10 @@
-import { AgCartesianChartOptions, AgLineSeriesOptions } from "ag-charts-community";
+import { AgCartesianChartOptions, AgLineSeriesMarkerItemStylerParams, AgLineSeriesOptions } from "ag-charts-community";
 import { AgCharts } from "ag-charts-react";
 import { DateTime } from "luxon";
 import { getLocalDateTime } from "shared/utility/current-date";
 import { formatCashShort } from "shared/utility/format-cash";
 import { shortDate } from "shared/utility/format-date";
 import { TimeSeriesWealth, useTimeSeriesWealth } from "./hooks/use-times-series-wealth";
-
-interface MarkerParams<T> {
-  fill: string;
-  fillOpacity: number;
-  highlighted: boolean;
-  seriesId: string;
-  size: number;
-  stroke: string;
-  strokeOpacity: number;
-  strokeWidth: number;
-  xKey: string;
-  yKey: string;
-  datum: T;
-}
 
 export const WealthChart = (props: { titleYear: number }) => {
   const dataYear = getLocalDateTime().year + 1;
@@ -39,16 +25,17 @@ export const WealthChart = (props: { titleYear: number }) => {
         }),
       },
       marker: {
-        itemStyler: (params: MarkerParams<TimeSeriesWealth>) => {
-          if (params.datum.date.year === getLocalDateTime().plus({ years: 1 }).year) {
+        itemStyler: (params: AgLineSeriesMarkerItemStylerParams<TimeSeriesWealth>) => {
+          const datum = (params as AgLineSeriesMarkerItemStylerParams<TimeSeriesWealth> & { datum: TimeSeriesWealth }).datum;
+          if (datum.date.year === getLocalDateTime().plus({ years: 1 }).year) {
             return {
               fill: "orange",
             };
-          } else if (params.datum.date.year === getLocalDateTime().plus({ years: 2 }).year) {
+          } else if (datum.date.year === getLocalDateTime().plus({ years: 2 }).year) {
             return {
               fill: "rgb(244, 67, 54)",
             };
-          } else if (params.datum.date.hasSame(getLocalDateTime(), "day")) {
+          } else if (datum.date.hasSame(getLocalDateTime(), "day")) {
             return {
               fill: "lightgrey",
             };
@@ -71,16 +58,17 @@ export const WealthChart = (props: { titleYear: number }) => {
       },
       marker: {
         fill: "grey",
-        itemStyler: (params: MarkerParams<TimeSeriesWealth>) => {
-          if (params.datum.date.year === getLocalDateTime().plus({ years: 1 }).year) {
+        itemStyler: (params: AgLineSeriesMarkerItemStylerParams<TimeSeriesWealth>) => {
+          const datum = (params as AgLineSeriesMarkerItemStylerParams<TimeSeriesWealth> & { datum: TimeSeriesWealth }).datum;
+          if (datum.date.year === getLocalDateTime().plus({ years: 1 }).year) {
             return {
               fill: "orange",
             };
-          } else if (params.datum.date.year === getLocalDateTime().plus({ years: 2 }).year) {
+          } else if (datum.date.year === getLocalDateTime().plus({ years: 2 }).year) {
             return {
               fill: "rgb(244, 67, 54)",
             };
-          } else if (params.datum.date.hasSame(getLocalDateTime(), "day")) {
+          } else if (datum.date.hasSame(getLocalDateTime(), "day")) {
             return {
               fill: "lightgrey",
             };
@@ -98,20 +86,20 @@ export const WealthChart = (props: { titleYear: number }) => {
       )}`,
     },
     data,
-    axes: [
-      {
+    axes: {
+      x: {
         type: "time",
         position: "bottom",
         label: {
           format: "%Y",
         },
       },
-      {
+      y: {
         type: "number",
         position: "left",
         nice: false,
       },
-    ],
+    },
     series,
   };
 

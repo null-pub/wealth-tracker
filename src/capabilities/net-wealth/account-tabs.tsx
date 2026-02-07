@@ -1,6 +1,6 @@
 import { Box, Tab, Tabs } from "@mui/material";
 import { useStore } from "@tanstack/react-store";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { store } from "shared/store";
 import { NewAccount } from "./new-account";
 import { AccountTab } from "./tab-types/account/account";
@@ -10,19 +10,14 @@ export const AccountTabs = () => {
   const accounts = useStore(store, (x) => x.wealth);
   const firstAccount = Object.keys(accounts)?.[0] ?? 0;
   const [account, setAccount] = useState<string | 0>(firstAccount);
-
-  useEffect(() => {
-    if (!accounts[account]) {
-      setAccount(0);
-    }
-  }, [account, accounts]);
+  const selectedAccount = accounts[account] ? account : firstAccount;
 
   return (
     <Box display="flex" width="100%" height="100%" gap={2}>
       <Box display={"flex"} flexDirection={"column"} flex={"0 1 auto"}>
         <Tabs
           orientation="vertical"
-          value={account}
+          value={selectedAccount}
           onChange={(_, value) => {
             setAccount(value as string);
           }}
@@ -36,10 +31,10 @@ export const AccountTabs = () => {
         </Tabs>
       </Box>
       <Box flex={"1 1 auto"} overflow={"auto"}>
-        {typeof account === "string" && (
+        {typeof selectedAccount === "string" && (
           <>
-            {accounts[account]?.type === "account" && <AccountTab accountName={account} />}
-            {accounts[account]?.type === "mortgage" && <MortgageTab accountName={account} />}
+            {accounts[selectedAccount]?.type === "account" && <AccountTab accountName={selectedAccount} />}
+            {accounts[selectedAccount]?.type === "mortgage" && <MortgageTab accountName={selectedAccount} />}
           </>
         )}
       </Box>

@@ -130,8 +130,8 @@ export const IncomeChart = () => {
       text: `Income`,
     },
 
-    axes: [
-      {
+    axes: {
+      x: {
         type: "time",
         position: "bottom",
         label: {
@@ -139,7 +139,7 @@ export const IncomeChart = () => {
         },
         nice: false,
       },
-      {
+      y: {
         type: "number",
         position: "left",
         nice: true,
@@ -152,7 +152,7 @@ export const IncomeChart = () => {
           },
         },
       },
-    ],
+    },
     series,
   };
 

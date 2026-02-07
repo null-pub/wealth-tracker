@@ -14,7 +14,7 @@ const jsonTryParse = (data?: string | null): { result: unknown; isSuccess: boole
   }
 };
 
-export const createStore = <T extends object>(validator: ZodSchema<unknown>, defaultValue: T) => {
+export const createStore = <T extends object>(validator: ZodSchema<T>, defaultValue: T) => {
   const key = "store";
   const invalidData = "store-invalid";
   const localData = localStorage.getItem(key);
@@ -46,4 +46,4 @@ export const createStore = <T extends object>(validator: ZodSchema<unknown>, def
   return store;
 };
 
-export const store = createStore<Store>(storeValidator, getDefaultStore());
+export const store: CreateStore<Store> = createStore<Store>(storeValidator, getDefaultStore());

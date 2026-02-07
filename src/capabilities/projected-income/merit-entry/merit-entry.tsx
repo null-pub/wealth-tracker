@@ -49,8 +49,8 @@ const MeritEntry = () => {
         }
 
         const result = meritData.safeParse(value);
-        result.error?.errors.forEach((x) => {
-          errors[x.path.toString()] = x.message;
+        result.error?.issues.forEach((issue) => {
+          errors[issue.path.toString()] = issue.message;
         });
 
         return { fields: errors };

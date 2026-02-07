@@ -8,9 +8,7 @@ import { useRef, useState } from "react";
 import { ConfirmDialog } from "shared/components/confirm-dialog";
 import { Loan } from "shared/models/store/version-1";
 import { hideAccount, removeAccount, setLoan, store, updateAccountName } from "shared/store";
-import { ZodIssue, z } from "zod";
-
-//todo: use tantstack form
+import { z } from "zod";
 
 const convertPct = (value: number) => {
   return value > 1 ? value / 100 : value;
@@ -40,7 +38,8 @@ export const AccountSettings = (props: AccountSettingsProps) => {
   });
 
   const ref = useRef<Partial<Loan>>(loan ?? {});
-  const [error, setError] = useState<Partial<Record<keyof Loan, ZodIssue>>>({});
+  const [error, setError] = useState<Partial<Record<string, z.core.$ZodIssue[]>>>({});
+  const defaultFirstPaymentDate = loan?.firstPaymentDate ? DateTime.fromISO(loan.firstPaymentDate) : null;
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -73,7 +72,7 @@ export const AccountSettings = (props: AccountSettingsProps) => {
               placeholder=""
             />
             <DatePicker
-              defaultValue={ref.current?.firstPaymentDate ? DateTime.fromISO(ref.current.firstPaymentDate) : null}
+              defaultValue={defaultFirstPaymentDate}
               label="First Payment"
               slotProps={{
                 textField: {
