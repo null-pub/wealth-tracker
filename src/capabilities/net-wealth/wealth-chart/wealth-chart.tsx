@@ -84,6 +84,8 @@ export const WealthChart = () => {
           const rangeStartIso = rangeStartDate ? DateTime.fromJSDate(rangeStartDate).toISODate() : undefined;
           const yearStartIso = DateTime.fromJSDate(datum.date).startOf("year").toISODate();
           const isRangeStartSameAsYearStart = rangeStartIso && rangeStartIso === yearStartIso;
+          const currentYearStart = localTime.startOf("year");
+          const isBeforeCurrentYearStart = DateTime.fromJSDate(datum.date) < currentYearStart;
           return {
             heading: DateTime.fromJSDate(datum.date).toFormat(shortDate),
             data: [
@@ -94,10 +96,12 @@ export const WealthChart = () => {
                     value: formatDeltaCash(datum.total - getRangeStartTotal()),
                   }
                 : undefined,
-              {
-                label: "YTD",
-                value: formatDeltaCash(datum.total - getYearStartTotal(datum.date)),
-              },
+              !isBeforeCurrentYearStart
+                ? {
+                    label: "YTD",
+                    value: formatDeltaCash(datum.total - getYearStartTotal(datum.date)),
+                  }
+                : undefined,
               ath < 0
                 ? {
                     label: "Since ATH",
