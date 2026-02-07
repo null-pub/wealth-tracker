@@ -35,6 +35,7 @@ export const WealthChart = () => {
   };
 
   const getRangeStartTotal = () => filteredData[0]?.total ?? 0;
+  const getRangeStartDate = () => filteredData[0]?.date;
 
   const getMaxTotalUpTo = (date: Date) => {
     const targetTime = date.getTime();
@@ -79,14 +80,20 @@ export const WealthChart = () => {
       tooltip: {
         renderer: ({ datum, yKey }) => {
           const ath = datum.total - getMaxTotalUpTo(datum.date);
+          const rangeStartDate = getRangeStartDate();
+          const rangeStartIso = rangeStartDate ? DateTime.fromJSDate(rangeStartDate).toISODate() : undefined;
+          const yearStartIso = DateTime.fromJSDate(datum.date).startOf("year").toISODate();
+          const isRangeStartSameAsYearStart = rangeStartIso && rangeStartIso === yearStartIso;
           return {
             heading: DateTime.fromJSDate(datum.date).toFormat(shortDate),
             data: [
               { label: yKey, value: `${formatCash(datum.total)} ${formatDeltaCash(datum.delta)}` },
-              {
-                label: "Since Range Start",
-                value: formatDeltaCash(datum.total - getRangeStartTotal()),
-              },
+              !isRangeStartSameAsYearStart
+                ? {
+                    label: "Since Range Start",
+                    value: formatDeltaCash(datum.total - getRangeStartTotal()),
+                  }
+                : undefined,
               {
                 label: "YTD",
                 value: formatDeltaCash(datum.total - getYearStartTotal(datum.date)),
