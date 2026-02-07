@@ -28,6 +28,27 @@ export const WealthChart = () => {
     return year && year >= fromDate.year && year <= toDate.year;
   });
 
+  const getYearStartTotal = (date: Date) => {
+    const year = date.getFullYear();
+    const firstInYear = filteredData.find((x) => x.date?.getFullYear() === year);
+    return firstInYear?.total ?? 0;
+  };
+
+  const getRangeStartTotal = () => filteredData[0]?.total ?? 0;
+
+  const getMaxTotalUpTo = (date: Date) => {
+    const targetTime = date.getTime();
+    let max = -Infinity;
+
+    filteredData.forEach((point) => {
+      if (point.date && point.date.getTime() <= targetTime) {
+        max = Math.max(max, point.total ?? 0);
+      }
+    });
+
+    return max === -Infinity ? 0 : max;
+  };
+
   const series = [
     ...Object.entries(wealth).map(([x, data]) => {
       return {
@@ -50,10 +71,29 @@ export const WealthChart = () => {
       yKey: "total",
       yName: "Total",
       tooltip: {
-        renderer: ({ datum, yKey }) => ({
-          heading: DateTime.fromJSDate(datum.date).toFormat(shortDate),
-          data: [{ label: yKey, value: `${formatCash(datum.total)} ${formatDeltaCash(datum.delta)}` }],
-        }),
+        renderer: ({ datum, yKey }) => {
+          const ath = datum.total - getMaxTotalUpTo(datum.date);
+          return {
+            heading: DateTime.fromJSDate(datum.date).toFormat(shortDate),
+            data: [
+              { label: yKey, value: `${formatCash(datum.total)} ${formatDeltaCash(datum.delta)}` },
+              {
+                label: "Since Range Start",
+                value: formatDeltaCash(datum.total - getRangeStartTotal()),
+              },
+              {
+                label: "YTD",
+                value: formatDeltaCash(datum.total - getYearStartTotal(datum.date)),
+              },
+              ath < 0
+                ? {
+                    label: "Since ATH",
+                    value: formatDeltaCash(datum.total - getMaxTotalUpTo(datum.date)),
+                  }
+                : undefined,
+            ].filter((x) => !!x),
+          };
+        },
       },
     } as AgLineSeriesOptions<GraphData>,
   ];
