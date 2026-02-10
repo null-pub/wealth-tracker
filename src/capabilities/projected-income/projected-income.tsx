@@ -124,7 +124,7 @@ export const ProjectedIncome = () => {
                     </Value>
                   </div>
                 </Tooltip>
-                <Value title={"APR to APR"}>
+                <Value title={"MAR to MAR"}>
                   <Cash value={aprToApr} />
                 </Value>
               </>
