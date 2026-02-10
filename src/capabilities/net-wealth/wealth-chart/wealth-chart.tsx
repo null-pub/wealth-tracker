@@ -89,7 +89,8 @@ export const WealthChart = () => {
           return {
             heading: DateTime.fromJSDate(datum.date).toFormat(shortDate),
             data: [
-              { label: yKey, value: `${formatCash(datum.total)} ${formatDeltaCash(datum.delta)}` },
+              { label: yKey, value: `${formatCash(datum.total)}` },
+              { label: "Since Last", value: formatDeltaCash(datum.delta) },
               !isRangeStartSameAsYearStart
                 ? {
                     label: "Since Range Start",
