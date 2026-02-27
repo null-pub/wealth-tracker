@@ -10,7 +10,31 @@ import { store } from "shared/store";
 import { useLocalDateTime } from "shared/utility/current-date";
 import { formatCash, formatDeltaCash } from "shared/utility/format-cash";
 import { shortDate } from "shared/utility/format-date";
+import { formatPercentSigns } from "shared/utility/format-percent";
 import { GraphData, useGraphData } from "./use-graph-data";
+
+const makeTooltipHtml = (
+  title: string,
+  rows: Array<{ label: string; cash: string; percent?: string; colorCash?: boolean } | undefined>
+): string => {
+  const filteredRows = rows.filter((x): x is { label: string; cash: string; percent?: string; colorCash?: boolean } => !!x);
+  const tableRows = filteredRows
+    .map(({ label, cash, percent, colorCash }) => {
+      const deltaColor = (val: string) => (val.startsWith("-") ? "#f87171" : "#4ade80");
+      const cashStyle = `text-align:right;padding:2px 4px${colorCash ? `;color:${deltaColor(cash)}` : ""}`;
+      const percentColor = percent === undefined ? "" : deltaColor(percent);
+      return `<tr>
+        <td style="text-align:left;padding:2px 8px 2px 0">${label}</td>
+        <td style="${cashStyle}">${cash}</td>
+        ${percent !== undefined ? `<td style="text-align:right;padding:2px 0 2px 4px;color:${percentColor}">${percent}</td>` : ""}
+      </tr>`;
+    })
+    .join("");
+  return `<div style="padding:8px 12px;font-variant-numeric:tabular-nums">
+    <div style="font-weight:bold;margin-bottom:6px">${title}</div>
+    <table style="width:100%;border-collapse:collapse">${tableRows}</table>
+  </div>`;
+};
 
 export const WealthChart = () => {
   const wealth = useStore(store, (x) => x.wealth);
@@ -86,31 +110,39 @@ export const WealthChart = () => {
           const isRangeStartSameAsYearStart = rangeStartIso && rangeStartIso === yearStartIso;
           const currentYearStart = localTime.startOf("year");
           const isBeforeCurrentYearStart = DateTime.fromJSDate(datum.date) < currentYearStart;
-          return {
-            heading: DateTime.fromJSDate(datum.date).toFormat(shortDate),
-            data: [
-              { label: yKey, value: `${formatCash(datum.total)}` },
-              { label: "Since Last", value: formatDeltaCash(datum.delta) },
-              !isRangeStartSameAsYearStart
-                ? {
-                    label: "Since Range Start",
-                    value: formatDeltaCash(datum.total - getRangeStartTotal()),
-                  }
-                : undefined,
-              !isBeforeCurrentYearStart
-                ? {
-                    label: "YTD",
-                    value: formatDeltaCash(datum.total - getYearStartTotal(datum.date)),
-                  }
-                : undefined,
-              ath < 0
-                ? {
-                    label: "Since ATH",
-                    value: formatDeltaCash(datum.total - getMaxTotalUpTo(datum.date)),
-                  }
-                : undefined,
-            ].filter((x) => !!x),
-          };
+          return makeTooltipHtml(DateTime.fromJSDate(datum.date).toFormat(shortDate), [
+            { label: yKey, cash: formatCash(datum.total) },
+            {
+              label: "Since Last",
+              cash: formatDeltaCash(datum.delta),
+              percent: formatPercentSigns(datum.delta / datum.total),
+              colorCash: true,
+            },
+            !isRangeStartSameAsYearStart
+              ? {
+                  label: "Since Range Start",
+                  cash: formatDeltaCash(datum.total - getRangeStartTotal()),
+                  percent: formatPercentSigns((datum.total - getRangeStartTotal()) / datum.total),
+                  colorCash: true,
+                }
+              : undefined,
+            !isBeforeCurrentYearStart
+              ? {
+                  label: "YTD",
+                  cash: formatDeltaCash(datum.total - getYearStartTotal(datum.date)),
+                  percent: formatPercentSigns((datum.total - getYearStartTotal(datum.date)) / datum.total),
+                  colorCash: true,
+                }
+              : undefined,
+            ath < 0
+              ? {
+                  label: "Since ATH",
+                  cash: formatDeltaCash(datum.total - getMaxTotalUpTo(datum.date)),
+                  percent: formatPercentSigns((datum.total - getMaxTotalUpTo(datum.date)) / datum.total),
+                  colorCash: true,
+                }
+              : undefined,
+          ]);
         },
       },
     } as AgLineSeriesOptions<GraphData>,

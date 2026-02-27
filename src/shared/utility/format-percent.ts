@@ -3,10 +3,9 @@ export const formatPercent = new Intl.NumberFormat("en-us", {
   maximumFractionDigits: 1,
 }).format;
 
-export const formatPercentKatex = (value: number) =>
-  new Intl.NumberFormat("en-us", {
-    style: "percent",
-    maximumFractionDigits: 1,
-  })
-    .format(value)
-    .replace("%", "\\%");
+export const formatPercentSigns = new Intl.NumberFormat("en-us", {
+  style: "percent",
+  maximumFractionDigits: 2,
+  minimumFractionDigits: 2,
+  signDisplay: "exceptZero",
+}).format;

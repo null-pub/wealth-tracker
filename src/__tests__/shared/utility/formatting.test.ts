@@ -1,7 +1,7 @@
 import { clamp } from "shared/utility/clamp";
 import { formatCash, formatCashShort } from "shared/utility/format-cash";
 import { monthDay, shortDate } from "shared/utility/format-date";
-import { formatPercent, formatPercentKatex } from "shared/utility/format-percent";
+import { formatPercent } from "shared/utility/format-percent";
 import { describe, expect, it } from "vitest";
 
 describe("clamp", () => {
@@ -43,14 +43,5 @@ describe("formatPercent", () => {
     expect(formatPercent(1)).toBe("100%");
     expect(formatPercent(0)).toBe("0%");
     expect(formatPercent(-0.1234)).toBe("-12.3%");
-  });
-});
-
-describe("formatPercentKatex", () => {
-  it("should format numbers as Katex percentages", () => {
-    expect(formatPercentKatex(0.1234)).toBe("12.3\\%");
-    expect(formatPercentKatex(1)).toBe("100\\%");
-    expect(formatPercentKatex(0)).toBe("0\\%");
-    expect(formatPercentKatex(-0.1234)).toBe("-12.3\\%");
   });
 });
