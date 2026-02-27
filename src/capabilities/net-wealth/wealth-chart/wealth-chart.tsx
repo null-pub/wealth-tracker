@@ -102,7 +102,7 @@ export const WealthChart = () => {
         enabled: false,
       },
       tooltip: {
-        renderer: ({ datum, yKey }) => {
+        renderer: ({ datum }) => {
           const ath = datum.total - getMaxTotalUpTo(datum.date);
           const rangeStartDate = getRangeStartDate();
           const rangeStartIso = rangeStartDate ? DateTime.fromJSDate(rangeStartDate).toISODate() : undefined;
@@ -111,7 +111,7 @@ export const WealthChart = () => {
           const currentYearStart = localTime.startOf("year");
           const isBeforeCurrentYearStart = DateTime.fromJSDate(datum.date) < currentYearStart;
           return makeTooltipHtml(DateTime.fromJSDate(datum.date).toFormat(shortDate), [
-            { label: yKey, cash: formatCash(datum.total) },
+            { label: "Total", cash: formatCash(datum.total) },
             {
               label: "Since Last",
               cash: formatDeltaCash(datum.delta),

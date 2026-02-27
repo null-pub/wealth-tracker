@@ -58,7 +58,7 @@ export const ProjectedIncome = () => {
   const clusters = useClusters(selectedYear);
 
   const dates = useDates(selectedYear);
-  const scenarios = useStore(scenarioStore);
+  const scenarios = useStore(scenarioStore, (x) => x);
 
   return (
     <Box display="flex" flexDirection="row" height="100%" width={"100%"}>

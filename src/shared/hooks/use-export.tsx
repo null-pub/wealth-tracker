@@ -26,7 +26,7 @@ export const downloadJson = <T,>(filename: string, storeData: T) => {
  * @returns {() => void} A callback function that triggers the download of store data as JSON
  */
 export const useExport = () => {
-  const storeData = useStore(store);
+  const storeData = useStore(store, (x) => x);
   const onExport = useCallback(() => {
     downloadJson(`wealth-tracker-${getLocalDateTime().toFormat(shortDate)}.json`, storeData);
   }, [storeData]);

@@ -1,4 +1,4 @@
-import { Store } from "@tanstack/store";
+import { createStore } from "@tanstack/react-store";
 import { Scenario } from "shared/models/scenario";
 import { getLocalDateTime } from "shared/utility/current-date";
 
@@ -10,7 +10,7 @@ interface ScenarioStore {
 }
 
 const year = getLocalDateTime().year;
-export const scenarioStore = new Store<ScenarioStore>({
+export const scenarioStore = createStore<ScenarioStore>({
   loading: true,
   maxYear: year,
   minYear: year,

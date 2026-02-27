@@ -114,7 +114,7 @@ describe("Store Persistence", () => {
 
   test("should notify subscribers of state changes", () => {
     let notified = false;
-    const unsubscribe = store.subscribe(() => {
+    const { unsubscribe } = store.subscribe(() => {
       notified = true;
     });
 
@@ -129,7 +129,7 @@ describe("Store Persistence", () => {
 
   test("should handle unsubscribe correctly", () => {
     let notified = false;
-    const unsubscribe = store.subscribe(() => {
+    const { unsubscribe } = store.subscribe(() => {
       notified = true;
     });
 

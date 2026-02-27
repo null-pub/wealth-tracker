@@ -19,7 +19,7 @@ export const ScenarioExplorer = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [year, setYear] = useState(getLocalDateTime().year);
   const [scenarioIndex, setScenarioIndex] = useState(0);
-  const scenarioData = useStore(scenarioStore);
+  const scenarioData = useStore(scenarioStore, (x) => x);
   const scenarios = scenarioData.scenarios[year];
   const scenario = scenarios?.[scenarioIndex];
 
