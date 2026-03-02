@@ -181,7 +181,7 @@ export const ProjectedIncome = () => {
             variant="cash"
             defaultDate={DateTime.fromObject({
               day: 1,
-              month: 4,
+              month: 3,
               year: selectedYear,
             })}
             title="Income Per Paycheck"
